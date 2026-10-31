@@ -7,7 +7,7 @@ import CareLayout from '@/components/ClientCare/CareLayout';
 import PolicyDoc, { Callout, CareContact, PlainTable, PolicySection, StepList } from '@/components/ClientCare/PolicyDoc';
 
 const FACTS = [
-  { Icon: LuTruck, title: 'Insured shipping', text: 'Every order ships fully insured, with tracking.' },
+  { Icon: LuTruck, title: 'Free US shipping', text: 'By USPS on orders over $100.' },
   { Icon: LuClock3, title: 'Signed for', text: 'Signature required on orders over $80.' },
   { Icon: LuRotateCcw, title: '30-day returns', text: 'Refund or exchange from the date of shipment.' },
   { Icon: LuGlobe, title: 'International', text: 'Shipping and returns worldwide.' },
@@ -22,7 +22,7 @@ const SECTIONS: PolicySection[] = [
         <PlainTable
           head={['Method', 'Carrier', 'Cost']}
           rows={[
-            ['Standard', 'USPS', 'TBC'],
+            ['Standard', 'USPS', 'Free on orders over $100'],
             ['Second Day Air', 'UPS', '$25'],
             ['Overnight', 'UPS', '$35'],
           ]}
