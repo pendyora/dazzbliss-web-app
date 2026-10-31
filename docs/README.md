@@ -1,3 +1,7 @@
+
+## Open items
+
+Everything Dazzbliss still has to provide or decide (all three apps) is tracked in one place: `dazzbliss-backend-portal/docs/OPEN_ITEMS.md`.
 # Storefront design docs
 
 These docs list the placeholder content in the redesigned Dazzbliss storefront and the **backend/API changes the new design needs**.
