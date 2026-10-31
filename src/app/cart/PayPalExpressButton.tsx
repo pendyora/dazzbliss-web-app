@@ -315,7 +315,7 @@ const PayPalExpressButton = ({ cartProducts, couponCode, isConsented, onConsentM
              opening PayPal, while the identical real button stays visible underneath. */
           <div
             role="button"
-            aria-label="PayPal — accept messaging terms to continue"
+            aria-label="PayPal — choose a ring size for your free gift to continue"
             className="absolute inset-0 z-20 cursor-pointer"
             onClick={() => onConsentMissing()}
           />

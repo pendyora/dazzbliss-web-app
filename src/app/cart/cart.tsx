@@ -61,8 +61,7 @@ const Cart = () => {
   const [applying, setApplying] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [showMessagingTermsError, setShowMessagingTermsError] = useState(false);
-  const messagingTermsSectionRef = useRef<HTMLDivElement>(null);
+
   const giftSectionRef = useRef<HTMLDivElement>(null);
   const [cartListFromLocalStorage, setCartListFromLocalStorage] = useState([]);
   const getSkuId = (item: any) => item?.sku_master_id ?? item?.sku_master;
@@ -148,35 +147,21 @@ const Cart = () => {
       return;
     }
     setShowGiftRingSizeError(false);
-    if (!isChecked) {
-      setShowMessagingTermsError(true);
-      setTimeout(() => {
-        messagingTermsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-      }, 0);
-      return;
-    }
-    setShowMessagingTermsError(false);
+    // The SMS consent checkbox is optional (US rules: consent to marketing texts can't be a condition
+    // of purchase), so it no longer blocks checkout.
     if (token) {
       await UpdateCartAPI();
     }
     route.push('/checkout');
   };
-  // Gate used by the PayPal Express button: require the messaging-terms checkbox just like
-  // the standard checkout button. Returns false (and surfaces the error + scroll) when not met.
+  // Gate used by the express buttons (PayPal, Shop Pay): only the free gift's ring size is required.
+  // Returns false (and surfaces the error + scroll) when it is missing.
   const canStartExpressCheckout = () => {
     if (giftNeedsRingSize) {
       flagGiftRingSize();
       return false;
     }
     setShowGiftRingSizeError(false);
-    if (!isChecked) {
-      setShowMessagingTermsError(true);
-      setTimeout(() => {
-        messagingTermsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-      }, 0);
-      return false;
-    }
-    setShowMessagingTermsError(false);
     return true;
   };
 
@@ -530,36 +515,24 @@ const Cart = () => {
                   </button>
                 )}
                 <OrderSummary cartProducts={updatedCartProducts} promoCode={promoCode} showAffirm />
-                {/* Messaging-terms consent gates both the checkout button and the express buttons. */}
-                <div ref={messagingTermsSectionRef} id="cart-messaging-terms-section" className="scroll-mt-24 sm:scroll-mt-20">
+                {/* Optional SMS consent: does not block checkout. DAZZBLISS TODO: when an SMS provider is set up,
+                    save `isChecked` with the customer/order so texts only go to people who opted in. */}
+                <div id="cart-messaging-terms-section">
                   <label htmlFor="checkoutCondition" className="flex cursor-pointer items-start gap-2.5 text-[11.5px] leading-[1.5] text-ink-soft">
                     <input
                       id="checkoutCondition"
                       type="checkbox"
                       checked={isChecked}
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        if (checked) {
-                          setShowMessagingTermsError(false);
-                        }
-                        setIsChecked(checked);
-                      }}
+                      onChange={(e) => setIsChecked(e.target.checked)}
                       className="mt-0.5 h-4 w-4 flex-none rounded-none border-line-strong text-ink focus:ring-ink"
                     />
                     <span>
-                      By checking this box, you agree to receive automated personalized text messages (e.g. cart reminders, shipping updates, and
-                      tracking info) from Pendyora. Reply HELP for help and STOP to cancel.{' '}
+                      Text me order and delivery updates from Pendyora. Optional. Message rates may apply; reply HELP for help and STOP to cancel.{' '}
                       <Link href="/terms-and-conditions" className="underline">
-                        View Terms &amp; Privacy
+                        Terms &amp; Privacy
                       </Link>
-                      .
                     </span>
                   </label>
-                  {showMessagingTermsError && !isChecked && (
-                    <p role="alert" className="m-0 mt-1.5 text-[12px] text-danger">
-                      Please confirm the messaging terms to continue.
-                    </p>
-                  )}
                 </div>
                 <Button type="default" loading={loading} disabled={loading} onClick={handleCheckout} className={`${PRIMARY_BTN} !h-[52px] w-full`}>
                   <LuLock className="h-[15px] w-[15px]" aria-hidden /> Secure checkout
@@ -596,7 +569,7 @@ const Cart = () => {
                         <PayPalExpressButton
                           cartProducts={updatedCartProducts}
                           couponCode={couponData?.coupon_code}
-                          isConsented={isChecked && !giftNeedsRingSize}
+                          isConsented={!giftNeedsRingSize}
                           onConsentMissing={canStartExpressCheckout}
                           onBeforeCreate={syncCartBeforeExpress}
                         />
