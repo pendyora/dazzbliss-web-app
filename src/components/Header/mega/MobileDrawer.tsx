@@ -44,7 +44,7 @@ export default function MobileDrawer({ open, onClose, menu, isSignedIn, firstNam
     >
       <div className="flex h-[62px] flex-none items-center justify-between border-b border-line px-5">
         <Link href="/" onClick={onClose} aria-label="Pendyora home">
-          <img src="/images/logo.png" alt="Pendyora" className="h-[22px] w-auto object-contain mix-blend-multiply" />
+          <img src="/images/logo.png" alt="Dazzbliss" className="h-[22px] w-auto object-contain mix-blend-multiply" />
         </Link>
         <button type="button" onClick={onClose} aria-label="Close menu" className="grid h-10 w-10 place-items-center">
           <LuX className="h-5 w-5" strokeWidth={1.2} />

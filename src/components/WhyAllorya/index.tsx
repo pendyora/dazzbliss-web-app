@@ -9,7 +9,7 @@ import { Img } from '../';
 export const whyAshclairBadges = [
   { src: 'img_close.svg', label: 'Finest Diamond & Gemstone' },
   { src: 'img_user.svg', label: 'Expert Support' },
-  { src: 'img_calculator.svg', label: 'Free Shipping & Returns' },
+  { src: 'img_calculator.svg', label: 'Insured Shipping & Returns' },
   { src: 'img_home.svg', label: 'Shop Now Pay Later' },
   { src: 'img_signal.svg', label: '90 Days Warranty' },
 ];
@@ -23,7 +23,7 @@ const COMPACT_PDP_SPACING = '-mt-4 md:-mt-2 -mb-4 md:-mb-2';
 const BAND_BADGES = [
   { src: 'img_close.svg', label: 'Finest Diamond & Gemstone' },
   { src: 'img_user.svg', label: 'Expert Support' },
-  { src: 'img_calculator.svg', label: 'Free Shipping and Returns' },
+  { src: 'img_calculator.svg', label: 'Insured Shipping and Returns' },
   { src: 'img_home.svg', label: 'Shop Now Pay Later' },
   { src: 'img_signal.svg', label: '90 Days Warranty' },
 ];

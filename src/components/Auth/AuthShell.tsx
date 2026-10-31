@@ -32,7 +32,7 @@ export default function AuthShell({ poster, flip, children }: Props) {
             <span className="sm:hidden">Continue shopping</span>
           </Link>
           <Link href="/" aria-label="Pendyora home" className="justify-self-center">
-            <img src="/images/logo.png" alt="Pendyora" className="h-[30px] w-auto object-contain mix-blend-multiply sm:h-[22px]" />
+            <img src="/images/logo.png" alt="Dazzbliss" className="h-[30px] w-auto object-contain mix-blend-multiply sm:h-[22px]" />
           </Link>
           <Link
             href="/contactpage"

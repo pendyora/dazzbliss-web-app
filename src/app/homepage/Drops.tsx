@@ -7,7 +7,7 @@ const drop = {
   name: 'Nocturne Chain',
   price: '$ 5,400',
   edition: 'of 24',
-  img: '/images/model/editorial.jpg',
+  img: '/images/Model/editorial.jpg',
 };
 
 function useCountdown(target: number) {

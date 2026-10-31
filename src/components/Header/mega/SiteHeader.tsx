@@ -185,7 +185,7 @@ export default function SiteHeader({ headerMetaData, currencyProps, search }: Pr
               <LuMenu className="h-5 w-5" strokeWidth={1.2} />
             </button>
             <Link href="/" aria-label="Pendyora home" className="lg:hidden">
-              <img src="/images/logo.png" alt="Pendyora" className="h-[34px] w-auto object-contain mix-blend-multiply" />
+              <img src="/images/logo.png" alt="Dazzbliss" className="h-[34px] w-auto object-contain mix-blend-multiply" />
             </Link>
           </div>
 
@@ -244,7 +244,7 @@ export default function SiteHeader({ headerMetaData, currencyProps, search }: Pr
           </nav>
 
           <Link href="/" aria-label="Pendyora home" className="hidden justify-self-center lg:block">
-            <img src="/images/logo.png" alt="Pendyora" className="h-[26px] w-auto object-contain mix-blend-multiply sm:h-[22px]" />
+            <img src="/images/logo.png" alt="Dazzbliss" className="h-[26px] w-auto object-contain mix-blend-multiply sm:h-[22px]" />
           </Link>
 
           <div className="flex items-center justify-end gap-1.5">

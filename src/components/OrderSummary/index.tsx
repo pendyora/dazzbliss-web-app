@@ -119,7 +119,8 @@ export default function OrderSummary({ cartProducts, promoCode, showAffirm }: su
   if (t.savings > 0) {
     rows.push([t.couponCode ? `Promo · ${t.couponCode}` : 'Savings', `−${formatCurrency(t.savings)}`, true]);
   }
-  rows.push(['Shipping', 'Complimentary']);
+  // DAZZBLISS: shipping is not free. Show the real amount once the backend charges it (backend docs/DAZZBLISS_BEHAVIOUR_CHANGES.md #4).
+  rows.push(['Shipping', 'Calculated at checkout']);
   if (t.gst > 0) {
     rows.push([`Tax (${t.gst}%)`, formatCurrency(Math.ceil(t.tax))]);
   }

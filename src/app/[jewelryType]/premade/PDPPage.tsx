@@ -2507,7 +2507,7 @@ const PDPPage = ({ selectionRoute }: { selectionRoute?: any }) => {
                     <path d="M8 7L4 11l4 4M4 11h11a5 5 0 010 10h-3" />
                   </svg>
                   <span>
-                    Free shipping and returns.{' '}
+                    Insured shipping and easy returns.{' '}
                     <Link href="/returns-shipping" className="text-ink underline underline-offset-4 hover:text-ink">
                       See the policy
                     </Link>

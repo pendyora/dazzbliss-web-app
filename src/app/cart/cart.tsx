@@ -36,7 +36,7 @@ import OurBestSellers from '../homepage/OurBestSellers';
 const ASSURANCES = [
   { icon: LuGem, title: 'Certified diamonds', text: 'Lab-grown and ethically mined, certified at origin.' },
   { icon: LuShieldCheck, title: 'Secure payment', text: 'Card details are encrypted and never stored.' },
-  { icon: LuTruck, title: 'Worldwide shipping', text: 'Complimentary shipping on every order.' },
+  { icon: LuTruck, title: 'Insured shipping', text: 'Every order ships fully insured. Shipping is added at checkout.' },
   { icon: LuRotateCcw, title: '30-day returns', text: 'Refund or exchange within 30 days of shipment.' },
 ];
 const PAYMENT_MARKS = ['VISA', 'MASTERCARD', 'AMEX', 'DISCOVER', 'PAYPAL', 'AFFIRM · US'];
