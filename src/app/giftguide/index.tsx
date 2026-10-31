@@ -8,7 +8,7 @@ import GiftguideFrame67 from './GiftguideFrame67';
 
 export default function GIFTGUIDEPage() {
   return (
-    <div className="w-full bg-[#ffffff]">
+    <div className="w-full bg-paper">
       <div className="sm:mt-5">
         <GiftguideFrame67 />
         <WhyAllorya />

@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { LuArrowLeft, LuCircleCheck, LuClock, LuGift, LuLoader, LuMail, LuMinus, LuPhone, LuPlus, LuShieldCheck } from 'react-icons/lu';
 
+import { PRIMARY_BTN } from '@/app/checkout/checkoutTheme';
 import { apiCreateOrderRequest } from '@/services/orderService';
 
 import { CANCEL_REASONS, ORDER_REQUEST_TYPE, RETURN_REASONS, SUPPORT, formatUsd } from './constants';
@@ -18,6 +19,14 @@ interface OrderRequestWizardProps {
 }
 
 const STEP_TITLES = ['Select items', 'Tell us why', 'Review & submit'];
+
+// Link-styled buttons matching the account pages (design-mockups/account).
+const BTN_DARK =
+  'inline-flex h-12 items-center justify-center bg-ink px-7 text-[11.5px] font-medium uppercase tracking-[0.2em] text-paper hover:bg-ink-hover hover:text-paper';
+const BTN_OUTLINE =
+  'inline-flex h-12 items-center justify-center border border-ink bg-transparent px-7 text-[11.5px] uppercase tracking-[0.2em] text-ink transition-colors hover:bg-ink hover:text-paper';
+const LINK = 'text-[13px] font-medium text-teal underline underline-offset-[3px] hover:text-navy';
+const KICKER = 'm-0 text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt';
 
 /**
  * Full-page cancel / return flow: pick the items, give a reason for each, review the refund and
@@ -155,8 +164,8 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
 
   if (loading || !eligibility) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <LuLoader className="h-10 w-10 animate-spin" />
+      <div className="grid min-h-[40vh] place-items-center">
+        <LuLoader className="h-7 w-7 animate-spin text-ink-soft" />
       </div>
     );
   }
@@ -164,9 +173,9 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
   const allowed = eligibility.supported && (isCancel ? eligibility.can_cancel : eligibility.can_return);
   if (!allowed && !result) {
     return (
-      <div className="mx-auto max-w-[560px] rounded-lg border border-[#e5e5e5] p-8 text-center sm:p-5">
-        <p className="mb-2 text-[18px] font-semibold">This order can’t be {isCancel ? 'cancelled' : 'returned'} online</p>
-        <p className="mb-5 text-[#666]">
+      <div className="grid max-w-[620px] justify-items-start gap-3 border border-line p-7 sm:p-5">
+        <b className="font-cormorant text-[26px] font-medium leading-[1.1]">This order can’t be {isCancel ? 'cancelled' : 'returned'} online</b>
+        <p className="m-0 text-[14px] leading-[1.65] text-ink-soft">
           {eligibility.blocked_reason ??
             (eligibility.return_window_expired
               ? 'The return window for this order has closed.'
@@ -175,7 +184,7 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
                 : 'Returns open once your order has been delivered.')}{' '}
           Call {SUPPORT.phone} or email {SUPPORT.email} and we’ll help.
         </p>
-        <Link href={backToOrder} className="inline-flex h-[42px] items-center bg-primary px-6 text-[13px] uppercase tracking-[1.5px] !text-text_w">
+        <Link href={backToOrder} className={`mt-1 ${BTN_DARK}`}>
           Back to order
         </Link>
       </div>
@@ -184,22 +193,21 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
 
   if (result) {
     return (
-      <div className="mx-auto max-w-[620px] rounded-lg border border-[#e5e5e5] p-8 sm:p-5">
-        <div className="mb-5 flex flex-col items-center text-center">
-          <LuCircleCheck className="mb-3 h-12 w-12 text-primary" />
-          <p className="mb-1 text-[22px] font-semibold">Your {noun} request is submitted</p>
-          <p className="mb-0 text-[#666]">
-            Request number <b>{result.request_number}</b>
-          </p>
-        </div>
-        <p className="mb-6 text-center text-[13px] text-[#777]">
+      <div className="grid max-w-[620px] justify-items-start gap-3 border border-line p-7 sm:p-5">
+        <LuCircleCheck className="h-9 w-9 text-ok" strokeWidth={1.3} />
+        <p className={KICKER}>Request received</p>
+        <b className="font-cormorant text-[30px] font-medium leading-[1.1]">Your {noun} request is submitted</b>
+        <p className="m-0 text-[14px] text-ink-soft">
+          Request number <b className="font-medium text-ink">{result.request_number}</b>
+        </p>
+        <p className="m-0 text-[13.5px] leading-[1.65] text-ink-soft">
           We’ve emailed you a confirmation. You can follow the status anytime from your order.
         </p>
-        <div className="flex flex-wrap justify-center gap-3">
-          <Link href={backToOrder} className="inline-flex h-[42px] items-center bg-primary px-6 text-[13px] uppercase tracking-[1.5px] !text-text_w">
+        <div className="mt-2 flex flex-wrap gap-3">
+          <Link href={backToOrder} className={BTN_DARK}>
             View request
           </Link>
-          <Link href="/" className="inline-flex h-[42px] items-center border border-primary px-6 text-[13px] uppercase tracking-[1.5px] text-primary">
+          <Link href="/" className={BTN_OUTLINE}>
             Continue shopping
           </Link>
         </div>
@@ -209,33 +217,37 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
 
   // ------------------------------------------------------------------ flow
 
+  const thumb = (item: any, size: string) => (
+    <div className={`${size} shrink-0 bg-stone`}>
+      <Image
+        src={item.image || '/images/no_images.svg'}
+        fallback="/images/no_images.svg"
+        preview={false}
+        alt={item.title}
+        className="mix-blend-multiply"
+      />
+    </div>
+  );
+
   const itemHeader = (item: any, qty?: number) => (
-    <div className="flex items-center gap-3">
-      <div className="h-[72px] w-[72px] shrink-0 bg-[#f3f3f1] sm:h-[60px] sm:w-[60px]">
-        <Image
-          src={item.image || '/images/no_images.svg'}
-          fallback="/images/no_images.svg"
-          preview={false}
-          alt={item.title}
-          className="mix-blend-multiply"
-        />
-      </div>
+    <div className="flex items-center gap-4 sm:gap-3">
+      {thumb(item, 'h-[80px] w-[64px] sm:h-[70px] sm:w-[56px]')}
       <div className="min-w-0 flex-1">
-        <p className="mb-0 font-medium leading-snug">{item.title}</p>
-        {item.variant && <p className="mb-0 text-[13px] text-[#777]">{item.variant}</p>}
-        {qty !== undefined && <p className="mb-0 text-[13px] text-[#777]">Qty {qty}</p>}
+        <p className="m-0 text-[14.5px] font-medium leading-snug text-ink">{item.title}</p>
+        {item.variant && <p className="m-0 mt-0.5 text-[13px] text-ink-soft">{item.variant}</p>}
+        {qty !== undefined && <p className="m-0 mt-0.5 text-[13px] text-ink-soft">Qty {qty}</p>}
       </div>
     </div>
   );
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="grid gap-6">
       <div>
-        <Link href={backToOrder} className="mb-3 inline-flex items-center gap-1 text-[14px] text-[#555] hover:text-primary">
-          <LuArrowLeft /> Back to order {orderNumber}
+        <Link href={backToOrder} className="mb-4 inline-flex items-center gap-1.5 text-[13px] text-ink-soft hover:text-ink">
+          <LuArrowLeft className="h-4 w-4" strokeWidth={1.3} /> Back to order {orderNumber}
         </Link>
-        <h1 className="mb-1 text-[28px] font-normal uppercase tracking-[2px] sm:text-[22px]">{isCancel ? 'Cancel items' : 'Return items'}</h1>
-        <p className="mb-0 text-[14px] text-[#666]">
+        <h2 className="m-0 font-cormorant text-[32px] font-medium leading-[1.05] text-ink">{isCancel ? 'Cancel items' : 'Return items'}</h2>
+        <p className="m-0 mt-1 text-[14px] text-ink-soft">
           Order {orderNumber} · placed {dayjs(eligibility.order_date).format('MMMM D, YYYY')}
           {!isCancel && eligibility.return_deadline && ` · returnable until ${dayjs(eligibility.return_deadline).format('MMMM D, YYYY')}`}
         </p>
@@ -243,17 +255,17 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
 
       <Steps current={step} size="small" responsive={false} items={STEP_TITLES.map((title) => ({ title }))} className="max-w-[640px]" />
 
-      <div className="flex items-start gap-6 md:flex-col">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(260px,320px)] items-start gap-[clamp(24px,3vw,40px)] md:grid-cols-1">
         {/* Main column */}
-        <div className="flex w-[65%] flex-col gap-4 md:w-full">
+        <div className="grid min-w-0 content-start gap-3.5">
           {step === 0 && (
             <>
-              <div className="flex items-center justify-between">
-                <p className="mb-0 text-[16px] font-semibold">Which items would you like to {isCancel ? 'cancel' : 'return'}?</p>
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <p className="m-0 text-[15px] font-medium text-ink">Which items would you like to {isCancel ? 'cancel' : 'return'}?</p>
                 {selectable.length > 1 && (
                   <button
                     type="button"
-                    className="text-[13px] text-primary underline"
+                    className={LINK}
                     onClick={() =>
                       setSelected(
                         chosen.length === selectable.length
@@ -278,21 +290,21 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
                     tabIndex={disabled ? -1 : 0}
                     onClick={() => !disabled && toggle(item)}
                     onKeyDown={(e) => e.key === 'Enter' && !disabled && toggle(item)}
-                    className={`flex items-center gap-4 rounded-lg border p-4 transition sm:gap-3 sm:p-3 ${
+                    className={`flex items-center gap-4 border p-4 transition-colors sm:gap-3 sm:p-3 ${
                       giftIncluded
-                        ? 'cursor-not-allowed border-primary bg-[#f6f8f3] shadow-[0_0_0_1px_#18381d]'
+                        ? 'cursor-not-allowed border-ink bg-haze'
                         : disabled
-                          ? 'cursor-not-allowed border-[#eeeeee] bg-[#fafafa] opacity-60'
+                          ? 'cursor-not-allowed border-line opacity-55'
                           : checked
-                            ? 'cursor-pointer border-primary bg-[#f6f8f3] shadow-[0_0_0_1px_#18381d]'
-                            : 'cursor-pointer border-[#e5e5e5] hover:border-[#b9c2ad]'
+                            ? 'cursor-pointer border-ink bg-haze'
+                            : 'cursor-pointer border-line hover:border-line-strong'
                     }`}
                   >
                     <Checkbox checked={checked} disabled={disabled} className="pointer-events-none" />
                     <div className="min-w-0 flex-1">{itemHeader(item)}</div>
                     <div className="flex shrink-0 flex-col items-end gap-2 text-right" onClick={(e) => e.stopPropagation()}>
                       {disabled ? (
-                        <span className={`text-[12px] ${giftIncluded ? 'font-medium text-[#8a6d1f]' : 'text-[#777]'}`}>
+                        <span className={`text-[10.5px] uppercase tracking-[0.14em] ${giftIncluded ? 'font-semibold text-gilt' : 'text-ink-faint'}`}>
                           {giftIncluded
                             ? 'Free gift · included'
                             : item.is_free_gift
@@ -303,31 +315,31 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
                         </span>
                       ) : (
                         <>
-                          <span className="text-[14px] font-medium">{formatUsd(item[unitKey])}</span>
+                          <span className="text-[14px] tabular-nums text-ink">{formatUsd(item[unitKey])}</span>
                           {item.available_qty > 1 && checked && (
-                            <div className="flex items-center rounded border border-[#dcdcdc]">
+                            <div className="flex h-9 items-center border border-line-strong bg-paper">
                               <button
                                 type="button"
-                                className="px-2 py-1 disabled:opacity-40"
+                                className="grid h-full w-8 place-items-center text-ink hover:bg-haze disabled:opacity-35"
                                 disabled={selected[item.order_item_id] <= 1}
                                 onClick={() => setQty(item, selected[item.order_item_id] - 1)}
                                 aria-label="Decrease"
                               >
-                                <LuMinus />
+                                <LuMinus className="h-3.5 w-3.5" />
                               </button>
-                              <span className="w-7 text-center text-[14px]">{selected[item.order_item_id]}</span>
+                              <span className="w-7 text-center text-[13.5px] tabular-nums">{selected[item.order_item_id]}</span>
                               <button
                                 type="button"
-                                className="px-2 py-1 disabled:opacity-40"
+                                className="grid h-full w-8 place-items-center text-ink hover:bg-haze disabled:opacity-35"
                                 disabled={selected[item.order_item_id] >= item.available_qty}
                                 onClick={() => setQty(item, selected[item.order_item_id] + 1)}
                                 aria-label="Increase"
                               >
-                                <LuPlus />
+                                <LuPlus className="h-3.5 w-3.5" />
                               </button>
                             </div>
                           )}
-                          {item.available_qty > 1 && !checked && <span className="text-[12px] text-[#777]">{item.available_qty} available</span>}
+                          {item.available_qty > 1 && !checked && <span className="text-[12px] text-ink-faint">{item.available_qty} available</span>}
                         </>
                       )}
                     </div>
@@ -335,19 +347,16 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
                 );
               })}
               {giftsIncluded.map((gift) => (
-                <div
-                  key={gift.order_item_id}
-                  className="flex items-start gap-3 rounded-lg border border-[#ecd9a6] bg-[#fdf8ea] p-4 text-[14px] sm:p-3"
-                >
-                  <LuGift className="mt-[2px] h-5 w-5 shrink-0 text-[#a07a1c]" />
-                  <p className="mb-0 text-[#5c4a14]">
-                    <b>{gift.title}</b> (free gift) will be included. {giftNotice(gift)}
+                <div key={gift.order_item_id} className="flex items-start gap-3 border border-line bg-mist p-4 text-[13.5px] sm:p-3">
+                  <LuGift className="mt-[2px] h-[18px] w-[18px] shrink-0 text-gilt" strokeWidth={1.4} />
+                  <p className="m-0 leading-[1.6] text-ink">
+                    <b className="font-medium">{gift.title}</b> (free gift) will be included. {giftNotice(gift)}
                   </p>
                 </div>
               ))}
               {hasGift && chosen.length > 0 && !giftsIncluded.length && (
-                <p className="mb-0 flex items-center gap-2 text-[13px] text-[#5b6b52]">
-                  <LuGift className="shrink-0" /> You keep your free gift — the rest of your order still qualifies for it.
+                <p className="m-0 flex items-center gap-2 text-[13px] text-ink-soft">
+                  <LuGift className="shrink-0 text-gilt" strokeWidth={1.4} /> You keep your free gift — the rest of your order still qualifies for it.
                 </p>
               )}
             </>
@@ -355,11 +364,11 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
 
           {step === 1 && (
             <>
-              <div className="rounded-lg border border-[#e5e5e5] bg-white p-4 sm:p-3">
-                <p className="mb-1 text-[16px] font-semibold">
-                  Why are you {isCancel ? 'cancelling' : 'returning'}? <span className="text-red-500">*</span>
+              <section className="border border-line p-[22px] sm:p-4">
+                <p className="m-0 text-[15px] font-medium text-ink">
+                  Why are you {isCancel ? 'cancelling' : 'returning'}? <span className="text-danger">*</span>
                 </p>
-                <p className="mb-4 text-[14px] text-[#777]">Choose the reason that fits best.</p>
+                <p className="m-0 mb-4 mt-1 text-[13.5px] text-ink-soft">Choose the reason that fits best.</p>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-1" role="radiogroup" aria-label="Reason">
                   {reasonList.map((value) => {
                     const active = reason === value;
@@ -370,28 +379,32 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
                         role="radio"
                         aria-checked={active}
                         onClick={() => setReason(value)}
-                        className={`flex items-center gap-3 rounded-md border px-4 py-3 text-left text-[14px] transition ${
-                          active ? 'border-primary bg-[#f6f8f3] text-primary' : 'border-[#e5e5e5] bg-white text-[#333] hover:border-[#b9c2ad]'
+                        className={`flex items-center gap-3 border px-4 py-3 text-left text-[14px] transition-colors ${
+                          active ? 'border-ink bg-haze text-ink' : 'border-line bg-paper text-ink-soft hover:border-line-strong hover:text-ink'
                         }`}
                       >
                         <span
                           className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border ${
-                            active ? 'border-primary' : 'border-[#bdbdbd]'
+                            active ? 'border-ink' : 'border-line-strong'
                           }`}
                         >
-                          {active && <span className="h-[10px] w-[10px] rounded-full bg-primary" />}
+                          {active && <span className="h-2 w-2 rounded-full bg-ink" />}
                         </span>
                         {value}
                       </button>
                     );
                   })}
                 </div>
-              </div>
+              </section>
 
-              <div className="rounded-lg border border-[#e5e5e5] bg-white p-4 sm:p-3">
-                <label htmlFor="request-comment" className="mb-2 block text-[15px] font-medium">
+              <section className="border border-line p-[22px] sm:p-4">
+                <label htmlFor="request-comment" className="mb-2 block text-[10.5px] uppercase tracking-[0.16em] text-ink-soft">
                   Additional details{' '}
-                  {needsComment ? <span className="text-red-500">*</span> : <span className="text-[13px] font-normal text-[#777]">(optional)</span>}
+                  {needsComment ? (
+                    <span className="text-danger">*</span>
+                  ) : (
+                    <span className="normal-case tracking-normal text-ink-faint">(optional)</span>
+                  )}
                 </label>
                 <Input.TextArea
                   id="request-comment"
@@ -399,49 +412,55 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
                   onChange={(e) => setComment(e.target.value.slice(0, 1000))}
                   autoSize={{ minRows: 3, maxRows: 8 }}
                   placeholder={needsComment ? 'Please tell us a little more about the reason' : 'Anything that helps us understand your request'}
-                  className="!rounded-md !bg-white !text-[14px]"
+                  className="!text-[14px]"
                 />
-                <div className="mt-2 flex justify-between gap-3 text-[12px] text-[#999]">
+                <div className="mt-2 flex justify-between gap-3 text-[12px] text-ink-faint">
                   <span>{needsComment ? 'Required when “Other” is selected.' : 'Our team reads every note.'}</span>
-                  <span>{comment.length} / 1000</span>
+                  <span className="tabular-nums">{comment.length} / 1000</span>
                 </div>
-              </div>
+              </section>
             </>
           )}
 
           {step === 2 && (
             <>
-              <p className="mb-0 text-[16px] font-semibold">Review your {noun}</p>
-              <div className="flex flex-col divide-y divide-[#f0f0f0] rounded-lg border border-[#e5e5e5] px-4 sm:px-3">
+              <p className="m-0 text-[15px] font-medium text-ink">Review your {noun}</p>
+              <ul className="m-0 list-none border-t border-line p-0">
                 {chosen.map((item) => (
-                  <div key={item.order_item_id} className="flex items-center gap-3 py-3">
+                  <li key={item.order_item_id} className="flex items-center gap-4 border-b border-line py-4">
                     <div className="min-w-0 flex-1">{itemHeader(item, selected[item.order_item_id])}</div>
-                    <span className="shrink-0 text-[14px]">{formatUsd(Number(item[unitKey]) * selected[item.order_item_id])}</span>
-                  </div>
+                    <span className="shrink-0 text-[14px] tabular-nums">{formatUsd(Number(item[unitKey]) * selected[item.order_item_id])}</span>
+                  </li>
                 ))}
                 {giftsIncluded.map((gift) => (
-                  <div key={gift.order_item_id} className="flex items-center gap-3 py-3">
+                  <li key={gift.order_item_id} className="flex items-center gap-4 border-b border-line py-4">
                     <div className="min-w-0 flex-1">
                       {itemHeader(gift, gift.quantity)}
-                      <p className="mb-0 mt-1 pl-[84px] text-[13px] text-[#8a6d1f] sm:pl-[72px]">Free gift · {giftNotice(gift)}</p>
+                      <p className="m-0 mt-1.5 pl-[80px] text-[12.5px] text-gilt sm:pl-[68px]">Free gift · {giftNotice(gift)}</p>
                     </div>
-                    <span className="shrink-0 text-[14px] text-[#777]">{formatUsd(0)}</span>
-                  </div>
+                    <span className="shrink-0 text-[14px] tabular-nums text-ink-faint">{formatUsd(0)}</span>
+                  </li>
                 ))}
-                <p className="mb-0 py-3 text-[14px] text-[#333]">
-                  <span className="text-[#777]">Reason:</span> {reason}
-                </p>
-                {comment.trim() && <p className="mb-0 py-3 text-[13px] text-[#555]">“{comment.trim()}”</p>}
-                <button type="button" className="py-3 text-left text-[13px] text-primary underline" onClick={() => setStep(0)}>
-                  Edit items
-                </button>
-              </div>
+              </ul>
+              <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-5 gap-y-1.5 text-[13.5px]">
+                <dt className="text-ink-faint">Reason</dt>
+                <dd className="m-0 text-ink">{reason}</dd>
+                {comment.trim() && (
+                  <>
+                    <dt className="text-ink-faint">Details</dt>
+                    <dd className="m-0 text-ink-soft">“{comment.trim()}”</dd>
+                  </>
+                )}
+              </dl>
+              <button type="button" className={`justify-self-start ${LINK}`} onClick={() => setStep(0)}>
+                Edit items
+              </button>
 
-              <label className="flex cursor-pointer items-start gap-3 rounded-lg bg-[#f6f8f3] p-4 text-[14px] sm:p-3">
+              <label className="mt-1 flex cursor-pointer items-start gap-3 border border-line bg-haze p-4 text-[13.5px] leading-[1.6] text-ink sm:p-3">
                 <Checkbox checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-[2px]" />
                 <span>
                   I understand the{' '}
-                  <Link href="/returns-shipping" target="_blank" className="text-primary underline">
+                  <Link href="/returns-shipping" target="_blank" className={LINK}>
                     Returns &amp; Shipping policy
                   </Link>
                   {isCancel
@@ -452,132 +471,108 @@ const OrderRequestWizard: React.FC<OrderRequestWizardProps> = ({ orderNumber, ty
             </>
           )}
 
-          <div className="mt-2 flex items-center justify-between gap-3 pt-2 sm:flex-col-reverse sm:items-stretch">
+          <div className="mt-3 flex items-center justify-between gap-3 border-t border-line pt-5 sm:flex-col-reverse sm:items-stretch">
             {step > 0 ? (
               <button
                 type="button"
                 onClick={() => setStep(step - 1)}
                 disabled={submitting}
-                className="inline-flex h-[48px] min-w-[140px] items-center justify-center gap-2 border border-primary bg-white px-6 text-[13px] uppercase tracking-[1.5px] text-primary transition hover:bg-[#f6f8f3] disabled:opacity-50"
+                className={`${BTN_OUTLINE} min-w-[140px] gap-2 disabled:opacity-50`}
               >
-                <LuArrowLeft /> Back
+                <LuArrowLeft className="h-4 w-4" strokeWidth={1.3} /> Back
               </button>
             ) : (
               <span className="sm:hidden" />
             )}
-            <Button
-              onClick={next}
-              loading={submitting}
-              className={`!h-[48px] !min-w-[180px] !rounded-none !border-primary !bg-primary !px-8 !text-[13px] uppercase !tracking-[1.5px] !text-text_w hover:!opacity-90 ${
-                stepError ? '!opacity-60' : ''
-              }`}
-            >
+            <Button onClick={next} loading={submitting} className={`${PRIMARY_BTN} !min-w-[180px] ${stepError ? '!opacity-60' : ''}`}>
               {step === 2 ? `Submit ${noun} request` : 'Continue'}
             </Button>
           </div>
         </div>
 
         {/* Summary */}
-        <aside className="sticky top-[120px] w-[35%] overflow-hidden rounded-lg border border-[#e5e5e5] bg-white md:static md:w-full">
-          <div className="p-5 sm:p-4">
-            <p className="mb-4 text-[12px] font-medium uppercase tracking-[1.5px] text-[#777]">Your {noun}</p>
+        <aside className="sticky top-[calc(var(--header-height,108px)+24px)] grid gap-3.5 md:static">
+          <section className="grid content-start gap-3 border border-line p-[22px]">
+            <h3 className="m-0 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-faint">Your {noun}</h3>
             {totals.units === 0 ? (
-              <p className="mb-0 text-[14px] text-[#777]">Select the items you want to {isCancel ? 'cancel' : 'return'} to see your refund.</p>
+              <p className="m-0 text-[13.5px] leading-[1.6] text-ink-soft">
+                Select the items you want to {isCancel ? 'cancel' : 'return'} to see your refund.
+              </p>
             ) : (
               <>
-                <div className="flex flex-col gap-3">
+                <div className="grid gap-3">
                   {chosen.map((item) => (
                     <div key={item.order_item_id} className="flex items-center gap-3">
-                      <div className="h-[44px] w-[44px] shrink-0 bg-[#f3f3f1]">
-                        <Image
-                          src={item.image || '/images/no_images.svg'}
-                          fallback="/images/no_images.svg"
-                          preview={false}
-                          alt={item.title}
-                          className="mix-blend-multiply"
-                        />
-                      </div>
+                      {thumb(item, 'h-[56px] w-[45px]')}
                       <div className="min-w-0 flex-1">
-                        <p className="mb-0 line-clamp-2 text-[13px] leading-snug text-[#333]">{item.title}</p>
-                        <p className="mb-0 text-[12px] text-[#777]">Qty {selected[item.order_item_id]}</p>
+                        <p className="m-0 line-clamp-2 text-[13px] leading-snug text-ink">{item.title}</p>
+                        <p className="m-0 text-[12px] text-ink-faint">Qty {selected[item.order_item_id]}</p>
                       </div>
-                      <span className="shrink-0 text-[13px]">{formatUsd(Number(item[unitKey]) * selected[item.order_item_id])}</span>
+                      <span className="shrink-0 text-[13px] tabular-nums">{formatUsd(Number(item[unitKey]) * selected[item.order_item_id])}</span>
                     </div>
                   ))}
                   {giftsIncluded.map((gift) => (
                     <div key={gift.order_item_id} className="flex items-center gap-3">
-                      <div className="h-[44px] w-[44px] shrink-0 bg-[#f3f3f1]">
-                        <Image
-                          src={gift.image || '/images/no_images.svg'}
-                          fallback="/images/no_images.svg"
-                          preview={false}
-                          alt={gift.title}
-                          className="mix-blend-multiply"
-                        />
-                      </div>
+                      {thumb(gift, 'h-[56px] w-[45px]')}
                       <div className="min-w-0 flex-1">
-                        <p className="mb-0 line-clamp-2 text-[13px] leading-snug text-[#333]">{gift.title}</p>
-                        <p className="mb-0 text-[12px] text-[#8a6d1f]">Free gift · Qty {gift.quantity}</p>
+                        <p className="m-0 line-clamp-2 text-[13px] leading-snug text-ink">{gift.title}</p>
+                        <p className="m-0 text-[12px] text-gilt">Free gift · Qty {gift.quantity}</p>
                       </div>
-                      <span className="shrink-0 text-[13px] text-[#777]">{formatUsd(0)}</span>
+                      <span className="shrink-0 text-[13px] tabular-nums text-ink-faint">{formatUsd(0)}</span>
                     </div>
                   ))}
                 </div>
                 {!isCancel && Number(eligibility.shipping_amount) > 0 && (
-                  <div className="mt-2 flex justify-between gap-3 text-[13px] text-[#777]">
+                  <div className="flex justify-between gap-3 text-[13px] text-ink-soft">
                     <span>Original shipping</span>
                     <span>Not refunded</span>
                   </div>
                 )}
-                <div className="mt-4 flex items-baseline justify-between gap-3 border-t border-[#eeeeee] pt-4">
-                  <span className="text-[15px] font-semibold">Estimated refund</span>
-                  <span className="text-[24px] font-semibold text-primary">{formatUsd(totals.estimate)}</span>
+                <div className="mt-1 flex items-baseline justify-between gap-3 border-t border-line pt-3.5">
+                  <span className="text-[14px] font-semibold">Estimated refund</span>
+                  <span className="font-cormorant text-[28px] font-medium leading-none tabular-nums text-ink">{formatUsd(totals.estimate)}</span>
                 </div>
               </>
             )}
-          </div>
-          <div className="flex flex-col gap-2.5 border-t border-[#eeeeee] bg-[#fafaf8] px-5 py-4 text-[13px] text-[#555] sm:px-4">
-            <p className="mb-0 flex gap-2">
-              <LuClock className="mt-[2px] shrink-0 text-primary" />
+          </section>
+
+          <section className="grid gap-2.5 bg-haze p-[22px] text-[13px] leading-[1.55] text-ink-soft">
+            <p className="m-0 flex gap-2.5">
+              <LuClock className="mt-[2px] h-4 w-4 shrink-0 text-gilt" strokeWidth={1.4} />
               {isCancel ? 'Reviewed within 1–2 business days.' : `Returns accepted within ${eligibility.return_window_days} days of delivery.`}
             </p>
             {!isCancel && (
-              <p className="mb-0 flex gap-2">
-                <LuShieldCheck className="mt-[2px] shrink-0 text-primary" />
+              <p className="m-0 flex gap-2.5">
+                <LuShieldCheck className="mt-[2px] h-4 w-4 shrink-0 text-gilt" strokeWidth={1.4} />
                 Every return is inspected by a certified jeweler.
               </p>
             )}
-          </div>
+          </section>
+
           {/* Support contacts, each on its own tappable row. */}
-          <div className="border-t border-[#eeeeee] px-5 py-4 sm:px-4">
-            <p className="mb-2 text-[12px] font-medium uppercase tracking-[1.5px] text-[#777]">Need help?</p>
-            <div className="flex flex-col gap-2">
-              <a
-                href={`tel:${SUPPORT.phone.replace(/[^0-9+]/g, '')}`}
-                className="flex items-center gap-3 rounded-md border border-[#eeeeee] px-3 py-2.5 text-[14px] text-[#333] transition hover:border-primary hover:text-primary"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eef1e8] text-primary">
-                  <LuPhone />
-                </span>
-                <span className="flex flex-col">
-                  <span className="text-[11px] uppercase tracking-[1px] text-[#999]">Call us</span>
-                  {SUPPORT.phone}
-                </span>
-              </a>
-              <a
-                href={`mailto:${SUPPORT.email}`}
-                className="flex items-center gap-3 rounded-md border border-[#eeeeee] px-3 py-2.5 text-[14px] text-[#333] transition hover:border-primary hover:text-primary"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eef1e8] text-primary">
-                  <LuMail />
-                </span>
-                <span className="flex min-w-0 flex-col">
-                  <span className="text-[11px] uppercase tracking-[1px] text-[#999]">Email us</span>
-                  <span className="truncate">{SUPPORT.email}</span>
-                </span>
-              </a>
-            </div>
-          </div>
+          <section className="grid content-start gap-2 border border-line p-[22px]">
+            <h3 className="m-0 mb-1 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-faint">Need help?</h3>
+            <a
+              href={`tel:${SUPPORT.phone.replace(/[^0-9+]/g, '')}`}
+              className="flex items-center gap-3 border border-line px-3 py-2.5 text-[14px] text-ink transition-colors hover:border-ink hover:text-ink"
+            >
+              <LuPhone className="h-4 w-4 shrink-0 text-ink-soft" strokeWidth={1.4} />
+              <span className="flex flex-col">
+                <span className="text-[10.5px] uppercase tracking-[0.16em] text-ink-faint">Call us</span>
+                {SUPPORT.phone}
+              </span>
+            </a>
+            <a
+              href={`mailto:${SUPPORT.email}`}
+              className="flex items-center gap-3 border border-line px-3 py-2.5 text-[14px] text-ink transition-colors hover:border-ink hover:text-ink"
+            >
+              <LuMail className="h-4 w-4 shrink-0 text-ink-soft" strokeWidth={1.4} />
+              <span className="flex min-w-0 flex-col">
+                <span className="text-[10.5px] uppercase tracking-[0.16em] text-ink-faint">Email us</span>
+                <span className="truncate">{SUPPORT.email}</span>
+              </span>
+            </a>
+          </section>
         </aside>
       </div>
     </div>

@@ -1,122 +1,53 @@
 import React from 'react';
 
-import { Img, Text } from '../../components';
+import { Img } from '../../components';
+
+/**
+ * Press logos. A logo is shown only when it links to the actual article (`href`); the whole
+ * section is hidden while there is none, so the site never shows an unverifiable "Featured in" claim.
+ * DAZZBLISS TODO: add real press mentions here (logo file in /public/images, article URL).
+ */
+interface PressLogo {
+  src: string;
+  alt: string;
+  href?: string;
+}
+
+const PRESS: PressLogo[] = [
+  // Placeholder from the old site, no article link, so it is not shown.
+  { src: 'img_vogue_revista_logo.png', alt: 'Vogue Revista' },
+];
 
 export default function FeaturedIn() {
+  const logos = PRESS.filter((logo) => !!logo.href);
+  if (logos.length === 0) {
+    return null;
+  }
+
   return (
-    <>
-      <div className="container-xs grid grid-cols-5 justify-center px-[78px] py-[74px] xl:grid-cols-4 2xl:px-[160px] xl:px-28 xl:py-14 lg:grid-cols-4 lg:px-20 lg:py-10 md:grid-cols-4 md:p-5 md:gap-10 sm:grid-cols-1 sm:hidden">
-        <Text size="text5xl" as="p" className="w-fit uppercase tracking-[2.20px] md:text-[26px] sm:text-[22px] whitespace-nowrap ">
-          FEATURED IN
-        </Text>
-        <div className="grid grid-cols-4 xl:col-span-3 col-span-4 gap-x-10 gap-y-10 md:gap-x-8 md:gap-y-6">
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className="h-[50px] w-full object-cover opacity-[0.29] lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className="h-[50px] w-full object-cover opacity-[0.29] lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className="h-[50px] w-full object-cover opacity-[0.29] lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className="h-[50px] w-full object-cover opacity-[0.29] lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className="h-[50px] w-full object-cover opacity-[0.29] lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className="h-[50px] w-full object-cover opacity-[0.29] lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className="h-[50px] w-full object-cover opacity-[0.29] lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className="h-[50px] w-full object-cover opacity-[0.29] lg:h-auto md:h-auto"
-          />
+    <section className="border-y border-line bg-paper">
+      <div className="mx-auto grid max-w-[1440px] grid-cols-[minmax(160px,220px)_1fr] items-center gap-12 px-[clamp(16px,3.2vw,56px)] py-14 md:grid-cols-1 md:gap-6 md:py-10 sm:py-8">
+        <div>
+          <p className="m-0 mb-2 text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Press</p>
+          <h2 className="m-0 font-cormorant text-[clamp(28px,2.6vw,38px)] font-normal leading-none text-ink">
+            Featured <em className="italic text-gilt">in</em>
+          </h2>
+        </div>
+        <div className="grid grid-cols-4 gap-x-10 gap-y-8 md:gap-x-6 sm:grid-cols-3 sm:gap-4">
+          {logos.map((logo) => (
+            <a
+              key={logo.href}
+              href={logo.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${logo.alt} article`}
+              className="block opacity-40 grayscale transition-opacity hover:opacity-80"
+            >
+              <Img src={logo.src} width={262} height={68} alt={logo.alt} className="h-[44px] w-full object-contain lg:h-auto" />
+            </a>
+          ))}
         </div>
       </div>
-      <div className="container-xs sm:flex flex-col justify-center items-center p-5 my-3 hidden gap-[14px]">
-        <Text size="text5xl" as="p" className="w-full uppercase tracking-[2.20px] text-center whitespace-nowrap">
-          FEATURED IN
-        </Text>
-        <div className="grid grid-cols-3 gap-3">
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className=" w-full object-cover  lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className=" w-full object-cover  lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className=" w-full object-cover  lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className=" w-full object-cover  lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className=" w-full object-cover  lg:h-auto md:h-auto"
-          />
-          <Img
-            src="img_vogue_revista_logo.png"
-            width={262}
-            height={68}
-            alt="Vogue Revista Logo"
-            className=" w-full object-cover  lg:h-auto md:h-auto"
-          />
-        </div>
-      </div>
-    </>
+    </section>
   );
 }

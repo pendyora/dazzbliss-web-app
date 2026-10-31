@@ -1,6 +1,8 @@
 :root {
-  --primary-color: #17381d;
-  --secondary-color: #818d64;
+  /* Legacy variables still read by src/styles/antd.css; mapped onto the Atlantic palette
+     (same values as the legacy `primary` / `secondary` tokens in theme-colors.js). */
+  --primary-color: #111111;
+  --secondary-color: #2f4156;
   --text_w: #ffffff;
 }
 
@@ -53,7 +55,7 @@ bottom: 14px !important;
 
 
 .blog-css-setup div p a,.education-css-setup div p a  {
-  color: #17381D !important;
+  color: #4E7486 !important;
   text-decoration: underline;
 }
 
@@ -167,7 +169,7 @@ bottom: 14px !important;
   z-index: -1;
   pointer-events: none;
   background: repeating-conic-gradient(from var(--angle, 0deg),
-    var(--l, #0000 0% 0%, #17381d)) border-box;
+    var(--l, #0000 0% 0%, #4E7486)) border-box;
   animation: rotateGradient 4s linear infinite;
 
   /* Mask to make gradient only appear in the border area */
@@ -222,6 +224,9 @@ bottom: 14px !important;
 
 .custom-modal .ant-modal-content{
   padding: 0px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden;
 }
 
 
@@ -245,9 +250,65 @@ bottom: 14px !important;
 .custom-class{
   margin-inline-end: auto;
   margin-inline-start: 0;
+  border-radius: 0 !important;
 }
 .highlight {
   margin: 0px !important;
+}
+
+/* Dazzbliss: toast notifications (antd `notification.*`). Static calls render outside the page
+   ConfigProviders, so they are styled here. The navy offer notification (`.custom-class`) keeps its own look. */
+.ant-notification .ant-notification-notice:not(.custom-class) {
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-left: 3px solid #111111;
+  border-radius: 0 !important;
+  box-shadow: 0 10px 30px -18px rgba(17, 17, 17, 0.35);
+  padding: 16px 20px 16px 18px;
+  font-family: 'Libre Franklin', 'Helvetica Neue', Arial, sans-serif;
+}
+.ant-notification .ant-notification-notice-success:not(.custom-class) {
+  border-left-color: #4e6b4a;
+}
+.ant-notification .ant-notification-notice-error:not(.custom-class) {
+  border-left-color: #a23b2e;
+}
+.ant-notification .ant-notification-notice-warning:not(.custom-class),
+.ant-notification .ant-notification-notice-info:not(.custom-class) {
+  border-left-color: #4e7486;
+}
+.ant-notification .ant-notification-notice:not(.custom-class) .ant-notification-notice-message {
+  color: #111111;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  margin-bottom: 2px;
+}
+.ant-notification .ant-notification-notice:not(.custom-class) .ant-notification-notice-description {
+  color: #5f6368;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.ant-notification .ant-notification-notice:not(.custom-class) .ant-notification-notice-icon {
+  font-size: 18px;
+}
+.ant-notification .ant-notification-notice:not(.custom-class) .ant-notification-notice-icon-success {
+  color: #4e6b4a;
+}
+.ant-notification .ant-notification-notice:not(.custom-class) .ant-notification-notice-icon-error {
+  color: #a23b2e;
+}
+.ant-notification .ant-notification-notice:not(.custom-class) .ant-notification-notice-icon-warning,
+.ant-notification .ant-notification-notice:not(.custom-class) .ant-notification-notice-icon-info {
+  color: #4e7486;
+}
+.ant-notification .ant-notification-notice:not(.custom-class) .ant-notification-notice-close {
+  color: #8a8d91;
+  border-radius: 0;
+}
+.ant-notification .ant-notification-notice:not(.custom-class) .ant-notification-notice-close:hover {
+  color: #111111;
+  background: transparent;
 }
 @media (max-width: 550px){
   .custom-class{
@@ -404,11 +465,12 @@ bottom: 14px !important;
 }
 
 /* "Why Ashclair" badges on the PDP (compact variant) sit on white, so the remote
-   SVG icons are tinted to the brand green (#818d64). They render as <img>, so a
+   SVG icons are tinted to ink (Dazzbliss palette; was the old green). They render as <img>, so a
    filter chain is the only way to recolour them; brightness(0) normalises the
    source colour to black first. */
 .why-ashclair-icon {
-  filter: brightness(0) saturate(100%) invert(56%) sepia(13%) saturate(945%) hue-rotate(35deg) brightness(92%) contrast(87%);
+  /* Dazzbliss: icons in ink (was old green). */
+  filter: brightness(0) saturate(100%);
 }
 
 /* --- Instagram community feed -------------------------------------------
@@ -438,3 +500,120 @@ bottom: 14px !important;
 
 /* Reduced motion needs nothing further — the rAF loop declines to auto-scroll,
    which leaves a row the reader drags themselves. */
+
+/* Dazzbliss: Yotpo
+   Brings Yotpo's own widget markup (which we cannot change) onto the Atlantic palette on the product page:
+   ink stars, square ink buttons, Libre Franklin text, hairline borders. antd.css loads after this file
+   and carries older green/rounded Yotpo rules, so every selector here is anchored on #pdp-reviews (an id)
+   or doubled up to win on specificity. Colours mirror src/styles/theme-colors.js
+   (ink #111111, ink-soft #5F6368, ink-faint #8A8D91, line #E6E6E6, line-strong #CFCFCF, stone #F3F3F2, ok #4E6B4A).
+   Stars: Yotpo paints them in the colour set in its dashboard (#EE7B2E); the attribute selectors below
+   repaint exactly that colour. Changing the star colour in the Yotpo dashboard to #111111 makes this redundant. */
+#pdp-reviews svg [fill='#EE7B2E' i],
+.yotpo-star-line.yotpo-star-line svg [fill='#EE7B2E' i] {
+  fill: #111111 !important;
+}
+#pdp-reviews svg [stroke='#EE7B2E' i],
+.yotpo-star-line.yotpo-star-line svg [stroke='#EE7B2E' i] {
+  stroke: #111111 !important;
+}
+#pdp-reviews svg stop[stop-color='#EE7B2E' i],
+.yotpo-star-line.yotpo-star-line svg stop[stop-color='#EE7B2E' i] {
+  stop-color: #111111 !important;
+}
+.yotpo-star-line.yotpo-star-line,
+.yotpo-star-line.yotpo-star-line *:not([class*='icon']) {
+  font-family: 'Libre Franklin', sans-serif !important;
+  color: #5f6368 !important;
+}
+
+/* Native summary header + empty state */
+#pdp-reviews .product-reviews-native .yotpo-widget-instance,
+#pdp-reviews .product-reviews-native .yotpo-widget-instance *:not([class*='icon']) {
+  font-family: 'Libre Franklin', sans-serif !important;
+}
+#pdp-reviews .product-reviews-native .yotpo-widget-instance {
+  color: #111111;
+}
+#pdp-reviews .product-reviews-native .yotpo-widget-instance [class*='layout-header'],
+#pdp-reviews .product-reviews-native .yotpo-widget-instance [class*='bottomline'] {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+#pdp-reviews .product-reviews-native .yotpo-widget-instance .yotpo-new-review-btn,
+#pdp-reviews .product-reviews-native .yotpo-widget-instance .yotpo-empty-state button {
+  --background: #111111 !important;
+  --color: #ffffff !important;
+  --hover-background: #2a2a2a !important;
+  --hover-color: #ffffff !important;
+  height: 42px !important;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #111111 !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+}
+#pdp-reviews .product-reviews-native .yotpo-widget-instance .yotpo-new-review-btn *,
+#pdp-reviews .product-reviews-native .yotpo-widget-instance .yotpo-empty-state button * {
+  color: #ffffff !important;
+}
+#pdp-reviews .product-reviews-native .yotpo-widget-instance .yotpo-new-review-btn:hover,
+#pdp-reviews .product-reviews-native .yotpo-widget-instance .yotpo-empty-state button:hover {
+  background: #2a2a2a !important;
+}
+
+/* Product / All product reviews tabs, when portaled into the native widget's empty state */
+#pdp-reviews .product-reviews-tabs-mount [role='tablist'] {
+  border-bottom: 1px solid #e6e6e6 !important;
+}
+#pdp-reviews .product-reviews-tabs-mount button[role='tab'] {
+  padding-bottom: 14px !important;
+  border-bottom-width: 1px !important;
+  font-family: 'Libre Franklin', sans-serif !important;
+  font-size: 11px !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  color: #5f6368 !important;
+}
+#pdp-reviews .product-reviews-tabs-mount button[role='tab'][aria-selected='true'] {
+  border-bottom-color: #111111 !important;
+  color: #111111 !important;
+  font-weight: 500 !important;
+}
+#pdp-reviews .product-reviews-tabs-mount button[role='tab']:hover {
+  color: #111111 !important;
+}
+
+/* Yotpo's review form modal (portaled to <body>, opened from the PDP or YotpoWriteReview) */
+.modal-backdrop.yotpo-review-form-modal .yotpo-modal.yotpo-modal {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: 'Libre Franklin', sans-serif !important;
+}
+
+/* Star colour everywhere Yotpo renders (PDP, listing cards, footer/home badges, review modal), whatever
+   colour the Yotpo dashboard is set to: every known Yotpo/legacy star colour is repainted to ink.
+   Empty-star greys are left alone so ratings still read correctly. */
+[class*='yotpo'] svg :is([fill='#EE7B2E' i], [fill='#FFA41C' i], [fill='#F4B740' i], [fill='#FFB400' i], [fill='#FFD200' i], [fill='#FFC107' i], [fill='#F5A623' i], [fill='#FFD700' i], [fill='#FFBE00' i], [fill='#FFA500' i]),
+#pdp-reviews svg :is([fill='#FFA41C' i], [fill='#F4B740' i], [fill='#FFB400' i], [fill='#FFD200' i], [fill='#FFC107' i], [fill='#F5A623' i], [fill='#FFD700' i]) {
+  fill: #111111 !important;
+}
+[class*='yotpo'] svg :is([stroke='#EE7B2E' i], [stroke='#FFA41C' i], [stroke='#F4B740' i], [stroke='#FFB400' i], [stroke='#FFD200' i], [stroke='#FFC107' i], [stroke='#F5A623' i], [stroke='#FFD700' i]) {
+  stroke: #111111 !important;
+}
+[class*='yotpo'] svg stop:is([stop-color='#EE7B2E' i], [stop-color='#FFA41C' i], [stop-color='#F4B740' i], [stop-color='#FFB400' i], [stop-color='#FFD200' i], [stop-color='#FFC107' i], [stop-color='#F5A623' i], [stop-color='#FFD700' i]) {
+  stop-color: #111111 !important;
+}
+/* Yotpo's legacy icon-font stars */
+.yotpo .yotpo-icon-star,
+.yotpo .yotpo-icon-half-star,
+.yotpo .rating-star.yotpo-icon-star,
+.yotpo-stars .yotpo-icon {
+  color: #111111 !important;
+}
+/* End Dazzbliss: Yotpo */

@@ -55,12 +55,12 @@ padding: 10px 5px !important;
 
 /* Rail styling */
 .diamond-slider .MuiSlider-rail {
-  background-color: #D2E0E6 !important;
+  background-color: #E6E6E6 !important;
 }
 
 /* Track styling */
 .diamond-slider .MuiSlider-track {
-  background-color: #d2e6dc8a !important;
+  background-color: #CFCFCF !important;
   border: none;
   height: 5px;
   width: 100%;
@@ -105,15 +105,15 @@ padding: 10px 5px !important;
 }
 
 .mySwiper2 .swiper-button-next, .mySwiper2 .swiper-button-prev{
-  color: #17381d !important;
+  color: #111111 !important;
   scale: 0.7;
 }
 .homepage-banner-swiper .swiper-button-next, .homepage-banner-swiper .swiper-button-prev{
-  color: #17381d !important;
+  color: #111111 !important;
   background-color: #fff !important;
   scale: 0.7;
   padding: 25px !important;
-  border-radius: 70%;
+  border-radius: 0;
   background-color: 1px solid transparent !important;
   display: flex;
   justify-content: center;
@@ -164,7 +164,7 @@ padding: 10px 5px !important;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #17381d;
+  background: #111111;
   border-radius: 1px;
   animation: progressAnimation 6s linear infinite;
 }
@@ -185,7 +185,7 @@ padding: 10px 5px !important;
 }
 .subtype-swiper .swiper-button-next,
 .subtype-swiper .swiper-button-prev {
-  color: #17381d;
+  color: #111111;
   scale: 0.7;
 }
 
@@ -687,9 +687,9 @@ padding: 10px 5px !important;
   max-width: none;
   height: 100%;
   flex: 1 1 auto !important; /* fill the full-height review-card */
-  background: #f6f6f4 !important;
+  background: #F8F9FA !important;
   border: 0;
-  border-radius: 16px !important;
+  border-radius: 0 !important;
   /* 24px top/bottom, tighter 16px left/right so the content isn't inset so far. */
   padding: 24px 16px !important;
   box-shadow: none;
@@ -720,7 +720,7 @@ padding: 10px 5px !important;
   height: auto;
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 0;
   display: block;
 }
 
@@ -778,7 +778,7 @@ padding-top: 10px !important;
   line-height: 1.625; /* leading-relaxed */
 }
 /* "Read more" / "Read less" toggle — match the custom ReviewCard link exactly:
-   dark-green (#17381D), 15px, medium weight, underlined (was bold/dark/larger).
+   dark-green (#111111), 15px, medium weight, underlined (was bold/dark/larger).
    Targets the clickable toggle (button/link, or a read-more/show-more element),
    but NOT the .yotpo-read-more-text body copy. */
 .yotpo-widget-instance .yotpo-review-content button,
@@ -791,7 +791,7 @@ padding-top: 10px !important;
 .yotpo-widget-instance [class*='read-less'],
 .yotpo-widget-instance [class*='show-more'],
 .yotpo-widget-instance [class*='show-less'] {
-  color: #17381d !important;
+  color: #111111 !important;
   font-size: 15px !important;
   font-weight: 500 !important;
   text-decoration: underline !important;
@@ -814,22 +814,22 @@ padding-top: 10px !important;
 .yotpo-widget-instance .yotpo-verified-buyer,
 .yotpo-widget-instance .yotpo-verified-buyer span,
 .yotpo-widget-instance [class*='verified-buyer'] {
-  color: #207a44 !important;
+  color: #4e6b4a !important;
 }
-/* Recolor the verified badge to #207A44 (same as the text + the custom card
+/* Recolor the verified badge to #4e6b4a (same as the text + the custom card
    icon), keeping the inner checkmark white. The badge icon is the only svg in
    the reviewer line, so target it there and in any verified-* wrapper; handle
    both currentColor and explicit fills, and skip white/empty fills so the
    checkmark stays white. */
 .yotpo-widget-instance .yotpo-reviewer svg,
 .yotpo-widget-instance [class*='verified'] svg {
-  color: #207a44 !important;
+  color: #4e6b4a !important;
 }
 .yotpo-widget-instance .yotpo-reviewer svg circle:not([fill='none']):not([fill='#fff']):not([fill='#FFFFFF']):not([fill='#ffffff']):not([fill='white']),
 .yotpo-widget-instance .yotpo-reviewer svg path:not([fill='none']):not([fill='#fff']):not([fill='#FFFFFF']):not([fill='#ffffff']):not([fill='white']),
 .yotpo-widget-instance [class*='verified'] svg circle:not([fill='none']):not([fill='#fff']):not([fill='#FFFFFF']):not([fill='#ffffff']):not([fill='white']),
 .yotpo-widget-instance [class*='verified'] svg path:not([fill='none']):not([fill='#fff']):not([fill='#FFFFFF']):not([fill='#ffffff']):not([fill='white']) {
-  fill: #207a44 !important;
+  fill: #4e6b4a !important;
 }
 
 /* --- "Was this review helpful?" footer: grey bar, question left / thumbs right --- */
@@ -892,18 +892,18 @@ padding-top: 10px !important;
 /* the pill: one grey border in every state (kills the black-on-focus border) */
 .yotpo-widget-instance .yotpo-search-filter,
 .yotpo-widget-instance .yotpo-search-filter:focus-within {
-  border: 1px solid #d9d9d9 !important;
-  border-radius: 999px !important;
+  border: 1px solid #CFCFCF !important;
+  border-radius: 0 !important;
   outline: none !important;
   box-shadow: none !important;
 }
 /* Search button: a dark-green circle with a white icon, matching the custom
-   "What our customers say" search button (bg-[#17381D], h-8 w-8). Yotpo's
+   "What our customers say" search button (bg-[#111111], h-8 w-8). Yotpo's
    default is a light-grey circle that only turns green on hover; we make it
    green by default. These are the same CSS custom properties Yotpo sets inline
    on the button, so overriding them recolours/resizes the whole control. */
 .yotpo-widget-instance .yotpo-search-filter__icon-button {
-  --background: #17381d !important;
+  --background: #111111 !important;
   --color: #ffffff !important;
   --hover-background: #1f4a28 !important;
   --hover-color: #ffffff !important;
@@ -979,8 +979,8 @@ padding-top: 10px !important;
     min-width: 0 !important;
     padding: 0 16px 0 20px !important;
     white-space: nowrap !important;
-    border: 1px solid #949494 !important;
-    border-radius: 9999px !important;
+    border: 1px solid #CFCFCF !important;
+    border-radius: 0 !important;
     box-sizing: border-box !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -1002,8 +1002,8 @@ padding-top: 10px !important;
     padding: 0 6px 0 20px !important;
     white-space: nowrap !important;
     justify-content: space-between !important;
-    border: 1px solid #949494 !important;
-    border-radius: 9999px !important;
+    border: 1px solid #CFCFCF !important;
+    border-radius: 0 !important;
     box-sizing: border-box !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -1088,8 +1088,8 @@ padding-top: 10px !important;
     min-width: 0 !important;
     padding: 0 16px 0 18px !important;
     white-space: nowrap !important;
-    border: 1px solid #949494 !important;
-    border-radius: 9999px !important;
+    border: 1px solid #CFCFCF !important;
+    border-radius: 0 !important;
     box-sizing: border-box !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -1108,8 +1108,8 @@ padding-top: 10px !important;
     padding: 0 6px 0 20px !important;
     white-space: nowrap !important;
     justify-content: space-between !important;
-    border: 1px solid #949494 !important;
-    border-radius: 9999px !important;
+    border: 1px solid #CFCFCF !important;
+    border-radius: 0 !important;
     box-sizing: border-box !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -1205,7 +1205,7 @@ padding-top: 10px !important;
      font-size: inherit;
      line-height: inherit;
      font-weight: 600;
-     color: #17381d;
+     color: #111111;
      text-decoration: underline;
      text-underline-offset: 2px;
      white-space: nowrap;
@@ -1362,7 +1362,7 @@ padding-top: 10px !important;
    just needs to recolor it: the SVG fills with `currentColor`, which
    inherits from `color` here, overriding Yotpo's default gray. */
 .y-badge.yotpo-display-wrapper .y-badge-stars .yotpo-icon-star {
-  color: #f4b740 !important;
+  color: #111111 !important;
 }
 .y-badge.yotpo-display-wrapper .y-badges-certified {
   position: absolute !important;

@@ -1,4 +1,6 @@
 import 'react-quill/dist/quill.snow.css';
+import { SHELL } from '@/components/ClientCare/careInfo';
+import CareLayout from '@/components/ClientCare/CareLayout';
 import { decrypt } from '@/utils/enc-decy';
 
 async function getJewelryCareData() {
@@ -30,23 +32,21 @@ async function getJewelryCareData() {
 const JewelryCare = async () => {
   const JewelryCareData = await getJewelryCareData();
   return (
-    <div className="w-full flex justify-center">
-      {JewelryCareData ? (
-        <div className="flex max-w-[1200px] ">
-          <div className=" w-full flex flex-col justify-center items-center gap-20 border-b py-10 sm:py-2 border-solid border-[#3b3b3b] 2xl:gap-16 xl:gap-12 lg:gap-8 md:gap-[60px] sm:gap-5 md:px-10 sm:px-5 lg:px-20 ">
-            {JewelryCareData?.content && (
-              <div className="flex sm:flex-col-reverse items-center m-auto about-us-css-setup">
+    <CareLayout title="Jewelry care" crumb="Jewelry care" intro="How to clean, store and look after your pieces so they keep their shine for years.">
+      <div className={`${SHELL} pb-20 pt-[clamp(36px,5vw,64px)]`}>
+        {JewelryCareData ? (
+          JewelryCareData?.content && (
+            <div className="mx-auto max-w-[1200px]">
+              <div className="about-us-css-setup">
                 <div className="ql-editor" dangerouslySetInnerHTML={{ __html: JewelryCareData?.content }} />
               </div>
-            )}
-          </div>
-        </div>
-      ) : (
-        <>
-          <div>No Data</div>
-        </>
-      )}
-    </div>
+            </div>
+          )
+        ) : (
+          <p className="m-0 py-16 text-center text-ink-soft">No Data</p>
+        )}
+      </div>
+    </CareLayout>
   );
 };
 

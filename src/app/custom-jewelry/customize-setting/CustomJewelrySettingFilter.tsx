@@ -3,7 +3,7 @@
 'use client';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 
-import { Button, Image, InputNumber, Slider, Tooltip } from 'antd';
+import { Button, ConfigProvider, Image, InputNumber, Slider, Tooltip } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { BsThreeDots } from 'react-icons/bs';
 import { FaCheck } from 'react-icons/fa6';
@@ -15,6 +15,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
+import { plpTheme } from '@/app/[jewelryType]/FilterDrawer';
 import { debounce } from '@/page/ChooseSetting/Filter';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
@@ -374,21 +375,20 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
   }, [settingFilters, searchParams?.toString(), selectedJewelryType, masterData]);
 
   return (
-    <>
+    <ConfigProvider theme={plpTheme}>
       {isLoading ? (
-        <div className="flex flex-col items-center gap-[60px] min-h-[50vh] sm:min-h-[20vh] justify-center">
-          <div className="w-full flex justify-center items-center">
-            <LuLoader className="h-10 w-10 animate-spin" />
-          </div>
+        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 sm:min-h-[20vh]">
+          <LuLoader className="h-6 w-6 animate-spin text-ink" />
+          <span className="text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-soft">Loading settings</span>
         </div>
       ) : (
-        <div className="">
-          <div className="flex justify-center">
-            <div className="container-xs flex items-start justify-center gap-5 2xl:px-[50px] xl:px-[50px] lg:px-[30px] sm:px-3 md:px-5">
-              <div className="flex w-[30%] lg:w-[35%] sm:hidden flex-col gap-3 lg:gap-[30px] sm:gap-[30px]">
-                <div className="flex flex-col items-start gap-2">
-                  <p className="text-[15px]">PRICE RANGE</p>
-                  <div className="flex flex-col self-stretch min-h-[100px]">
+        <div className="w-full bg-paper font-libre text-ink">
+          <div className="mx-auto w-full max-w-[1440px] px-[clamp(16px,3.2vw,56px)]">
+            <div className="flex items-start justify-center gap-10 border-y border-line py-7 lg:gap-6 sm:border-t-0 sm:py-3">
+              <div className="flex w-[30%] flex-col gap-7 border-r border-line pr-10 lg:w-[35%] lg:pr-6 sm:hidden">
+                <div className="flex flex-col items-start gap-3">
+                  <p className="m-0 text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-soft">PRICE RANGE</p>
+                  <div className="flex min-h-[100px] flex-col self-stretch">
                     {settingFilters?.price_range && Object.keys(settingFilters?.price_range)?.length !== 0 && (
                       <Slider
                         range
@@ -413,14 +413,14 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                         onChangeComplete={(value: any) => handleFilterChange('price', value)}
                       />
                     )}
-                    <div className="flex justify-between">
-                      <div className="flex items-center gap-1">
-                        <p>{settingFilters?.currency_symbol}</p>
+                    <div className="mt-2 flex justify-between gap-3">
+                      <div className="flex items-center gap-1.5">
+                        <p className="m-0 text-[13px] text-ink-soft">{settingFilters?.currency_symbol}</p>
                         <InputNumber
                           size="small"
                           min={settingFilters?.price_range?.min_price}
                           max={settingFilters?.price_range?.max_price}
-                          style={{ color: 'black' }}
+                          className="!w-[96px] tabular-nums"
                           value={selectedFilters?.min_price}
                           onChange={(value: any) => {
                             setSelectedFilters((prevFilters: any) => ({
@@ -440,13 +440,13 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                           }}
                         />
                       </div>
-                      <div className="flex items-center gap-1">
-                        <p>{settingFilters?.currency_symbol}</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="m-0 text-[13px] text-ink-soft">{settingFilters?.currency_symbol}</p>
                         <InputNumber
                           size="small"
                           min={settingFilters?.price_range?.min_price}
                           max={settingFilters?.price_range?.max_price}
-                          style={{ color: 'black' }}
+                          className="!w-[96px] tabular-nums"
                           value={selectedFilters?.max_price}
                           onChange={(value: any) => {
                             setSelectedFilters((prevFilters: any) => ({
@@ -469,8 +469,8 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col items-start gap-2">
-                  <p className="text-[15px]">METAL</p>
+                <div className="flex flex-col items-start gap-3">
+                  <p className="m-0 text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-soft">METAL</p>
                   {/* <div className="grid grid-cols-8 lg:!grid-cols-7 md:!grid-cols-6 gap-2 items-start justify-between self-stretch">
                     {settingFilters.metal_color_id &&
                       masterData
@@ -531,8 +531,10 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                               return (
                                 <SwiperSlide key={`${metal?.id}-${index}`} virtualIndex={index}>
                                   <div
-                                    className={`flex flex-col items-center justify-center cursor-pointer  mx-2 border w-[82px] !overflow-hidden relative ${
-                                      selectedFilters?.metal?.includes(metal?.id as any) ? 'opacity-100 border-primary' : 'opacity-70 border'
+                                    className={`relative mx-1.5 flex w-[72px] cursor-pointer flex-col items-center justify-center !overflow-hidden border bg-paper py-1.5 transition-colors ${
+                                      selectedFilters?.metal?.includes(metal?.id as any)
+                                        ? 'border-ink opacity-100'
+                                        : 'border-line opacity-80 hover:border-ink-soft'
                                     }`}
                                     onClick={() => {
                                       handleFilterChange('metal', metal?.id);
@@ -550,7 +552,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                                         />
                                       </div>
                                     </Tooltip>
-                                    <div className="text-[9px] sm:text-[8px] absolute top-[8%] left-[-36%] w-full text-center bg-primary/70 text-text_w -rotate-45">
+                                    <div className="text-[9px] sm:text-[8px] absolute left-[-36%] top-[8%] w-full -rotate-45 bg-ink/75 text-center tracking-[0.06em] text-paper">
                                       {metal?.code !== 'SILVER_925' ? metal?.code : '925'}
                                     </div>
                                   </div>
@@ -570,7 +572,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                           viewBox="0 0 24 24"
                           strokeWidth={1.5}
                           stroke="currentColor"
-                          className="w-6 h-6"
+                          className="h-5 w-5 text-ink"
                         >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                         </svg>
@@ -586,7 +588,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                           viewBox="0 0 24 24"
                           strokeWidth={1.5}
                           stroke="currentColor"
-                          className="w-6 h-6"
+                          className="h-5 w-5 text-ink"
                         >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                         </svg>
@@ -595,18 +597,18 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                   </div>
                 </div>
               </div>
-              <div className="flex w-[70%] lg:w-[65%] flex-1 sm:w-full flex-col items-start gap-3 sm:gap-3 sm:flex-wrap">
+              <div className="flex w-[70%] flex-1 flex-col items-start gap-6 lg:w-[65%] sm:w-full sm:flex-wrap sm:gap-4">
                 <div className="hidden flex-1 sm:w-full flex-col items-start gap-2 sm:gap-2 sm:flex-wrap">
                   <div className="flex justify-between items-center sm:w-full ">
-                    <p className="text-[15px] sm:text-[16px]">JEWELRY TYPE</p>
+                    <p className="m-0 text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-soft">JEWELRY TYPE</p>
 
                     <div
-                      className="bg-secondary hidden sm:flex sm:min-w-[96px] text-text_w px-[11px] py-[4.5px] items-center justify-between gap-1"
+                      className="hidden items-center justify-between gap-2 bg-ink px-3.5 py-2 text-paper sm:flex sm:min-w-[96px]"
                       onClick={handleMenuToggle}
                     >
-                      <p className="text-text_w capitalize tracking-[1px] text-[14px] flex gap-2">Filter</p>
+                      <p className="m-0 flex gap-2 text-[10.5px] uppercase tracking-[0.18em] text-paper">Filter</p>
                       <div>
-                        <Img width={14} height={14} className="h-5 w-5 p-0" src="filter_icon.svg" />
+                        <Img width={14} height={14} className="h-4 w-4 p-0 invert" src="filter_icon.svg" />
                       </div>
                     </div>
                   </div>
@@ -615,17 +617,17 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                       {settingFilters?.jewelry_types?.map((type: any, index: number) => (
                         <div
                           key={index}
-                          className={`flex flex-col  !text-black items-center cursor-pointer gap-2 sm:gap-2 sm:w-fit py-1.5 px-2 sm:px-0.5 sm:py-1 ${
+                          className={`inline-flex min-h-[32px] cursor-pointer items-center border px-3 text-[12.5px] transition-colors ${
                             selectedJewelryType === type.name.toLowerCase().replace(' ', '-')
-                              ? ' border sm:!border-x-transparent sm:!border-t-transparent border-primary '
-                              : ' border sm:!border-x-transparent sm:!border-y-transparent border-transparent '
+                              ? 'border-ink bg-ink text-paper'
+                              : 'border-line text-ink hover:border-ink'
                           }`}
                           onClick={() => {
                             handleFilterChange('jewelryType', type.name?.toLowerCase()?.replace(' ', '-'));
                             setSelectedJewelryType(type.name.toLowerCase().replace(' ', '-'));
                           }}
                         >
-                          <p className="tracking-[1.0px] text-nowrap text-center text-[14px] sm:text-[12px]">{type?.name}</p>
+                          <p className="m-0 text-nowrap text-center">{type?.name}</p>
                         </div>
                       ))}
                     </Suspense>
@@ -633,15 +635,15 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                 </div>
                 <div className="flex flex-1 sm:w-full flex-col items-start gap-1.5 sm:gap-2 sm:flex-wrap">
                   <div className="flex justify-between items-center sm:w-full">
-                    <p className="text-[15px] sm:text-[16px]">SETTING STYLE</p>
-                    <div className="bg-[#17381D] text-white p-1 px-2 hidden sm:flex" onClick={handleMenuToggle}>
-                      <Text size="textxl" as="p" className="text-white uppercase flex gap-2">
+                    <p className="m-0 text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-soft">SETTING STYLE</p>
+                    <div className="hidden cursor-pointer items-center bg-ink px-3.5 py-2 sm:flex" onClick={handleMenuToggle}>
+                      <Text size="textxl" as="p" className="!m-0 flex items-center gap-2 !text-[10.5px] uppercase !tracking-[0.18em] !text-paper">
                         Filter
-                        <Img width={14} height={14} className="h-5 w-5" src="filter_icon.svg" />
+                        <Img width={14} height={14} className="h-4 w-4 invert" src="filter_icon.svg" />
                       </Text>
                     </div>
                   </div>
-                  <div className="flex gap-2 self-stretch lg:flex-wrap py-2 sm:max-w-[95vw] sm:py-0 lg:gap-3 sm:gap-2 relative">
+                  <div className="relative flex gap-2 self-stretch py-1 lg:flex-wrap lg:gap-2 sm:max-w-[95vw] sm:gap-2 sm:py-0">
                     {settingFilters?.subTypes
                       ?.slice(
                         0,
@@ -650,7 +652,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                       ?.map((sub: any, index: number) => (
                         <div
                           key={index}
-                          className={`sm:hidden flex flex-col items-center border select-none w-[100px] xl:w-[90px] lg:w-[65px] lg:h-[65px] md:w-[65px] h-[85px] p-2 pt-0 justify-center cursor-pointer ${selectedFilters.subTypes.includes(sub?.id) ? 'border-[#17381d]' : 'border-transparent'}`}
+                          className={`flex h-[92px] w-[100px] cursor-pointer select-none flex-col items-center justify-center gap-1 border bg-paper p-2 pt-0 transition-colors xl:w-[90px] lg:h-[65px] lg:w-[65px] md:w-[65px] sm:hidden ${selectedFilters.subTypes.includes(sub?.id) ? 'border-ink' : 'border-line hover:border-ink-soft'}`}
                           onClick={() => {
                             handleFilterChange('subTypes', sub.id);
                           }}
@@ -662,7 +664,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                             src={masterData.find((el: any) => el.id === sub?.id)?.image?.[0]}
                             alt={masterData.find((el: any) => el.id === sub?.id)?.name}
                           />
-                          <span className="text-[14px] w-[98%] xl:text-[13px] lg:text-[12px] text-nowrap text-center overflow-hidden px-0.5 lg:px-0.5">
+                          <span className="w-[98%] overflow-hidden text-nowrap px-0.5 text-center text-[12.5px] text-ink xl:text-[12px] lg:text-[11px]">
                             {masterData.find((el: any) => el.id === sub?.id)?.name}
                           </span>
                         </div>
@@ -671,15 +673,17 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                       (windowWidth <= 425 ? 4 : windowWidth <= 768 && windowWidth > 425 ? 5 : windowWidth <= 1024 && windowWidth > 768 ? 6 : 8) && (
                       <>
                         <div
-                          className={`sm:hidden flex flex-col items-center border w-[100px] xl:w-[90px] lg:w-[64px] lg:h-[60px] h-[85px] p-2 pt-0 justify-center cursor-pointer ${selectedMoreSubType?.length > 0 || isOpenSubType ? 'border-[#17381d]' : 'border-transparent'}`}
+                          className={`flex h-[92px] w-[100px] cursor-pointer flex-col items-center justify-center border bg-paper p-2 pt-0 transition-colors xl:w-[90px] lg:h-[60px] lg:w-[64px] sm:hidden ${selectedMoreSubType?.length > 0 || isOpenSubType ? 'border-ink' : 'border-line hover:border-ink-soft'}`}
                           onClick={() => {
                             setIsOpenSubType(true);
                           }}
                         >
                           <div>
-                            <BsThreeDots className="w-5 h-5 my-3 lg:my-1" />
+                            <BsThreeDots className="my-3 h-5 w-5 text-ink lg:my-1" />
                           </div>
-                          <span className="text-[14px] xl:text-[13px] lg:text-[12px] text-wrap text-center px-0.5 lg:px-0">More Styles</span>
+                          <span className="text-wrap px-0.5 text-center text-[12.5px] text-ink xl:text-[12px] lg:px-0 lg:text-[11px]">
+                            More Styles
+                          </span>
                         </div>
                       </>
                     )}
@@ -687,17 +691,17 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                     {isOpenSubType && (
                       <div
                         ref={dropdownRef}
-                        className="w-[200px] absolute top-[94px] z-[19] right-[0px] xl:right-[0px] lg:top-[68px] lg:right-0 bg-white shadow-lg rounded-sm sm:hidden"
+                        className="absolute right-0 top-[102px] z-[19] w-[220px] border border-line bg-paper lg:right-0 lg:top-[72px] sm:hidden"
                       >
-                        <div className="flex justify-between p-3">
-                          <span className="text-[16px] font-semibold text-wrap text-center px-0.5">More Styles</span>
-                          <RxCross2 className="w-6 h-6 cursor-pointer" onClick={() => setIsOpenSubType(false)} />
+                        <div className="flex items-center justify-between border-b border-line px-4 py-3">
+                          <span className="text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-soft !text-ink">More Styles</span>
+                          <RxCross2 className="h-4 w-4 cursor-pointer text-ink" onClick={() => setIsOpenSubType(false)} />
                         </div>
                         <div className="max-h-[250px] overflow-y-scroll">
                           {settingFilters?.subTypes?.slice(6, settingFilters?.subTypes?.length)?.map((item: any, index: number) => (
                             <div
                               key={index}
-                              className={`flex items-center w-[100%] select-none h-6 px-3 py-5 border-b cursor-pointer gap-3`}
+                              className={`flex h-6 w-[100%] cursor-pointer select-none items-center gap-3 border-b border-line px-4 py-5 last:border-b-0 hover:bg-stone`}
                               onClick={() => {
                                 setSelectedMoreSubType(
                                   selectedMoreSubType?.includes(item?.id)
@@ -706,7 +710,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                                 );
                               }}
                             >
-                              <div className="w-10 h-auto flex items-center justify-center">
+                              <div className="flex h-auto w-9 items-center justify-center">
                                 <Image
                                   preview={false}
                                   className="w-full h-full object-cover"
@@ -716,12 +720,12 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                                 />
                               </div>
                               <div className="flex justify-between items-center w-full">
-                                <span className="text-[14px] text-wrap text-center px-0.5">
+                                <span className="text-wrap px-0.5 text-center text-[13.5px] text-ink">
                                   {masterData.find((el: any) => el.id === item.id)?.name}
                                 </span>
                                 {selectedMoreSubType?.includes(item?.id) && (
                                   <span>
-                                    <FaCheck className="h-5 w-5 text-[#17381d]" />
+                                    <FaCheck className="h-3.5 w-3.5 text-ink" />
                                   </span>
                                 )}
                               </div>
@@ -758,8 +762,8 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                           {settingFilters?.subTypes?.map((sub: any, index: number) => (
                             <SwiperSlide key={`${sub.id}-${index}`} virtualIndex={index}>
                               <div
-                                className={`border p-1.5 pt-0 flex flex-col aspect-square min-w-[65px] w-[65px] justify-center cursor-pointer ${
-                                  selectedFilters.subTypes.includes(sub?.id) ? 'border-[#17381d]' : 'border-transparent'
+                                className={`flex aspect-square w-[65px] min-w-[65px] cursor-pointer flex-col justify-center border bg-paper p-1.5 pt-0 ${
+                                  selectedFilters.subTypes.includes(sub?.id) ? 'border-ink' : 'border-line'
                                 }`}
                                 onClick={() => {
                                   handleFilterChange('subTypes', sub.id);
@@ -772,7 +776,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                                   src={masterData.find((el: any) => el.id === sub?.id)?.image?.[0]}
                                   alt={masterData.find((el: any) => el.id === sub?.id)?.name}
                                 />
-                                <span className="text-[14px] w-[98%] xl:text-[13px] lg:text-[12px] text-nowrap text-center overflow-hidden px-0.5 lg:px-0.5">
+                                <span className="w-[98%] overflow-hidden text-nowrap px-0.5 text-center text-[12.5px] text-ink xl:text-[12px] lg:text-[11px]">
                                   {masterData.find((el: any) => el.id === sub?.id)?.name}
                                 </span>
                               </div>
@@ -791,7 +795,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6"
+                            className="h-5 w-5 text-ink"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                           </svg>
@@ -807,7 +811,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6"
+                            className="h-5 w-5 text-ink"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                           </svg>
@@ -818,9 +822,9 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                 </div>
                 <div className="flex flex-1 sm:w-full flex-col items-start gap-1.5 sm:gap-2 sm:flex-wrap">
                   <div className="flex justify-between items-center sm:w-full">
-                    <p className="text-[15px] sm:text-[16px]">SHAPE</p>
+                    <p className="m-0 text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-soft">SHAPE</p>
                   </div>
-                  <div className="flex gap-5 self-stretch lg:flex-wrap py-2 sm:max-w-[95vw] sm:py-0 lg:gap-3 sm:gap-2 relative">
+                  <div className="relative flex gap-2 self-stretch py-1 lg:flex-wrap sm:max-w-[95vw] sm:gap-2 sm:py-0">
                     {settingFilters?.shape_id
                       ?.filter((shapeId: string) => shapeId !== null)
                       ?.map((shapeId: string, index: number) => {
@@ -828,8 +832,10 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                         return (
                           <div
                             key={index}
-                            className={`sm:hidden flex flex-col items-center justify-center cursor-pointer border-b border-black pb-1.5 ${
-                              selectedFilters.shape.includes(shapeId) ? 'opacity-100 border-b' : 'opacity-60 border-transparent'
+                            className={`flex cursor-pointer flex-col items-center justify-center border p-1.5 transition-colors sm:hidden ${
+                              selectedFilters.shape.includes(shapeId)
+                                ? 'border-ink opacity-100'
+                                : 'border-line opacity-70 hover:border-ink-soft hover:opacity-100'
                             }`}
                             onClick={() => {
                               handleFilterChange('shape', shapeId);
@@ -880,8 +886,8 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                             return (
                               <SwiperSlide key={`${shapeId}-${index}`} virtualIndex={index}>
                                 <div
-                                  className={`flex flex-col items-center justify-center cursor-pointer pb-1 mx-2 border-b w-[80px] ${
-                                    selectedFilters.subTypes.includes(shapeId) ? 'opacity-100 border-primary' : 'opacity-70 border-transparent'
+                                  className={`mx-1.5 flex w-[64px] cursor-pointer flex-col items-center justify-center border p-1 ${
+                                    selectedFilters.subTypes.includes(shapeId) ? 'border-ink opacity-100' : 'border-line opacity-70'
                                   }`}
                                   onClick={() => {
                                     handleFilterChange('subTypes', shapeId);
@@ -916,7 +922,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6"
+                            className="h-5 w-5 text-ink"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                           </svg>
@@ -932,7 +938,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6"
+                            className="h-5 w-5 text-ink"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                           </svg>
@@ -946,34 +952,41 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
           </div>
           {/* drawer */}
           <div
-            className={`fixed top-0 left-0 inset-0 bg-gray-800 bg-opacity-75 z-[1053] transition-all duration-500 ease-in-out ${
+            className={`fixed inset-0 left-0 top-0 z-[1053] bg-ink/40 transition-all duration-500 ease-in-out ${
               isFilterOpen ? '-translate-y-0' : 'translate-y-full'
             }`}
             style={{ width: '100%', height: '100vh' }}
           >
-            <div className="relative modal-content bg-white h-full py-5 overflow-hidden">
-              <div className="flex justify-between items-center w-full px-5 sm:px-3">
-                <Text size="text5xl" as="p" className="uppercase !text-[18px]">
+            <div className="modal-content relative h-full overflow-hidden bg-paper">
+              <div className="flex w-full items-center justify-between border-b border-line px-[18px] py-[18px]">
+                <Text size="text5xl" as="p" className="!m-0 !text-[12px] !font-medium uppercase !tracking-[0.18em] !text-ink">
                   Filter By
                 </Text>
                 <div>
-                  <RxCross2 className="h-5 w-5" onClick={handleMenuToggle} />
+                  <button
+                    type="button"
+                    aria-label="Close filters"
+                    onClick={handleMenuToggle}
+                    className="grid place-items-center bg-ink px-3.5 py-2 text-paper"
+                  >
+                    <RxCross2 className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
-              <div className="w-full overflow-auto px-5 mt-3 " style={{ width: '100%', maxHeight: 'calc(100vh - 79px)' }}>
-                <div className="h-full flex flex-col gap-3">
-                  <div className="flex flex-col items-start gap-2">
-                    <Text size="textxl" as="p" className="!text-[14px]">
+              <div className="w-full overflow-auto px-[18px] pt-2" style={{ width: '100%', maxHeight: 'calc(100vh - 79px)' }}>
+                <div className="flex h-full flex-col">
+                  <div className="flex flex-col items-start gap-3 border-b border-line py-[22px]">
+                    <Text size="textxl" as="p" className="!m-0 font-cormorant !text-[22px] !font-medium !text-ink">
                       PRICE RANGE
                     </Text>
-                    <div className="flex flex-col gap-0 self-stretch">
+                    <div className="flex flex-col gap-2 self-stretch">
                       <div className="flex flex-wrap justify-between gap-5">
-                        <div className="flex items-center gap-1">
-                          <p>{settingFilters?.currency_symbol}</p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="m-0 text-[13px] text-ink-soft">{settingFilters?.currency_symbol}</p>
                           <InputNumber
                             min={settingFilters?.price_range?.min_price}
                             max={settingFilters?.price_range?.max_price}
-                            style={{ color: 'black' }}
+                            className="!w-[96px] tabular-nums"
                             size="small"
                             // prefix="$"
                             inputMode="numeric"
@@ -997,12 +1010,12 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                             }}
                           />
                         </div>
-                        <div className="flex items-center gap-1">
-                          <p>{settingFilters?.currency_symbol}</p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="m-0 text-[13px] text-ink-soft">{settingFilters?.currency_symbol}</p>
                           <InputNumber
                             min={settingFilters?.price_range?.min_price}
                             max={settingFilters?.price_range?.max_price}
-                            style={{ color: 'black' }}
+                            className="!w-[96px] tabular-nums"
                             // prefix="$"
                             // style={{ margin: "0 16px" }}
                             inputMode="numeric"
@@ -1055,8 +1068,8 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-start gap-2">
-                    <Text size="textxl" as="p" className="tracking-[1.40px] !text-[18px]">
+                  <div className="flex flex-col items-start gap-3 border-b border-line py-[22px]">
+                    <Text size="textxl" as="p" className="!m-0 font-cormorant !text-[22px] !font-medium !text-ink">
                       METAL
                     </Text>
                     {/* <div className="grid grid-cols-7 gap-2 items-start justify-between self-stretch">
@@ -1120,8 +1133,10 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                                 return (
                                   <SwiperSlide key={`${metal?.id}-${index}`} virtualIndex={index}>
                                     <div
-                                      className={`flex flex-col items-center justify-center cursor-pointer  mx-2 border w-[82px] !overflow-hidden relative ${
-                                        selectedFilters?.metal?.includes(metal?.id as any) ? 'opacity-100 border-primary' : 'opacity-70 border'
+                                      className={`relative mx-1.5 flex w-[72px] cursor-pointer flex-col items-center justify-center !overflow-hidden border bg-paper py-1.5 transition-colors ${
+                                        selectedFilters?.metal?.includes(metal?.id as any)
+                                          ? 'border-ink opacity-100'
+                                          : 'border-line opacity-80 hover:border-ink-soft'
                                       }`}
                                       onClick={() => {
                                         handleFilterChange('metal', metal?.id);
@@ -1139,7 +1154,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                                           />
                                         </div>
                                       </Tooltip>
-                                      <div className="text-[9px] sm:text-[8px] absolute top-[8%] left-[-36%] w-full text-center bg-primary/70 text-text_w -rotate-45">
+                                      <div className="text-[9px] sm:text-[8px] absolute left-[-36%] top-[8%] w-full -rotate-45 bg-ink/75 text-center tracking-[0.06em] text-paper">
                                         {metal?.code !== 'SILVER_925' ? metal?.code : '925'}
                                       </div>
                                     </div>
@@ -1159,7 +1174,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6"
+                            className="h-5 w-5 text-ink"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                           </svg>
@@ -1175,7 +1190,7 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6"
+                            className="h-5 w-5 text-ink"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                           </svg>
@@ -1183,8 +1198,9 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col items-center gap-3">
+                  <div className="flex flex-col items-stretch gap-3 py-[22px]">
                     <Button
+                      className="!h-12 !rounded-none !border !border-ink !bg-transparent !px-8 !text-[11px] uppercase !tracking-[0.2em] !text-ink hover:!bg-ink hover:!text-paper"
                       onClick={() => {
                         handleMenuToggle();
                         replaceUrl(`/custom-jewelry?type=${type}&state=${state}${dId ? `&did=${dId}` : ''}`);
@@ -1233,10 +1249,11 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
               </div>
             </div>
           </div>
-          <div className="container-xs sm:hidden flex flex-col gap-10 2xl:px-[50px]  xl:px-[50px] lg:px-[30px] md:px-5">
-            <div className="flex flex-wrap items-center justify-end gap-5">
+          <div className="mx-auto flex w-full max-w-[1440px] flex-col px-[clamp(16px,3.2vw,56px)] sm:hidden">
+            <div className="flex flex-wrap items-center justify-end gap-5 py-4">
               <Button
-                size="small"
+                type="link"
+                className="!h-auto !p-0 !text-[11px] uppercase !tracking-[0.12em] !text-ink-soft underline underline-offset-4 hover:!text-ink"
                 onClick={() => {
                   replaceUrl(`/custom-jewelry?type=${type}&state=${state}${dId ? `&did=${dId}` : ''}`);
                   setSelectedJewelryType(settingFilters?.jewelry_types?.[0]?.name?.toLowerCase()?.replace(' ', '-'));
@@ -1283,6 +1300,6 @@ export default function CustomJewelrySettingFilter({ isLoading, setIsLoading }: 
           </div>
         </div>
       )}
-    </>
+    </ConfigProvider>
   );
 }

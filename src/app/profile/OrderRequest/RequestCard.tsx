@@ -26,6 +26,16 @@ interface RequestCardProps {
 
 const formatDate = (value: any) => (value ? dayjs(value).format('MMM D, YYYY') : '');
 
+// Status dot colour, in the account pages' StatusPill style (the label still comes from REQUEST_STATUS_META).
+const STATUS_DOT: Record<number, string> = {
+  [ORDER_REQUEST_STATUS.PENDING]: 'bg-gilt',
+  [ORDER_REQUEST_STATUS.APPROVED]: 'bg-navy',
+  [ORDER_REQUEST_STATUS.RECEIVED]: 'bg-teal',
+  [ORDER_REQUEST_STATUS.COMPLETED]: 'bg-ok',
+  [ORDER_REQUEST_STATUS.REJECTED]: 'bg-danger',
+  [ORDER_REQUEST_STATUS.WITHDRAWN]: 'bg-ink-faint',
+};
+
 /** One cancel / return request: where it is, what happens next, and what the customer can do. */
 const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
   const [busy, setBusy] = useState<'withdraw' | null>(null);
@@ -107,18 +117,27 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
   const refundValue = status === ORDER_REQUEST_STATUS.COMPLETED ? request.refunded_amount : (request.approved_amount ?? request.estimated_amount);
 
   return (
-    <div className="overflow-hidden rounded-lg border border-[#e5e5e5] bg-white">
+    <article className="border border-line bg-paper">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#eeeeee] bg-[#fafaf8] px-5 py-3 sm:px-3">
-        <div className="flex items-center gap-2">
-          {isReturn ? <LuRotateCcw className="text-primary" /> : <LuCircleX className="text-primary" />}
-          <p className="mb-0 font-semibold">{REQUEST_TYPE_LABEL[type]} Request</p>
-          <span className="text-[13px] text-[#777]">#{request.request_number}</span>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-haze px-5 py-3.5 sm:px-4">
+        <div className="flex items-center gap-2.5">
+          {isReturn ? (
+            <LuRotateCcw className="h-4 w-4 text-ink-soft" strokeWidth={1.4} />
+          ) : (
+            <LuCircleX className="h-4 w-4 text-ink-soft" strokeWidth={1.4} />
+          )}
+          <p className="m-0 text-[14px] font-medium text-ink">{REQUEST_TYPE_LABEL[type]} request</p>
+          <span className="text-[12.5px] text-ink-faint">#{request.request_number}</span>
         </div>
-        {meta && <span className={`rounded-full border px-3 py-0.5 text-[12px] font-medium ${meta.className}`}>{meta.label}</span>}
+        {meta && (
+          <span className="inline-flex items-center gap-2 text-[13px] font-medium text-ink">
+            <i className={`h-2 w-2 rounded-full ${STATUS_DOT[status] ?? 'bg-ink-faint'}`} />
+            {meta.label}
+          </span>
+        )}
       </div>
 
-      <div className="flex flex-col gap-4 p-5 sm:p-3">
+      <div className="grid gap-4 p-5 sm:p-4">
         {/* Progress */}
         {!isClosedEarly && (
           <Steps
@@ -132,20 +151,16 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
         )}
 
         <div
-          className={`rounded-md px-4 py-3 text-[14px] ${
-            status === ORDER_REQUEST_STATUS.REJECTED
-              ? 'bg-red-50 text-red-800'
-              : status === ORDER_REQUEST_STATUS.COMPLETED
-                ? 'bg-green-50 text-green-800'
-                : 'bg-[#f4f6f1] text-[#2f3a2a]'
+          className={`border-l-2 bg-haze px-4 py-3 text-[13.5px] leading-[1.6] text-ink ${
+            status === ORDER_REQUEST_STATUS.REJECTED ? 'border-danger' : status === ORDER_REQUEST_STATUS.COMPLETED ? 'border-ok' : 'border-gilt'
           }`}
         >
-          <p className="mb-0">{statusMessage}</p>
-          {request.admin_note && <p className="mb-0 mt-1">Note from our team: {request.admin_note}</p>}
+          <p className="m-0">{statusMessage}</p>
+          {request.admin_note && <p className="m-0 mt-1 text-ink-soft">Note from our team: {request.admin_note}</p>}
           {status === ORDER_REQUEST_STATUS.REJECTED && (
-            <p className="mb-0 mt-1 text-[13px]">
+            <p className="m-0 mt-1 text-[13px] text-ink-soft">
               Questions? Call {SUPPORT.phone} or email{' '}
-              <a href={`mailto:${SUPPORT.email}`} className="underline">
+              <a href={`mailto:${SUPPORT.email}`} className="text-ink underline underline-offset-[3px] hover:text-ink">
                 {SUPPORT.email}
               </a>
               .
@@ -155,26 +170,26 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
 
         {/* Return shipping instructions */}
         {isReturn && status === ORDER_REQUEST_STATUS.APPROVED && (
-          <div className="rounded-md border border-dashed border-[#c9d1bd] p-4 text-[14px]">
-            <p className="mb-2 flex items-center gap-2 font-semibold">
-              <LuPackage /> How to send it back
+          <div className="border border-line p-[18px] text-[13.5px] sm:p-4">
+            <p className="m-0 mb-2.5 flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-faint">
+              <LuPackage className="h-4 w-4" strokeWidth={1.4} /> How to send it back
             </p>
-            <ol className="mb-3 list-decimal pl-5 text-[#444]">
+            <ol className="m-0 mb-3.5 grid list-decimal gap-1 pl-5 leading-[1.6] text-ink-soft">
               <li>Pack the item securely with its original tags and a copy of your invoice.</li>
               <li>
-                Write your return number <b>{request.request_number}</b> on a note inside the package.
+                Write your return number <b className="font-medium text-ink">{request.request_number}</b> on a note inside the package.
               </li>
               {hasGift && (
                 <li>
-                  <b>Include your free gift</b> — it is part of this return.
+                  <b className="font-medium text-ink">Include your free gift</b> — it is part of this return.
                 </li>
               )}
               <li>Ship with insurance and signature confirmation to the address below.</li>
             </ol>
-            <div className="flex items-start justify-between gap-3 rounded bg-[#fafaf8] p-3">
-              <p className="mb-0">{RETURN_ADDRESS}</p>
-              <button type="button" className="shrink-0 text-primary" onClick={() => copy(RETURN_ADDRESS)} aria-label="Copy address">
-                <LuCopy />
+            <div className="flex items-start justify-between gap-3 bg-haze p-3.5">
+              <p className="m-0 text-ink">{RETURN_ADDRESS}</p>
+              <button type="button" className="shrink-0 text-ink-soft hover:text-ink" onClick={() => copy(RETURN_ADDRESS)} aria-label="Copy address">
+                <LuCopy className="h-4 w-4" strokeWidth={1.4} />
               </button>
             </div>
           </div>
@@ -182,22 +197,23 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
 
         {/* Tracking */}
         {isReturn && request.return_tracking_number && (
-          <div className="flex flex-wrap items-center justify-between gap-2 text-[14px]">
-            <p className="mb-0">
-              Tracking: <b>{request.return_carrier}</b> · {request.return_tracking_number}
-              {request.return_shipped_at && <span className="text-[#777]"> · shipped {formatDate(request.return_shipped_at)}</span>}
+          <div className="flex flex-wrap items-center justify-between gap-2 text-[13.5px]">
+            <p className="m-0">
+              <span className="text-ink-faint">Tracking:</span> <b className="font-medium">{request.return_carrier}</b> ·{' '}
+              {request.return_tracking_number}
+              {request.return_shipped_at && <span className="text-ink-soft"> · shipped {formatDate(request.return_shipped_at)}</span>}
             </p>
           </div>
         )}
 
         {/* Items */}
-        <div className="flex flex-col divide-y divide-[#f0f0f0]">
+        <ul className="m-0 list-none border-t border-line p-0">
           {request.requestItems?.map((item: any) => {
             const approved = item.approved_quantity;
             const qty = approved !== null && approved !== undefined ? approved : item.quantity;
             return (
-              <div key={item.id} className="flex items-center gap-3 py-2">
-                <div className="h-[56px] w-[56px] shrink-0 bg-[#f0f0f0]">
+              <li key={item.id} className="flex items-center gap-4 border-b border-line py-3">
+                <div className="h-[70px] w-[56px] shrink-0 bg-stone">
                   <Image
                     src={item.image || '/images/no_images.svg'}
                     fallback="/images/no_images.svg"
@@ -207,14 +223,16 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
                   />
                 </div>
                 <div className="min-w-0 flex-1 text-[14px]">
-                  <p className="mb-0 flex items-center gap-2 font-medium">
+                  <p className="m-0 flex items-center gap-2 font-medium text-ink">
                     <span className="truncate">{item.title}</span>
                     {item.is_free_gift && (
-                      <span className="shrink-0 bg-secondary px-2 py-[1px] text-[9px] uppercase tracking-[1.2px] text-text_w">Free Gift</span>
+                      <span className="shrink-0 bg-navy px-2 py-[2px] text-[9.5px] font-semibold uppercase tracking-[0.14em] text-noir-on">
+                        Free gift
+                      </span>
                     )}
                   </p>
-                  {item.variant && <p className="mb-0 truncate text-[12px] text-[#777]">{item.variant}</p>}
-                  <p className="mb-0 text-[12px] text-[#777]">
+                  {item.variant && <p className="m-0 truncate text-[12.5px] text-ink-soft">{item.variant}</p>}
+                  <p className="m-0 text-[12.5px] text-ink-faint">
                     {item.is_free_gift && Number(qty) === 0 ? 'You keep this gift' : `Qty ${qty}`}
                     {!item.is_free_gift && approved !== null && approved !== undefined && approved !== item.quantity
                       ? ` of ${item.quantity} requested`
@@ -222,26 +240,26 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
                     {item.reason ? ` · ${item.reason}` : ''}
                   </p>
                 </div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
 
         {/* Footer */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#f0f0f0] pt-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="text-[14px]">
             {!isClosedEarly && (
-              <p className="mb-0">
-                {refundLabel}: <b>{formatUsd(refundValue)}</b>
+              <p className="m-0">
+                <span className="text-ink-soft">{refundLabel}:</span> <b className="font-semibold tabular-nums">{formatUsd(refundValue)}</b>
                 {Number(request.deduction_amount) > 0 && (
-                  <span className="text-[12px] text-[#777]">
+                  <span className="text-[12px] text-ink-faint">
                     {' '}
                     (after {formatUsd(request.deduction_amount)} deduction{request.deduction_reason ? `: ${request.deduction_reason}` : ''})
                   </span>
                 )}
               </p>
             )}
-            <p className="mb-0 text-[12px] text-[#777]">Submitted {formatDate(request.createdAt)}</p>
+            <p className="m-0 mt-0.5 text-[12px] text-ink-faint">Submitted {formatDate(request.createdAt)}</p>
           </div>
           <div className="flex gap-2">
             {canWithdraw && (
@@ -253,7 +271,10 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
                 onConfirm={withdraw}
                 zIndex={10060}
               >
-                <Button loading={busy === 'withdraw'} className="uppercase">
+                <Button
+                  loading={busy === 'withdraw'}
+                  className="!h-10 !rounded-none !border !border-ink !bg-transparent !px-6 !text-[11px] uppercase !tracking-[0.2em] !text-ink hover:!bg-ink hover:!text-paper"
+                >
                   Withdraw
                 </Button>
               </Popconfirm>
@@ -261,7 +282,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

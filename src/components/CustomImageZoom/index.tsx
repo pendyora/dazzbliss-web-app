@@ -95,7 +95,7 @@ const Figure = styled.figure`
 const ErrorText = styled.p`
   width: 100%;
   text-align: center;
-  border: 1px solid #f8f8f8;
+  border: 1px solid #f3f3f2;
   padding: 8px 16px;
   border-radius: 8px;
   color: #555;
@@ -195,7 +195,7 @@ const ImageZoom: React.FC<ImageZoomProps> = ({
   const figureClass = `${'loaded'} ${isZoomed ? 'zoomed' : 'fullView'} ${className || ''}`;
 
   return (
-    <div className="bg-[#f8f8f8] flex justify-center items-center !aspect-square">
+    <div className="bg-stone flex justify-center items-center !aspect-square">
       <Figure
         id={id}
         className={figureClass}

@@ -31,7 +31,7 @@ const ScrollArrow: React.FC = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed right-[38px] sm:right-[25px] sm:w-9 sm:h-9 bottom-[88px] sm:bottom-[82px] z-[50] bg-white text-black rounded-full w-12 h-12 flex items-center justify-center shadow-md text-3xl transition-opacity duration-300 ease-in-out ${
+      className={`fixed bottom-[88px] right-[38px] z-[50] flex h-11 w-11 items-center justify-center border border-line bg-paper text-[22px] text-ink transition-[opacity,border-color] duration-300 ease-in-out hover:border-ink sm:bottom-[82px] sm:right-[25px] sm:h-9 sm:w-9 sm:text-[18px] ${
         isVisible ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
       }`}
       aria-label="Scroll to top"

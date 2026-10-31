@@ -4,11 +4,8 @@ import { LuLoader } from 'react-icons/lu';
 
 const Loading: React.FC = () => {
   return (
-    <div className="flex justify-center items-center h-[80vh] bg-white">
-      {/* <Spin /> */}
-      <div className="w-full flex justify-center items-center">
-        <LuLoader className="h-10 w-10 animate-spin" />
-      </div>
+    <div className="flex h-[80vh] items-center justify-center bg-paper">
+      <LuLoader className="h-10 w-10 animate-spin text-ink" aria-label="Loading your bag" />
     </div>
   );
 };

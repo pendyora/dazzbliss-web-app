@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { createPortal } from 'react-dom';
 
 import { useAppSelector } from '@/store';
+import themeColors from '@/styles/theme-colors';
 
 // Yotpo's REST host — set per environment via NEXT_PUBLIC_YOTPO_API_URL.
 const YOTPO_API_URL = process.env.NEXT_PUBLIC_YOTPO_API_URL;
@@ -33,7 +34,9 @@ interface YotpoApiReview {
   images_data?: YotpoReviewImage[];
 }
 
-const STAR_COLOR = '#EE7B2E';
+// Stars in ink, as in the product-page design.
+const STAR_COLOR = themeColors.ink.DEFAULT;
+const VERIFIED_COLOR = themeColors.ok;
 
 // The Yotpo API returns HTML-encoded entities (e.g. &#x27; &amp;). Decode them for display.
 const decodeHtml = (value = ''): string => {
@@ -60,10 +63,10 @@ const formatReviewDate = (iso?: string): string => {
   return `${dd}/${mm}/${yy}`;
 };
 
-const Stars = ({ score, size = 22 }: { score: number; size?: number }) => {
+const Stars = ({ score, size = 14 }: { score: number; size?: number }) => {
   const rounded = Math.round(score || 0);
   return (
-    <div className="flex items-center gap-1" aria-label={`${rounded} out of 5 stars`}>
+    <div className="flex items-center gap-0.5" aria-label={`${rounded} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map((n) => (
         <svg key={n} width={size} height={size} viewBox="0 0 20 20" fill={n <= rounded ? STAR_COLOR : 'none'} stroke={STAR_COLOR} strokeWidth="1.5">
           <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.79L10 14.77l-5.2 2.73.99-5.79-4.21-4.1 5.82-.85z" />
@@ -74,7 +77,7 @@ const Stars = ({ score, size = 22 }: { score: number; size?: number }) => {
 };
 
 const VerifiedIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 20 20" fill="#207A44" aria-hidden="true">
+  <svg width="14" height="14" viewBox="0 0 20 20" fill={VERIFIED_COLOR} aria-hidden="true">
     <circle cx="10" cy="10" r="10" />
     <path d="M6 10.5l2.5 2.5L14 7.5" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
@@ -176,7 +179,7 @@ const ClampedText = ({ text, limit, toggleClassName = '' }: { text: string; limi
           e.stopPropagation();
           setExpanded((v) => !v);
         }}
-        className={`font-medium text-[#17381D] underline underline-offset-2 hover:opacity-80 ${toggleClassName}`}
+        className={`font-normal text-ink underline underline-offset-[3px] hover:text-ink-soft ${toggleClassName}`}
       >
         {expanded ? 'Read Less' : 'Read More'}
       </button>
@@ -187,9 +190,9 @@ const ClampedText = ({ text, limit, toggleClassName = '' }: { text: string; limi
 const ReviewTitle = ({ text }: { text: string }) => {
   const limit = useClampChars(MOBILE_TITLE_CLAMP_CHARS, TITLE_CLAMP_CHARS);
   return (
-    <h4 className="font-bold text-lg text-gray-900">
+    <h4 className="m-0 font-cormorant text-[21px] font-medium leading-[1.2] text-ink">
       {/* The toggle keeps the body text size so it doesn't read as part of the bold title. */}
-      <ClampedText text={text} limit={limit} toggleClassName="text-[15px]" />
+      <ClampedText text={text} limit={limit} toggleClassName="font-libre text-[13px]" />
     </h4>
   );
 };
@@ -197,7 +200,7 @@ const ReviewTitle = ({ text }: { text: string }) => {
 const ReviewContent = ({ text }: { text: string }) => {
   const limit = useClampChars(MOBILE_CONTENT_CLAMP_CHARS, CONTENT_CLAMP_CHARS);
   return (
-    <p className="text-[15px] text-gray-600 leading-relaxed">
+    <p className="m-0 text-[14px] leading-[1.65] text-ink-soft">
       <ClampedText text={text} limit={limit} />
     </p>
   );
@@ -210,26 +213,29 @@ const ReviewCard = ({ review, onOpen }: { review: YotpoApiReview; onOpen?: (revi
   const reviewImage = review.images_data?.find((img) => img?.original_url || img?.thumb_url);
   const reviewImageUrl = reviewImage?.original_url || reviewImage?.thumb_url;
   return (
-    <div onClick={() => onOpen?.(review)} className={`bg-[#f6f6f4] rounded-2xl p-6 flex flex-col gap-4 h-full ${onOpen ? 'cursor-pointer' : ''}`}>
+    <div
+      onClick={() => onOpen?.(review)}
+      className={`flex h-full flex-col gap-3.5 border border-line bg-paper p-6 transition-colors sm:p-5 ${onOpen ? 'cursor-pointer hover:border-ink' : ''}`}
+    >
       {reviewImageUrl && (
-        <img src={reviewImageUrl} alt={review.title || 'Customer review'} loading="lazy" className="w-full aspect-[16/9] object-cover rounded-xl" />
+        <img src={reviewImageUrl} alt={review.title || 'Customer review'} loading="lazy" className="aspect-[16/9] w-full bg-stone object-cover" />
       )}
       <div className="flex items-center justify-between">
         <Stars score={review.score} />
-        <span className="text-sm text-gray-500">{formatReviewDate(review.created_at)}</span>
+        <span className="text-[11px] tabular-nums tracking-[0.12em] text-ink-faint">{formatReviewDate(review.created_at)}</span>
       </div>
       {review.title && <ReviewTitle text={decodeHtml(review.title)} />}
       {review.content && <ReviewContent text={decodeHtml(review.content)} />}
-      <div className="flex items-center gap-2 text-sm mt-auto pt-2">
-        <span className="text-gray-800">{review.user?.display_name || 'Anonymous'}</span>
-        <span className="text-gray-300">|</span>
-        <span className="inline-flex items-center gap-1.5 text-[#207A44]">
+      <div className="mt-auto flex flex-wrap items-center gap-2 pt-2 text-[12.5px]">
+        <span className="font-medium text-ink">{review.user?.display_name || 'Anonymous'}</span>
+        <span className="text-line-strong">|</span>
+        <span className="inline-flex items-center gap-1.5 text-ok">
           <VerifiedIcon />
           Verified Reviewer
         </span>
       </div>
-      <div className="flex items-center justify-end gap-4 text-sm text-gray-700 border-t border-gray-200 pt-3">
-        <span className="font-medium">Was this review helpful?</span>
+      <div className="flex items-center justify-end gap-4 border-t border-line pt-3 text-[12.5px] text-ink-soft">
+        <span>Was this review helpful?</span>
         <span className="inline-flex items-center gap-1">
           <ThumbUpIcon />
           {review.votes_up ?? 0}
@@ -245,7 +251,7 @@ const ReviewCard = ({ review, onOpen }: { review: YotpoApiReview; onOpen?: (revi
 
 // The responsive card grid used by both review sections.
 const ReviewsGrid = ({ reviews, onOpen }: { reviews: YotpoApiReview[]; onOpen?: (review: YotpoApiReview) => void }) => (
-  <div className="grid grid-cols-3 gap-6 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+  <div className="grid grid-cols-3 gap-5 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
     {reviews.map((review) => (
       <ReviewCard key={review.id} review={review} onOpen={onOpen} />
     ))}
@@ -305,23 +311,23 @@ const ReviewMediaModal = ({ review, onClose }: { review: YotpoApiReview; onClose
   }
 
   return createPortal(
-    <div onClick={onClose} role="dialog" aria-modal="true" className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/70 p-4">
+    <div onClick={onClose} role="dialog" aria-modal="true" className="fixed inset-0 z-[999999] flex items-center justify-center bg-ink/70 p-4">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative flex max-h-[92vh] w-[1057px] max-w-[calc(100vw-32px)] overflow-y-auto rounded-[10px] bg-white pt-[50px] pb-10 px-10 xls:w-[500px] xls:flex-col xls:pt-12 xls:px-5 xls:pb-6"
+        className="relative flex max-h-[92vh] w-[1057px] max-w-[calc(100vw-32px)] overflow-y-auto bg-paper px-10 pb-10 pt-[56px] font-libre xls:w-[500px] xls:flex-col xls:px-5 xls:pb-6 xls:pt-14"
       >
         {/* Close */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Close modal"
-          className="absolute right-[9px] top-[9px] flex h-8 w-8 items-center justify-center text-[#2c2c2c] hover:opacity-70"
+          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center border border-line bg-paper text-ink transition-colors hover:border-ink"
         >
           <ModalCloseIcon />
         </button>
 
         {/* Left: media viewer (502x502 square, grey letterbox) */}
-        <div className="relative flex h-[502px] w-[502px] shrink-0 items-center justify-center overflow-hidden bg-[#ececec] xls:h-auto xls:aspect-square xls:w-full">
+        <div className="relative flex h-[502px] w-[502px] shrink-0 items-center justify-center overflow-hidden bg-stone xls:h-auto xls:aspect-square xls:w-full">
           {hasImages && <img src={images[index]} alt={review.title || 'Customer review'} className="max-h-full max-w-full object-contain" />}
           {hasImages && (
             <>
@@ -329,7 +335,7 @@ const ReviewMediaModal = ({ review, onClose }: { review: YotpoApiReview; onClose
                 type="button"
                 onClick={() => setIndex((i) => Math.max(0, i - 1))}
                 aria-label="Previous review media slide"
-                className="absolute left-[7px] top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/60"
+                className="absolute left-0 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-ink/60 transition-colors hover:bg-ink"
               >
                 <ModalArrowLeft />
               </button>
@@ -337,7 +343,7 @@ const ReviewMediaModal = ({ review, onClose }: { review: YotpoApiReview; onClose
                 type="button"
                 onClick={() => setIndex((i) => Math.min(images.length - 1, i + 1))}
                 aria-label="Next review media slide"
-                className="absolute right-[7px] top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/60"
+                className="absolute right-0 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-ink/60 transition-colors hover:bg-ink"
               >
                 <ModalArrowRight />
               </button>
@@ -347,14 +353,14 @@ const ReviewMediaModal = ({ review, onClose }: { review: YotpoApiReview; onClose
 
         {/* Right: review details (435px) */}
         <div className="ml-10 flex w-[435px] flex-col xls:ml-0 xls:mt-5 xls:w-full">
-          <div className="flex items-start justify-between">
-            <span className="text-[16px] text-[#2c2c2c]">{review.user?.display_name || 'Anonymous'}</span>
-            <span className="text-[12px] text-[#2c2c2c]">{formatReviewDate(review.created_at)}</span>
+          <div className="flex items-start justify-between gap-4">
+            <span className="text-[14px] font-medium text-ink">{review.user?.display_name || 'Anonymous'}</span>
+            <span className="text-[11px] tabular-nums tracking-[0.12em] text-ink-faint">{formatReviewDate(review.created_at)}</span>
           </div>
           <div className="mt-5">
-            <Stars score={review.score} size={22} />
+            <Stars score={review.score} size={16} />
           </div>
-          {review.title && <h3 className="mt-2.5 text-[16px] font-bold text-[#2c2c2c]">{decodeHtml(review.title)}</h3>}
+          {review.title && <h3 className="m-0 mt-3 font-cormorant text-[26px] font-medium leading-[1.15] text-ink">{decodeHtml(review.title)}</h3>}
           {hasImages && (
             <div className="mt-[18px] ml-0.5 flex flex-wrap gap-2">
               {images.map((src, i) => (
@@ -365,12 +371,12 @@ const ReviewMediaModal = ({ review, onClose }: { review: YotpoApiReview; onClose
                   aria-label={`Review image ${i + 1}`}
                   aria-pressed={i === index}
                   style={{ backgroundImage: `url(${src})` }}
-                  className={`h-[82px] w-[82px] bg-cover bg-center ${i === index ? 'outline outline-2 outline-[#17381D]' : ''}`}
+                  className={`h-[82px] w-[82px] bg-stone bg-cover bg-center ${i === index ? 'outline outline-1 outline-offset-2 outline-ink' : ''}`}
                 />
               ))}
             </div>
           )}
-          {review.content && <p className="mt-[18px] text-[16px] leading-[22px] text-[#2c2c2c]">{decodeHtml(review.content)}</p>}
+          {review.content && <p className="m-0 mt-[18px] text-[14px] leading-[1.65] text-ink-soft">{decodeHtml(review.content)}</p>}
         </div>
       </div>
     </div>,
@@ -483,19 +489,19 @@ const ReviewFilters = ({ search, setSearch, ratingFilter, setRatingFilter, withM
   }, []);
 
   return (
-    <div ref={containerRef} className="flex items-center justify-between gap-3 mb-6 flex-wrap">
+    <div ref={containerRef} className="mb-6 flex flex-wrap items-center justify-between gap-3 font-libre">
       <div className="flex items-center gap-3 flex-wrap sm:w-full">
         {/* Search reviews — pill with a dark-green circular search button.
             On mobile it shrinks (flex-1, no min-width) so Search + Filters share one row. */}
-        <div className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white pl-5 pr-1 py-1 min-w-[240px] focus-within:border-gray-400 sm:min-w-0 sm:flex-1">
+        <div className="inline-flex h-[42px] min-w-[260px] items-center gap-2 border border-line-strong bg-paper pl-4 pr-1 focus-within:border-ink sm:min-w-0 sm:flex-1">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search reviews"
             style={{ outline: 'none', boxShadow: 'none' }}
-            className="w-full border-0 bg-transparent text-sm text-gray-700 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0 placeholder:text-gray-500"
+            className="w-full border-0 bg-transparent text-[13px] text-ink outline-none ring-0 placeholder:text-ink-faint focus:border-0 focus:outline-none focus:ring-0"
           />
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#17381D] text-white">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center text-ink-soft">
             <SearchIcon />
           </span>
         </div>
@@ -505,33 +511,33 @@ const ReviewFilters = ({ search, setSearch, ratingFilter, setRatingFilter, withM
           <button
             type="button"
             onClick={() => setFiltersOpen((v) => !v)}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white pl-4 pr-5 py-2.5 text-sm text-gray-700"
+            className="inline-flex h-[42px] items-center gap-2 border border-line-strong bg-paper px-4 text-[11px] uppercase tracking-[0.14em] text-ink transition-colors hover:border-ink"
           >
             <FiltersIcon />
             Filters
           </button>
           {filtersOpen && (
-            <div className="absolute left-0 z-20 mt-2 w-56 rounded-lg border border-gray-200 bg-white p-2 shadow-lg">
-              <div className="px-2 pb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Rating</div>
+            <div className="absolute left-0 z-20 mt-2 w-56 border border-line bg-paper p-2">
+              <div className="px-3 pb-1 pt-1 text-[10.5px] uppercase tracking-[0.16em] text-ink-soft">Rating</div>
               {[0, 5, 4, 3, 2, 1].map((s) => (
                 <button
                   key={s}
                   type="button"
                   onClick={() => setRatingFilter(s)}
-                  className={`block w-full rounded-md px-3 py-2 text-left text-sm hover:bg-gray-50 ${s === ratingFilter ? 'font-semibold text-[#17381D]' : 'text-gray-700'}`}
+                  className={`block w-full px-3 py-2 text-left text-[13px] hover:bg-stone ${s === ratingFilter ? 'font-medium text-ink' : 'text-ink-soft'}`}
                 >
                   {s === 0 ? 'All ratings' : `${s} star${s === 1 ? '' : 's'}`}
                 </button>
               ))}
-              <div className="mt-1 border-t border-gray-100 pt-1">
+              <div className="mt-1 border-t border-line pt-1">
                 <button
                   type="button"
                   onClick={() => setWithMedia(!withMedia)}
-                  className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                  className="flex w-full items-center justify-between px-3 py-2 text-left text-[13px] text-ink-soft hover:bg-stone"
                 >
                   With media
                   <span
-                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${withMedia ? 'bg-[#3fae5a]' : 'border border-gray-400'}`}
+                    className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center border ${withMedia ? 'border-ink bg-ink' : 'border-line-strong bg-paper'}`}
                   >
                     {withMedia && <CheckIcon />}
                   </span>
@@ -545,13 +551,13 @@ const ReviewFilters = ({ search, setSearch, ratingFilter, setRatingFilter, withM
           <button
             type="button"
             onClick={() => setRatingOpen((v) => !v)}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white pl-5 pr-4 py-2.5 text-sm text-gray-700"
+            className="inline-flex h-[42px] items-center gap-2 border border-line-strong bg-paper pl-4 pr-3 text-[11px] uppercase tracking-[0.14em] text-ink transition-colors hover:border-ink"
           >
             {ratingFilter ? `${ratingFilter} star${ratingFilter === 1 ? '' : 's'}` : 'Rating'}
             <ChevronDown />
           </button>
           {ratingOpen && (
-            <div className="absolute left-0 z-10 mt-2 w-40 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+            <div className="absolute left-0 z-10 mt-2 w-44 border border-line bg-paper py-1">
               {[0, 5, 4, 3, 2, 1].map((s) => (
                 <button
                   key={s}
@@ -560,7 +566,7 @@ const ReviewFilters = ({ search, setSearch, ratingFilter, setRatingFilter, withM
                     setRatingFilter(s);
                     setRatingOpen(false);
                   }}
-                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-gray-50 ${s === ratingFilter ? 'font-semibold text-[#17381D]' : 'text-gray-700'}`}
+                  className={`block w-full px-4 py-2 text-left text-[13px] hover:bg-stone ${s === ratingFilter ? 'font-medium text-ink' : 'text-ink-soft'}`}
                 >
                   {s === 0 ? 'All ratings' : `${s} star${s === 1 ? '' : 's'}`}
                 </button>
@@ -572,10 +578,12 @@ const ReviewFilters = ({ search, setSearch, ratingFilter, setRatingFilter, withM
         <button
           type="button"
           onClick={() => setWithMedia(!withMedia)}
-          className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white pl-5 pr-1.5 py-1 text-sm text-gray-700 sm:hidden"
+          className="inline-flex h-[42px] items-center gap-2.5 border border-line-strong bg-paper pl-4 pr-3 text-[11px] uppercase tracking-[0.14em] text-ink transition-colors hover:border-ink sm:hidden"
         >
           With media
-          <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${withMedia ? 'bg-[#3fae5a]' : 'border border-gray-400'}`}>
+          <span
+            className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center border ${withMedia ? 'border-ink bg-ink' : 'border-line-strong bg-paper'}`}
+          >
             {withMedia && <CheckIcon />}
           </span>
         </button>
@@ -583,12 +591,16 @@ const ReviewFilters = ({ search, setSearch, ratingFilter, setRatingFilter, withM
 
       {/* Sort by — on mobile it wraps to its own line; ml-auto keeps it right-aligned. */}
       <div className="relative sm:ml-auto">
-        <button type="button" onClick={() => setSortOpen((v) => !v)} className="inline-flex items-center gap-2 text-sm text-gray-700">
-          Sort by: <span className="font-semibold">{SORT_LABELS[sortBy]}</span>
+        <button
+          type="button"
+          onClick={() => setSortOpen((v) => !v)}
+          className="inline-flex items-center gap-2 text-[13px] text-ink-soft hover:text-ink"
+        >
+          Sort by: <span className="font-medium text-ink">{SORT_LABELS[sortBy]}</span>
           <ChevronDown />
         </button>
         {sortOpen && (
-          <div className="absolute right-0 z-10 mt-2 w-44 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+          <div className="absolute right-0 z-10 mt-2 w-48 border border-line bg-paper py-1">
             {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
               <button
                 key={key}
@@ -597,7 +609,7 @@ const ReviewFilters = ({ search, setSearch, ratingFilter, setRatingFilter, withM
                   setSortBy(key);
                   setSortOpen(false);
                 }}
-                className={`block w-full px-4 py-2 text-left text-sm hover:bg-gray-50 ${key === sortBy ? 'font-semibold text-[#17381D]' : 'text-gray-700'}`}
+                className={`block w-full px-4 py-2 text-left text-[13px] hover:bg-stone ${key === sortBy ? 'font-medium text-ink' : 'text-ink-soft'}`}
               >
                 {SORT_LABELS[key]}
               </button>
@@ -654,7 +666,7 @@ interface ReviewTabsProps {
 // by BOTH sections (directly above their card grid), so it appears once — in
 // whichever section is currently visible.
 const ReviewTabs = ({ activeTab, onTabChange, counts }: ReviewTabsProps) => (
-  <div role="tablist" className="flex items-center gap-8 border-b border-[#e5e5e5] mb-6 sm:gap-6 sm:mb-4">
+  <div role="tablist" className="mb-6 flex items-center gap-8 border-b border-line sm:mb-4 sm:gap-6">
     {REVIEW_TABS.map((tab) => (
       <button
         key={tab.key}
@@ -662,8 +674,8 @@ const ReviewTabs = ({ activeTab, onTabChange, counts }: ReviewTabsProps) => (
         role="tab"
         onClick={() => onTabChange(tab.key)}
         aria-selected={activeTab === tab.key}
-        className={`-mb-px border-b-2 pb-3 font-['Noto_Sans',sans-serif] text-[17px] leading-none transition-colors sm:text-[15px] ${
-          activeTab === tab.key ? 'border-[#2c2c2c] font-bold text-[#2c2c2c]' : 'border-transparent font-normal text-[#6b6b6b] hover:text-[#2c2c2c]'
+        className={`-mb-px border-b pb-3.5 font-libre text-[11px] uppercase leading-none tracking-[0.16em] transition-colors ${
+          activeTab === tab.key ? 'border-ink font-medium text-ink' : 'border-transparent font-normal text-ink-soft hover:text-ink'
         }`}
       >
         {tab.label}
@@ -769,7 +781,7 @@ const ProductSummaryHeader = ({
   }, [total, productCode]);
 
   return (
-    <div className="product-reviews-section container-xs 2xl:px-[30px] sm:gap-[20px] xl:px-28 lg:px-20 md:px-5 sm:px-3 mt-8 sm:mt-1">
+    <div className="product-reviews-section w-full">
       {/* Native widget — empty state stays here so Yotpo's own design applies.
           Tabs are portaled in above .yotpo-empty-state when the product tab is open. */}
       <div ref={containerRef} className={`product-reviews-native${hideEmptyContent ? ' product-reviews-native--hide-empty' : ''}`}>
@@ -883,7 +895,7 @@ const ProductReviews = ({
   }
 
   return (
-    <div className="container-xs 2xl:px-[30px] sm:gap-[20px] xl:px-28 lg:px-20 md:px-5 sm:px-3 mt-6 sm:mt-4">
+    <div className="mt-8 w-full sm:mt-6">
       <ReviewFilters
         search={search}
         setSearch={setSearch}
@@ -899,18 +911,18 @@ const ProductReviews = ({
       {visibleReviews.length > 0 ? (
         <ReviewsGrid reviews={visibleReviews} onOpen={setActiveReview} />
       ) : (
-        <p className="text-center text-gray-500">No reviews match your filters.</p>
+        <p className="m-0 py-10 text-center text-[14px] text-ink-soft">No reviews match your filters.</p>
       )}
 
       {activeReview && <ReviewMediaModal review={activeReview} onClose={() => setActiveReview(null)} />}
 
       {hasMore && (
-        <div className="mt-10 sm:mt-4 flex justify-center">
+        <div className="mt-10 flex justify-center sm:mt-6">
           <button
             type="button"
             onClick={() => setVisibleCount((c) => c + perView)}
             disabled={loading}
-            className="inline-flex items-center gap-2 rounded-full bg-[#17381D] px-8 py-3 text-sm font-medium tracking-wide text-white transition-colors hover:bg-[#1f4a28] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex h-12 items-center gap-2 border border-ink bg-paper px-8 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:bg-ink hover:text-paper disabled:cursor-not-allowed disabled:opacity-50"
           >
             See more reviews
             <svg
@@ -1063,7 +1075,7 @@ const OtherProductsReviews = ({
   // the tab bar, so this tab never renders as a dead end.
   if (otherReviews.length === 0) {
     return (
-      <div className="container-xs 2xl:px-[30px] xl:px-28 lg:px-20 md:px-5 sm:px-3 mt-6 sm:mt-4">
+      <div className="mt-8 w-full sm:mt-6">
         <ReviewTabs activeTab={activeTab} onTabChange={onTabChange} counts={counts} />
       </div>
     );
@@ -1087,7 +1099,7 @@ const OtherProductsReviews = ({
   };
 
   return (
-    <div className="container-xs 2xl:px-[30px] xl:px-28 lg:px-20 md:px-5 sm:px-3 mt-6 sm:mt-4">
+    <div className="mt-8 w-full sm:mt-6">
       {/* No section heading here — the "All Product Reviews" tab above names this section. */}
       <ReviewFilters
         search={search}
@@ -1104,18 +1116,18 @@ const OtherProductsReviews = ({
       {visibleReviews.length > 0 ? (
         <ReviewsGrid reviews={visibleReviews} onOpen={setActiveReview} />
       ) : (
-        <p className="text-center text-gray-500">No reviews match your filters.</p>
+        <p className="m-0 py-10 text-center text-[14px] text-ink-soft">No reviews match your filters.</p>
       )}
 
       {activeReview && <ReviewMediaModal review={activeReview} onClose={() => setActiveReview(null)} />}
 
       {hasMore && (
-        <div className="mt-10 sm:mt-4 flex justify-center">
+        <div className="mt-10 flex justify-center sm:mt-6">
           <button
             type="button"
             onClick={handleSeeMore}
             disabled={loadingMore}
-            className="inline-flex items-center gap-2 rounded-full bg-[#17381D] px-8 py-3 text-sm font-medium tracking-wide text-white transition-colors hover:bg-[#1f4a28] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex h-12 items-center gap-2 border border-ink bg-paper px-8 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:bg-ink hover:text-paper disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loadingMore ? 'Loading…' : 'See more reviews'}
             {!loadingMore && (
@@ -1197,7 +1209,7 @@ const YotpoReview = () => {
   }
 
   return (
-    <div className="w-full flex flex-col sm:mb-8">
+    <div className="flex w-full flex-col font-libre">
       {/* "Customer Reviews" summary — outside the tabs, so the breakdown, average
           and "Write A Review" stay visible on BOTH tabs. */}
       <ProductSummaryHeader

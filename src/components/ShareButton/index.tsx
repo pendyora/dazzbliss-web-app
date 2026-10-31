@@ -93,21 +93,21 @@ export default function ShareButton({ className = '', url, label = 'Share' }: Pr
         aria-expanded={open}
         aria-label={label}
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-1.5 text-[#757575] cursor-pointer select-none"
+        className="flex cursor-pointer select-none items-center gap-1.5 text-ink-soft transition-colors hover:text-ink"
       >
-        <FiShare className="w-[17px] h-[17px] md:w-4 md:h-4" strokeWidth={2} />
-        <span className="text-[15px] font-medium lg:text-[14px] md:text-[13px]">{label}</span>
+        <FiShare className="h-[15px] w-[15px]" strokeWidth={1.6} />
+        <span className="text-[13px] underline-offset-[3px] hover:underline">{label}</span>
       </button>
 
       {open && (
-        <div role="menu" className="absolute right-0 z-20 mt-2 min-w-[180px] rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+        <div role="menu" className="absolute right-0 z-20 mt-2 min-w-[180px] border border-line bg-paper py-1">
           <button
             type="button"
             role="menuitem"
             onClick={handleCopyLink}
-            className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-[13px] text-[#757575] hover:bg-gray-50"
+            className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-[13px] text-ink transition-colors hover:bg-stone"
           >
-            {copied ? <FiCheck className="w-4 h-4" /> : <FiLink className="w-4 h-4" />}
+            {copied ? <FiCheck className="h-4 w-4 text-ok" /> : <FiLink className="h-4 w-4 text-ink-soft" />}
             {copied ? 'Link copied' : 'Copy Link'}
           </button>
         </div>

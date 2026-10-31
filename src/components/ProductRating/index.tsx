@@ -1,10 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
 
+import themeColors from '@/styles/theme-colors';
+
 // Yotpo's REST host — set per environment via NEXT_PUBLIC_YOTPO_API_URL.
 const YOTPO_API_URL = process.env.NEXT_PUBLIC_YOTPO_API_URL;
 const YOTPO_APP_KEY = process.env.NEXT_PUBLIC_YOTPO_APP_KEY;
-const STAR_COLOR = '#EE7B2E';
+// Ink stars, as in the listing/product-page design.
+const STAR_COLOR = themeColors.ink.DEFAULT;
 
 interface Bottomline {
   score: number;
@@ -114,7 +117,7 @@ const ProductRating = ({ code, size = 12, className = '' }: Props) => {
   return (
     <span className={`flex shrink-0 items-center gap-1 leading-none ${className}`} title={label} aria-label={label}>
       <Stars score={bottomline.score} size={size} />
-      <span className="text-[11px] text-gray-500 sm:text-[10px]">({bottomline.total})</span>
+      <span className="text-[11px] tabular-nums text-ink-soft sm:text-[10px]">({bottomline.total})</span>
     </span>
   );
 };

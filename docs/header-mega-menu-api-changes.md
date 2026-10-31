@@ -1,54 +1,63 @@
 # Header & mega menu: placeholder content and API changes
 
 **Scope:** new site header (announcement bar, main bar, mega menu, search panel, mobile drawer).
-**Design reference:** [design-mockups/header/index.html](../design-mockups/header/index.html)
+**Design reference:** [header mockup](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/header/index.html)
+**Mockups:** the design mockups live in the `pendyora-web-app` repo (branch `shruti/mockups`, folder `design-mockups/`), not in this repo.
 **Code:** [src/components/Header/mega/](../src/components/Header/mega/)
-**Last updated:** 4 Oct 2026
+**Last updated:** 31 Oct 2026 (statuses checked against this repo's `design-merge` branch and `latest-backend-main`)
+
+Priority: 🔴 High · 🟠 Medium · ⚪ Low
+
+**Status** values: `Done (in latest code)` · `Partly done — <what's missing>` · `Still needed` · `No longer applies — <why>` · `Check`.
+Backend paths are in `latest-backend-main/`. Mega menu: `src/models/megaMenu.model.ts`, `src/controllers/megaMenu/megaMenu.controller.ts`.
+Strip: `src/models/promotionalStrip.model.ts` (`data` is free JSONB).
 
 The header is built from the existing APIs: `/mega-menu` (menu, columns, links, icons, tiles) and `/promotional-strips` (announcement messages). Some parts of the mockup have no API data, so for now they are hardcoded in [headerContent.ts](../src/components/Header/mega/headerContent.ts) or filled with fixed text.
 
 ## 1. Placeholder content (hardcoded today)
 
-| Item | Where it shows | Current value | File |
-|---|---|---|---|
-| Service strip | Bottom of every mega-menu panel | "Need help choosing?": Book a virtual appointment, Diamond education, Jewelry care | `headerContent.ts` → `SERVICE_STRIP` |
-| Announcement bar links | Right side of the black top bar (desktop) | Book an appointment, Client care | `headerContent.ts` → `ANNOUNCEMENT_LINKS` |
-| Popular searches | Search panel, before typing | Engagement rings, Tennis bracelet, Diamond studs, Gold hoops, Lab-grown, Wedding bands | `headerContent.ts` → `POPULAR_SEARCHES` |
-| Tile caption | Under each image tile in a panel | Always "Shop now →" | `MegaPanel.tsx` |
-| Tile title fallback | Tile with an empty title | Uses the menu name | `MegaPanel.tsx` |
-| Metal swatches | Metal links | Picked from the link's `?metal=` code (yg, wg, rg, wp = silver, pt) instead of the CMS icon | `menuModel.ts` |
+| Item | Where it shows | Current value | File | Status |
+|---|---|---|---|---|
+| Service strip | Bottom of every mega-menu panel | "Need help choosing?": Book a virtual appointment, Diamond education, Jewelry care | `headerContent.ts` → `SERVICE_STRIP` | Still needed — see M3 |
+| Announcement bar links | Right side of the black top bar (desktop) | Book an appointment, Client care | `headerContent.ts` → `ANNOUNCEMENT_LINKS` (used in `AnnouncementBar.tsx`) | Still needed — see P3 |
+| Popular searches | Search panel, before typing | Engagement rings, Tennis bracelet, Diamond studs, Gold hoops, Lab-grown, Wedding bands | `headerContent.ts` → `POPULAR_SEARCHES` (used in `SearchPanel.tsx`) | Still needed — see S1 |
+| Tile caption | Under each image tile in a panel | Always "Shop now →" | `MegaPanel.tsx` | Still needed — see M4 |
+| Tile title fallback | Tile with an empty title | Uses the menu name | `MegaPanel.tsx` | Done (in latest code) — fine as is; fill tile titles in the admin |
+| Metal swatches | Metal links | Picked from the link's `?metal=` code (yg, wg, rg, wp = silver, pt, pl) instead of the CMS icon | `menuModel.ts` (`METAL_CODES`, `metalSwatch()`) | Done (in latest code) — works as designed |
 
 ## 2. API changes requested
 
 ### `/mega-menu`
 
-| # | Need | Today | Proposed change | Priority |
-|---|---|---|---|---|
-| M1 | **Relative links** | Every link is stored as `https://ashclair.com/...`. The frontend now rewrites these to site paths, but new links on another domain would break. | Store paths only (`/rings?metal=yg`), or the current site domain. | 🔴 High |
-| M2 | **Small icons** | Menu icons are full JPG photos (~290 KB each) shown at 22 px. They load slowly and some look blank in the drawer. | Upload icons as SVG or small PNG (≤ 10 KB), on a transparent background. | 🔴 High |
-| M3 | **Service strip per menu** | Same hardcoded strip on every panel. | Per menu item: `service_strip: { label, links: [{ icon, label, link }] }` | 🟠 Medium |
-| M4 | **Tile subtitle** | Fixed "Shop now". | On `menu_images[]`: `cta_label` (e.g. "Start now", "Our story"). | ⚪ Low |
-| M5 | **Link badge** | No way to mark a link as new. | On `sub_menu[]`: `tag` (e.g. "New"). | ⚪ Low |
-| M6 | **Highlighted menu item** | The mockup shows "The Atelier" in gold. Not possible today. | On the menu item: `is_highlighted: boolean`. | ⚪ Low |
-| M7 | **Collections panel** | The mockup's image-card panel for collections can't be built from the menu data. | Either a menu item `type: "collections"` that returns `collections: [{ name, image, link }]`, or reuse the existing collections API. | 🟠 Medium |
-| M8 | **`is_active` vs `is_web_visible`** | "Custom Engagement Ring" has `is_web_visible: true` but `is_active: false`. The new header hides inactive items (the old one showed them). | Confirm which flag controls the menu. If it should show, set `is_active: true`. | 🟠 Confirm |
-| M9 | **Master items** | `master[]` entries only have an `id` and a link. The name and image come from a separate master list loaded on every page. | Return `title` and `image` on each `master[]` entry like `sub_menu[]`. | ⚪ Low |
+| # | Need | Today | Proposed change | Priority | Status |
+|---|---|---|---|---|---|
+| M1 | **Relative links** | Links were stored as `https://ashclair.com/...`. The frontend rewrites these to site paths (`toSitePath` in `menuModel.ts`, hosts ashclair.com, pendyora.com and `NEXT_PUBLIC_BASE_URL`), but new links on another domain would break. | Store paths only (`/rings?metal=yg`), or the current site domain. | 🔴 High | Partly done — frontend rewrite in place; stored links are not normalised by the backend. Data fix in the admin; Check the live data. |
+| M2 | **Small icons** | Menu icons were full JPG photos (~290 KB each) shown at 22 px. | Upload icons as SVG or small PNG (≤ 10 KB), on a transparent background. | 🔴 High | Partly done — the backend now resizes new icon uploads to 96×96 (`resizeUploadedImage`, `MEGA_MENU_ICON_SIZE`). Old icons are not reprocessed (re-upload or a backfill script) and SVG is not supported. |
+| M3 | **Service strip per menu** | Same hardcoded strip on every panel. | Per menu item: `service_strip: { label, links: [{ icon, label, link }] }` | 🟠 Medium | Still needed — no `service_strip` column on `MegaMenu`. |
+| M4 | **Tile subtitle** | Fixed "Shop now". | On `menu_images[]`: `cta_label` (e.g. "Start now", "Our story"). | ⚪ Low | Still needed — `menu_images` is JSONB, so no migration: the admin needs the field and the frontend must read it. |
+| M5 | **Link badge** | No way to mark a link as new. | On `sub_menu[]`: `tag` (e.g. "New"). | ⚪ Low | Still needed — the controller writes only `{id, title, link, image}` per `sub_menu` item; admin field + frontend needed. |
+| M6 | **Highlighted menu item** | The mockup shows "The Atelier" in gold. Not possible today. | On the menu item: `is_highlighted: boolean`. | ⚪ Low | Still needed — no column on `MegaMenu`. |
+| M7 | **Collections panel** | The mockup's image-card panel for collections can't be built from the menu data. | Either a menu item `type: "collections"` that returns `collections: [{ name, image, link }]`, or reuse the existing collections API. | 🟠 Medium | Still needed — no `type` on `MegaMenu`. The header API already returns `collections` (name, images), so the frontend can build it with no backend change. |
+| M8 | **`is_active` vs `is_web_visible`** | "Custom Engagement Ring" has `is_web_visible: true` but `is_active: false`. The header hides inactive items (`menuModel.ts`). `GET /mega-menu` does not filter. | Confirm which flag controls the menu. If it should show, set `is_active: true`. | 🟠 Confirm | Partly done — frontend rule is in place; the business decision is still open (data only). |
+| M9 | **Master items** | `master[]` entries only have an `id` and a link. The name and image come from a separate master list loaded on every page. | Return `title` and `image` on each `master[]` entry like `sub_menu[]`. | ⚪ Low | Still needed — `menuModel.ts` still looks names up in `masterData`; the backend returns `master[]` as stored. |
 
 ### Search
 
-| # | Need | Today | Proposed change | Priority |
-|---|---|---|---|---|
-| S1 | **Popular searches** | Hardcoded list. | `GET /search/popular` → `[{ term }]`, managed in the admin or based on real searches. | 🟠 Medium |
-| S2 | **Trending pieces** | Not shown: no API. The mockup shows 4 trending products before typing. | `GET /products/trending?limit=4` → same shape as search results. | ⚪ Low |
+| # | Need | Today | Proposed change | Priority | Status |
+|---|---|---|---|---|---|
+| S1 | **Popular searches** | Hardcoded list. | `GET /search/popular` → `[{ term }]`, managed in the admin or based on real searches. | 🟠 Medium | Still needed — no route in the backend (same as S1 in [account-search-appointment-api-changes.md](account-search-appointment-api-changes.md)). |
+| S2 | **Trending pieces** | Not shown. The mockup shows 4 trending products before typing. | `GET /products/trending?limit=4` → same shape as search results. | ⚪ Low | Partly done — `GET /jewelry/best-selling-products` exists and the frontend already calls it (`src/services/productService.ts`). The search panel doesn't use it yet (frontend; slice to 4 or add `?limit=`). |
 
 ### `/promotional-strips`
 
-| # | Need | Today | Proposed change | Priority |
-|---|---|---|---|---|
-| P1 | **Relative links** | Links are `https://ashclair.com/all`. | Same as M1. | 🔴 High |
-| P2 | **Message content** | Live messages include "90 DAY WARRANTY \| HASSLE FREE RETURNS \| 0% Finance", "Free domestic shipping", "10% OFF Site-wide \| Use Code…". | Marketing to confirm these are current offers. | 🟠 Confirm |
-| P3 | **Right-side links** | Hardcoded (Book an appointment, Client care). | Optional `links: [{ icon, label, link }]` on the strip. | ⚪ Low |
+| # | Need | Today | Proposed change | Priority | Status |
+|---|---|---|---|---|---|
+| P1 | **Relative links** | Links were `https://ashclair.com/all`. The frontend rewrites them (`toSitePath` in `AnnouncementBar.tsx`). | Same as M1. | 🔴 High | Partly done — same as M1 (data fix). |
+| P2 | **Message content** | Live messages included "90 DAY WARRANTY \| HASSLE FREE RETURNS \| 0% Finance", "Free domestic shipping", "10% OFF Site-wide \| Use Code…". | Marketing to confirm these are current offers. | 🟠 Confirm | Check — messages are data in `PromotionalStrip.data`; marketing to confirm. |
+| P3 | **Right-side links** | Hardcoded (Book an appointment, Client care). | Optional `links: [{ icon, label, link }]` on the strip. | ⚪ Low | Still needed — `data` is JSONB, so no migration: the admin needs the field and the frontend must read it. |
 
 ## 3. Not changed (still from the API)
 
 Menu names and order (`sequence`), columns and groups, link labels and URLs, "View all" links, menu image tiles, and announcement messages with countdowns (`endDate`, `enableEndDate`, `prefixText`). Currency list, cart and wishlist counts, and live search results also still come from the API.
+
+Brand note: the logo labels in `SiteHeader.tsx` and `MobileDrawer.tsx` still say `alt="Pendyora"` / `aria-label="Pendyora home"`, and the offer pop-up SMS text (`src/components/Header/components/OfferModel.tsx`) says "from ASHCLAIR" (to change in brand cleanup).

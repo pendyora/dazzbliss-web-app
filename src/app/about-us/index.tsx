@@ -1,3 +1,6 @@
+import Link from 'next/link';
+
+import { SHELL } from '@/components/ClientCare/careInfo';
 import { decrypt } from '@/utils/enc-decy';
 import 'react-quill/dist/quill.snow.css';
 
@@ -32,22 +35,38 @@ export default async function AboutUs() {
   const aboutData = await getAboutData();
 
   return (
-    <div className="w-full flex justify-center">
-      {aboutData ? (
-        <div className="flex max-w-[1200px] ">
-          <div className=" w-full flex flex-col justify-center items-center gap-20 border-b py-10 sm:py-2 border-solid border-[#3b3b3b] 2xl:gap-16 xl:gap-12 lg:gap-8 md:gap-[60px] sm:gap-5 md:px-10 sm:px-5 lg:px-20 ">
-            {aboutData?.content && (
-              <div className="flex sm:flex-col-reverse items-center m-auto about-us-css-setup">
+    <div className="bg-paper font-libre text-[14px] leading-[1.55] text-ink antialiased">
+      <section className="border-b border-line bg-haze">
+        <div className={`${SHELL} pb-[clamp(28px,4vw,48px)] pt-[clamp(36px,5vw,64px)]`}>
+          <nav aria-label="Breadcrumb" className="mb-3.5 flex flex-wrap gap-2 text-[12px] text-ink-soft">
+            <Link href="/" className="text-ink-soft hover:text-ink">
+              Home
+            </Link>
+            <span aria-hidden className="text-line-strong">
+              /
+            </span>
+            <span aria-current="page">About us</span>
+          </nav>
+          <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Our story</span>
+          <h1 className="m-0 mt-3 font-cormorant text-[clamp(38px,4.4vw,58px)] font-medium leading-none tracking-[-0.01em]">
+            About <em className="text-gilt">us</em>
+          </h1>
+        </div>
+      </section>
+
+      <div className={`${SHELL} pb-20 pt-[clamp(36px,5vw,64px)]`}>
+        {aboutData ? (
+          aboutData?.content && (
+            <div className="mx-auto max-w-[1200px]">
+              <div className="about-us-css-setup">
                 <div className="ql-editor" dangerouslySetInnerHTML={{ __html: aboutData?.content }} />
               </div>
-            )}
-          </div>
-        </div>
-      ) : (
-        <>
-          <div>No Data</div>
-        </>
-      )}
+            </div>
+          )
+        ) : (
+          <p className="m-0 py-16 text-center text-ink-soft">No Data</p>
+        )}
+      </div>
     </div>
   );
 }

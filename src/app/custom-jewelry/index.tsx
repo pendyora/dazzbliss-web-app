@@ -53,9 +53,9 @@ export default function CUSTOMJEWELRYCHOOSEADIAMONDPage() {
   }, [searchParams?.toString()]);
 
   return (
-    <div className="w-full bg-[#ffffff]">
-      <div className="flex flex-col gap-[20px] relative lg:gap-5 sm:gap-[10px]">
-        <div className="sticky top-0 sm:top-[87px] w-full bg-[#ffffff] z-[20]">
+    <div className="w-full bg-paper">
+      <div className="relative flex flex-col gap-8 lg:gap-6 sm:gap-4">
+        <div className="sticky top-0 z-[20] w-full bg-paper sm:top-[87px]">
           <ShowStepper
             selectionRoute={selectionRoute}
             activeStep={activeStep}

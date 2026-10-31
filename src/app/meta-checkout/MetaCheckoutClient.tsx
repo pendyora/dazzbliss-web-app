@@ -156,27 +156,42 @@ export default function MetaCheckoutClient() {
   }, [dispatch, router, searchParams]);
 
   return (
-    <div className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-4 px-4 text-center">
+    <div
+      className="flex min-h-[60vh] w-full flex-col items-center justify-center gap-3.5 bg-paper px-4 py-16 text-center font-libre text-ink antialiased"
+      role="status"
+      aria-live="polite"
+    >
       {status === 'loading' && (
         <>
-          <LuLoader className="h-8 w-8 animate-spin" />
-          <p className="text-base">Preparing your cart&hellip;</p>
+          <LuLoader className="mb-1 h-9 w-9 animate-spin text-ink" aria-hidden />
+          <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Checkout</span>
+          <p className="m-0 font-cormorant text-[clamp(30px,3.2vw,44px)] font-normal leading-none text-ink">Preparing your cart&hellip;</p>
         </>
       )}
       {status === 'empty' && (
         <>
-          <p className="text-lg font-medium">We couldn&apos;t find those items</p>
-          <p className="text-sm text-gray-500">The products from this link are no longer available.</p>
-          <button className="mt-2 rounded bg-black px-6 py-2 text-white" onClick={() => router.replace('/')}>
+          <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Checkout</span>
+          <p className="m-0 font-cormorant text-[clamp(30px,3.2vw,48px)] font-normal leading-none text-ink">We couldn&apos;t find those items</p>
+          <p className="m-0 max-w-[46ch] text-[14px] leading-[1.65] text-ink-soft">The products from this link are no longer available.</p>
+          <button
+            type="button"
+            className="mt-3 inline-flex h-12 items-center justify-center bg-ink px-8 text-[11px] font-medium uppercase tracking-[0.18em] text-paper transition-colors hover:bg-ink-hover"
+            onClick={() => router.replace('/')}
+          >
             Continue shopping
           </button>
         </>
       )}
       {status === 'error' && (
         <>
-          <p className="text-lg font-medium">Something went wrong</p>
-          <p className="text-sm text-gray-500">Please try again in a moment.</p>
-          <button className="mt-2 rounded bg-black px-6 py-2 text-white" onClick={() => router.replace('/cart')}>
+          <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Checkout</span>
+          <p className="m-0 font-cormorant text-[clamp(30px,3.2vw,48px)] font-normal leading-none text-ink">Something went wrong</p>
+          <p className="m-0 max-w-[46ch] text-[14px] leading-[1.65] text-ink-soft">Please try again in a moment.</p>
+          <button
+            type="button"
+            className="mt-3 inline-flex h-12 items-center justify-center bg-ink px-8 text-[11px] font-medium uppercase tracking-[0.18em] text-paper transition-colors hover:bg-ink-hover"
+            onClick={() => router.replace('/cart')}
+          >
             Go to cart
           </button>
         </>

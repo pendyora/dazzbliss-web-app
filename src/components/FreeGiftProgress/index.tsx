@@ -68,10 +68,12 @@ export default function FreeGiftProgress({ className = '' }: Props) {
   // had to be rewritten seconds after load.
   const shopHref = `/all?min_price=${shortfallAmount}`;
 
+  const em = 'font-medium text-ink';
+
   const headline = allUnlocked ? (
     <>
       <span aria-hidden="true">🎉 </span>
-      <span className="font-bold text-gray-800">Congratulations!</span> Your <span className="font-bold text-secondary">FREE {currentGiftName}</span>{' '}
+      <span className={em}>Congratulations!</span> Your <span className={em}>FREE {currentGiftName}</span>{' '}
       {/* Never claim a refused gift is on the order — the strip would be contradicting the
           card right below it, which is offering to add the same gift back. */}
       {declined ? 'is waiting in your cart.' : 'is included.'}
@@ -79,13 +81,11 @@ export default function FreeGiftProgress({ className = '' }: Props) {
   ) : anyUnlocked ? (
     <>
       <span aria-hidden="true">🎉 </span>
-      <span className="font-bold text-gray-800">Congratulations!</span> You&apos;ve unlocked your{' '}
-      <span className="font-bold text-secondary">FREE {currentGiftName}</span>.
+      <span className={em}>Congratulations!</span> You&apos;ve unlocked your <span className={em}>FREE {currentGiftName}</span>.
     </>
   ) : (
     <>
-      Add <span className="font-bold text-secondary">{shortfall}</span> more to unlock your{' '}
-      <span className="font-bold text-secondary">FREE {nextGiftName}</span>.
+      Add <span className={`${em} tabular-nums`}>{shortfall}</span> more to unlock your <span className={em}>FREE {nextGiftName}</span>.
     </>
   );
 
@@ -93,69 +93,55 @@ export default function FreeGiftProgress({ className = '' }: Props) {
   const subline =
     anyUnlocked && !allUnlocked ? (
       <>
-        Add <span className="font-bold text-secondary">{shortfall}</span> more to unlock your{' '}
-        <span className="font-bold text-secondary">next gift</span>.
+        Add <span className={`${em} tabular-nums`}>{shortfall}</span> more to unlock your <span className={em}>next gift</span>.
       </>
     ) : null;
 
   return (
-    <div
-      className={`rounded-xl border border-secondary/20 bg-[#faf9f4] px-6 py-5 md:px-4 md:py-4 sm:px-3 sm:py-3 ${className}`}
-      role="status"
-      aria-live="polite"
-    >
-      <div className="flex items-center gap-5 lg:gap-4 md:gap-4 sm:gap-2">
+    <div className={`bg-mist px-6 py-5 font-libre text-ink md:px-4 md:py-4 sm:px-3.5 sm:py-3.5 ${className}`} role="status" aria-live="polite">
+      <div className="flex items-center gap-6 lg:gap-4 sm:gap-3">
         {/* Icon + copy + progress bar */}
-        <div className={`flex min-w-0 flex-1 items-center gap-3.5 sm:order-1 sm:items-start sm:gap-2`}>
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-secondary/20 bg-white-a700 text-secondary sm:h-8 sm:w-8">
+        <div className="flex min-w-0 flex-1 items-center gap-4 sm:order-1 sm:items-start sm:gap-2.5">
+          <span className="grid h-11 w-11 shrink-0 place-items-center border border-line bg-paper text-gilt sm:h-8 sm:w-8">
             {allUnlocked ? (
-              <LuCheck className="h-5 w-5 sm:h-4 sm:w-4" strokeWidth={2.2} />
+              <LuCheck className="h-[18px] w-[18px] sm:h-4 sm:w-4" strokeWidth={2} />
             ) : (
-              <LuGift className="h-5 w-5 sm:h-4 sm:w-4" strokeWidth={1.6} />
+              <LuGift className="h-[18px] w-[18px] sm:h-4 sm:w-4" strokeWidth={1.6} />
             )}
           </span>
           <div className="min-w-0 flex-1">
+            <span className="mb-1 block text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt sm:text-[10px]">Free gift</span>
             <p
-              className={`font-notosans text-[13px] leading-snug text-pretty text-gray-700 md:text-[12px] sm:text-[12px] sm:leading-[1.35] ${
-                subline ? 'sm:hidden' : ''
-              }`}
+              className={`m-0 text-pretty text-[13.5px] leading-[1.5] text-ink-soft sm:text-[12.5px] sm:leading-[1.4] ${subline ? 'sm:hidden' : ''}`}
             >
               {headline}
             </p>
             {subline && (
-              <p className="mt-0.5 font-notosans text-[13px] leading-snug text-pretty text-gray-700 md:text-[12px] sm:mt-0 sm:text-[12px] sm:leading-[1.35]">
-                {subline}
-              </p>
+              <p className="m-0 mt-0.5 text-pretty text-[13.5px] leading-[1.5] text-ink-soft sm:mt-0 sm:text-[12.5px] sm:leading-[1.4]">{subline}</p>
             )}
 
             {!allUnlocked && shortfallAmount > 0 && (
               <Link
                 href={shopHref}
-                className="mt-2 inline-flex w-fit items-center gap-1.5 rounded-lg border border-secondary/40 bg-white-a700 px-3 py-1.5 font-notosans text-[13px] font-semibold text-secondary transition-colors hover:border-secondary hover:bg-secondary/5 sm:w-full sm:justify-center sm:py-2 sm:text-[12px]"
+                className="mt-3 inline-flex h-9 w-fit items-center gap-2 border border-ink bg-paper px-4 text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-ink hover:text-paper sm:w-full sm:justify-center"
               >
                 Add {shortfall} more
-                <LuArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+                <LuArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={1.8} />
               </Link>
             )}
 
             {/* Solid fill for what is earned, a tick where it stops, then a dashed run to the
                 amount still to go. The shortfall is what the shopper can act on, so it gets the
-                pill — a raw "spent / target" ratio made them do the subtraction themselves. */}
-            <div className="mt-3 flex items-center gap-2.5 sm:mt-2 sm:gap-2">
-              <span className="relative h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-secondary/15">
-                <span
-                  className="absolute inset-y-0 left-0 rounded-full bg-secondary transition-[width] duration-500 ease-out"
-                  style={{ width: `${fillPct}%` }}
-                />
+                figure — a raw "spent / target" ratio made them do the subtraction themselves. */}
+            <div className="mt-3.5 flex items-center gap-3 sm:mt-2.5 sm:gap-2">
+              <span className="relative h-[3px] min-w-0 flex-1 overflow-hidden bg-line-strong/60">
+                <span className="absolute inset-y-0 left-0 bg-ink transition-[width] duration-500 ease-out" style={{ width: `${fillPct}%` }} />
               </span>
 
               {/* Only once a tier is actually earned — a tick on an empty cart would claim
                   progress the shopper has not made. */}
               {anyUnlocked && (
-                <span
-                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary text-text_w sm:h-[17px] sm:w-[17px]"
-                  aria-hidden="true"
-                >
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-ink text-paper sm:h-[17px] sm:w-[17px]" aria-hidden="true">
                   <LuCheck className="h-3 w-3 sm:h-[10px] sm:w-[10px]" strokeWidth={3} />
                 </span>
               )}
@@ -164,12 +150,12 @@ export default function FreeGiftProgress({ className = '' }: Props) {
                 <>
                   {/* Dropped on a phone: the copy column is ~200px and the dash is the one
                       part that carries no information. */}
-                  <span className="h-px w-5 shrink-0 border-t border-dashed border-secondary/40 sm:hidden" aria-hidden="true" />
-                  <span className="shrink-0 rounded-lg bg-secondary/[0.07] px-2.5 py-1 text-center sm:px-2 sm:py-0.5">
-                    <span className="block whitespace-nowrap font-castoro text-[15px] font-bold leading-tight text-secondary sm:text-[13px]">
+                  <span className="h-px w-5 shrink-0 border-t border-dashed border-line-strong sm:hidden" aria-hidden="true" />
+                  <span className="shrink-0 text-right leading-none">
+                    <span className="block whitespace-nowrap font-cormorant text-[20px] font-medium tabular-nums text-ink sm:text-[17px]">
                       {shortfall}
                     </span>
-                    <span className="block font-sans text-[9px] uppercase leading-tight tracking-[0.8px] text-gray-500 sm:text-[8px]">To go</span>
+                    <span className="mt-0.5 block text-[9.5px] uppercase tracking-[0.16em] text-ink-soft sm:text-[8.5px]">To go</span>
                   </span>
                 </>
               )}
@@ -177,22 +163,20 @@ export default function FreeGiftProgress({ className = '' }: Props) {
           </div>
         </div>
 
-        <span className={`w-px self-stretch bg-secondary/15 sm:order-2`} aria-hidden="true" />
+        <span className="w-px self-stretch bg-line-strong/70 sm:order-2" aria-hidden="true" />
 
         {/* The highest unlocked gift (✓) and the next locked one (🔒) — never the full ladder. */}
-        <div className={`flex shrink-0 items-start justify-center sm:justify-center sm:order-3`}>
+        <div className="flex shrink-0 items-start justify-center sm:order-3">
           {displayTiers.map((tier, index) => (
             <Fragment key={tier.id}>
-              {index > 0 && (
-                <span className={`mt-[44px] h-px w-4 shrink-0 border-t border-dashed border-secondary/40 sm:hidden`} aria-hidden="true" />
-              )}
-              <div className={`flex w-[116px] flex-col items-center text-center sm:w-[96px] ${tier.id === mobileTier?.id ? '' : 'sm:hidden'}`}>
+              {index > 0 && <span className="mt-[44px] h-px w-4 shrink-0 border-t border-dashed border-line-strong sm:hidden" aria-hidden="true" />}
+              <div className={`flex w-[116px] flex-col items-center text-center sm:w-[92px] ${tier.id === mobileTier?.id ? '' : 'sm:hidden'}`}>
                 <span className="relative">
                   <span
-                    className={`flex h-[88px] w-[88px] items-center justify-center overflow-hidden rounded-full border bg-white-a700 md:h-[76px] md:w-[76px] sm:h-[76px] sm:w-[76px] [&_.ant-image]:h-full [&_.ant-image]:w-full ${tier.unlocked ? 'border-secondary/40' : 'border-secondary/15'} ${tier.available === false ? 'opacity-40 grayscale' : ''}`}
+                    className={`flex h-[88px] w-[88px] items-center justify-center overflow-hidden border bg-paper md:h-[76px] md:w-[76px] sm:h-[72px] sm:w-[72px] [&_.ant-image]:h-full [&_.ant-image]:w-full ${tier.unlocked ? 'border-ink/40' : 'border-line'} ${tier.available === false ? 'opacity-40 grayscale' : ''}`}
                   >
                     {tier.image ? (
-                      /* Clickable: an 88px disc is too small to judge a ring by, and the locked
+                      /* Clickable: an 88px tile is too small to judge a ring by, and the locked
                          tier is the one the shopper is deciding whether to spend more for. The
                          lightbox shows the full asset — the dimming and greyscale that mark the
                          locked/unavailable states live on the wrapper, so the preview is never
@@ -215,24 +199,22 @@ export default function FreeGiftProgress({ className = '' }: Props) {
                         fallback="/images/no_images.svg"
                       />
                     ) : (
-                      <LuGift className="h-7 w-7 text-secondary/50 sm:h-6 sm:w-6" strokeWidth={1.5} />
+                      <LuGift className="h-7 w-7 text-ink-faint sm:h-6 sm:w-6" strokeWidth={1.4} />
                     )}
                   </span>
 
                   {/* Earned tier gets a filled tick, the locked one a lock — distinguishable by
-                    shape as well as colour. Offsets are positive, not negative: the badge is
-                    parked on the circle's 45° arc, and pinning it to the bounding box corner
-                    instead left it floating in empty space once the thumbnail grew. */}
+                    shape as well as colour. Parked on the tile's top corner. */}
                   {tier.unlocked ? (
                     <span
-                      className="absolute left-[2px] top-[2px] flex h-[22px] w-[22px] items-center justify-center rounded-full bg-secondary text-text_w ring-2 ring-[#faf9f4] sm:left-[1px] sm:top-[1px] sm:h-5 sm:w-5"
+                      className="absolute -left-[7px] -top-[7px] grid h-[22px] w-[22px] place-items-center rounded-full bg-ink text-paper ring-2 ring-mist sm:h-5 sm:w-5"
                       aria-hidden="true"
                     >
                       <LuCheck className="h-3 w-3" strokeWidth={3} />
                     </span>
                   ) : (
                     <span
-                      className="absolute right-[2px] top-[2px] flex h-[22px] w-[22px] items-center justify-center rounded-full border border-secondary/20 bg-white-a700 text-gray-500 ring-2 ring-[#faf9f4] sm:right-[1px] sm:top-[1px] sm:h-5 sm:w-5"
+                      className="absolute -right-[7px] -top-[7px] grid h-[22px] w-[22px] place-items-center rounded-full border border-line-strong bg-paper text-ink-soft ring-2 ring-mist sm:h-5 sm:w-5"
                       aria-hidden="true"
                     >
                       <LuLock className="h-[11px] w-[11px]" strokeWidth={2} />
@@ -245,8 +227,8 @@ export default function FreeGiftProgress({ className = '' }: Props) {
                   with an ellipsis; `title` reveals the full name on hover. */}
                 <span
                   title={`Free ${tier.gift_title}`}
-                  className={`mt-2 line-clamp-2 h-[25px] font-sans text-[10px] uppercase leading-tight tracking-[0.6px] sm:mt-1.5 sm:h-[23px] sm:text-[9px] sm:tracking-[0.3px] ${
-                    tier.unlocked ? 'text-secondary' : 'text-gray-500'
+                  className={`mt-2.5 line-clamp-2 h-[25px] text-[10px] uppercase leading-tight tracking-[0.12em] sm:mt-2 sm:h-[23px] sm:text-[9px] sm:tracking-[0.06em] ${
+                    tier.unlocked ? 'text-ink' : 'text-ink-soft'
                   }`}
                 >
                   Free {tier.gift_title}
@@ -255,8 +237,8 @@ export default function FreeGiftProgress({ className = '' }: Props) {
                 {/* Spells out what the tick and padlock mean, so the state does not rely on
                   reading a small glyph. */}
                 <span
-                  className={`mt-1.5 whitespace-nowrap rounded px-2 py-[3px] font-sans text-[9px] uppercase leading-none tracking-[0.8px] sm:mt-1 sm:px-1.5 sm:text-[8px] sm:tracking-[0.4px] ${
-                    tier.unlocked ? 'bg-primary text-text_w' : 'bg-primary/75 text-text_w'
+                  className={`mt-1.5 whitespace-nowrap px-2 py-[4px] text-[9px] font-medium uppercase leading-none tracking-[0.16em] sm:mt-1 sm:px-1.5 sm:text-[8px] sm:tracking-[0.1em] ${
+                    tier.unlocked ? 'bg-ink text-paper' : 'border border-line-strong bg-paper text-ink-soft'
                   }`}
                 >
                   {tier.unlocked ? 'Unlocked' : 'Next gift'}

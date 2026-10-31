@@ -546,7 +546,7 @@ const ShopPayButton = ({
   // 45px to match the cart's checkout button above it; square corners like the rest of the site. The colour and logo stay Shop's own, as the design guidelines require.
   return (
     <>
-      {!configured && <div className="h-[45px] w-full bg-gray-100 animate-pulse" />}
+      {!configured && <div className="h-[45px] w-full animate-pulse bg-stone" />}
       <div
         ref={containerRef}
         id={CONTAINER_ID}

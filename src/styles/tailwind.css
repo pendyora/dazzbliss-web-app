@@ -57,7 +57,7 @@
 }
 
 .ant-table-thead tr th.ant-table-cell{
-background-color :#C4B8AB !important;
+background-color: #F8F9FA !important; /* Dazzbliss: haze (was beige) */
 }
 .ant-table-wrapper table{
   border-radius: 0 !important;
@@ -66,10 +66,10 @@ background-color :#C4B8AB !important;
   border-radius: 0 !important;
 }
 .ant-table-wrapper .ant-table-thead >tr>th{
-  color:white !important;
+  color: #111111 !important; /* Dazzbliss: ink */
 }
 .ant-btn-primary.ant-btn-solid,.ant-btn-primary {
-  color: #000000 !important;
+  color: #ffffff !important; /* Dazzbliss: text on ink buttons (was black) */
 }
 .ant-pagination-item{
   display: flex !important;

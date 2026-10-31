@@ -32,36 +32,38 @@ const OrderRequestPanel: React.FC<OrderRequestPanelProps> = ({ orderNumber, elig
   const showHelp = !hasOpenRequest && !eligibility.can_cancel && !eligibility.can_return && [1, 2, 4].includes(status);
 
   return (
-    <div className="mb-4 flex flex-col gap-4">
+    <div className="grid gap-3.5">
       {(eligibility.can_cancel || eligibility.can_return) && (
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-[#e5e5e5] bg-white p-5 sm:p-4">
+        <div className="flex flex-wrap items-center justify-between gap-5 border border-line bg-haze p-[22px] sm:p-4">
           <div className="min-w-[220px] flex-1">
-            <p className="mb-1 text-[16px] font-semibold">{eligibility.can_cancel ? 'Need to change your order?' : 'Not quite right?'}</p>
-            <p className="mb-0 text-[14px] text-[#666]">
+            <p className="m-0 mb-1 font-cormorant text-[24px] font-medium leading-[1.1] text-ink">
+              {eligibility.can_cancel ? 'Need to change your order?' : 'Not quite right?'}
+            </p>
+            <p className="m-0 text-[13.5px] leading-[1.6] text-ink-soft">
               {eligibility.can_cancel
                 ? 'You can ask to cancel the whole order or just some items before it ships.'
                 : eligibility.return_deadline
                   ? `You can return items until ${dayjs(eligibility.return_deadline).format('MMMM D, YYYY')}.`
                   : `You can return items within ${eligibility.return_window_days} days of delivery.`}{' '}
-              <Link href="/returns-shipping" className="text-primary underline">
+              <Link href="/returns-shipping" className="font-medium text-teal underline underline-offset-[3px] hover:text-navy">
                 Returns policy
               </Link>
             </p>
           </div>
           <Link
             href={startLink(eligibility.can_cancel ? ORDER_REQUEST_TYPE.CANCEL : ORDER_REQUEST_TYPE.RETURN)}
-            className="inline-flex h-[42px] items-center gap-2 bg-primary px-5 text-[13px] uppercase tracking-[1.5px] !text-text_w hover:opacity-90"
+            className="inline-flex h-12 items-center gap-2.5 bg-ink px-6 text-[11.5px] font-medium uppercase tracking-[0.2em] text-paper hover:bg-ink-hover hover:text-paper"
           >
-            {eligibility.can_cancel ? <LuCircleX /> : <LuRotateCcw />}
+            {eligibility.can_cancel ? <LuCircleX className="h-4 w-4" strokeWidth={1.4} /> : <LuRotateCcw className="h-4 w-4" strokeWidth={1.4} />}
             {eligibility.can_cancel ? 'Cancel Items' : 'Return Items'}
           </Link>
         </div>
       )}
 
       {showHelp && !eligibility.return_window_expired && eligibility.blocked_reason && (
-        <p className="mb-0 text-[13px] text-[#777]">
+        <p className="m-0 text-[13px] leading-[1.6] text-ink-soft">
           {eligibility.blocked_reason} Call {SUPPORT.phone} or email{' '}
-          <a href={`mailto:${SUPPORT.email}`} className="underline">
+          <a href={`mailto:${SUPPORT.email}`} className="text-ink underline underline-offset-[3px] hover:text-ink">
             {SUPPORT.email}
           </a>
           .

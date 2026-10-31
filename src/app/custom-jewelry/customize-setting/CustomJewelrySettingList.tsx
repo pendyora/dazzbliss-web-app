@@ -1,10 +1,9 @@
 'use client';
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { Button } from 'antd';
 import { LuLoader } from 'react-icons/lu';
 
-import CustomProduct from '@/components/CustomProduct';
+import { gridClassName, PlpGridSkeleton } from '@/app/[jewelryType]/PlpGrid';
 import ProductProfile from '@/components/ProductProfile';
 import {
   setSelectedAppraisal,
@@ -130,53 +129,59 @@ export default function CustomJewelrySettingList({
   }, [handleScroll]);
 
   return (
-    <div>
-      <div className="flex flex-col items-center border-b border-solid">
-        <div className="container-xs mb-20 flex flex-col gap-10 2xl:px-[50px] xl:px-[50px] lg:px-[30px] md:px-5 sm:px-3 sm:gap-2">
-          <div className="grid grid-cols-4 sm:grid-cols-2 gap-5 sm:gap-2">
-            {products?.length > 0 ? (
-              products?.map((product: any, index: number) => (
-                <div
-                  key={index}
-                  className="cursor-pointer"
-                  onClick={() => {
-                    dispatch(setSelectedSettingStore(null));
-                    dispatch(setSelectedProductsDetails(null));
+    <section className="w-full bg-paper">
+      <div className="mx-auto w-full max-w-[1440px] px-[clamp(16px,3.2vw,56px)] pb-20 md:pb-14">
+        {products?.length > 0 ? (
+          <div className={gridClassName(4)}>
+            {products?.map((product: any, index: number) => (
+              <div
+                key={index}
+                className="min-w-0 cursor-pointer"
+                onClick={() => {
+                  dispatch(setSelectedSettingStore(null));
+                  dispatch(setSelectedProductsDetails(null));
 
-                    dispatch(setSelectedRingSizeRedux(null));
-                    dispatch(setSelectedRingSizeId(null));
+                  dispatch(setSelectedRingSizeRedux(null));
+                  dispatch(setSelectedRingSizeId(null));
 
-                    dispatch(setSelectedAppraisal(null));
-                    dispatch(setSelectedWarranty(null));
-                    dispatch(setSelectedEngraving(null));
-                  }}
-                >
-                  <ProductProfile
-                    {...product}
-                    isStatic={true}
-                    selectionRoute={selectionRoute}
-                    key={'group2652' + index}
-                    className={`w-full`}
-                    specialProductTitles={product.specialProductTitles || []}
-                  />
-                </div>
-              ))
-            ) : !isLoading && products?.length == 0 ? (
-              <div className="ml-8 col-span-4 sm:col-span-2 w-full flex flex-col items-center justify-center gap-[60px] lg:ml-0 md:ml-0 sm:gap-[30px] min-h-[30vh]">
-                No Products Available
+                  dispatch(setSelectedAppraisal(null));
+                  dispatch(setSelectedWarranty(null));
+                  dispatch(setSelectedEngraving(null));
+                }}
+              >
+                <ProductProfile
+                  {...product}
+                  isStatic={true}
+                  layout="plp"
+                  selectionRoute={selectionRoute}
+                  key={'group2652' + index}
+                  className={`w-full`}
+                  specialProductTitles={product.specialProductTitles || []}
+                />
               </div>
-            ) : (
-              <></>
-            )}
+            ))}
           </div>
+        ) : !isLoading && products?.length == 0 ? (
+          <div className="grid min-h-[30vh] place-items-center content-center gap-3 border-y border-line py-16 text-center">
+            <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">No matches</span>
+            <p className="m-0 font-cormorant text-[clamp(26px,2.6vw,36px)] leading-none text-ink">
+              No <em className="italic text-gilt">settings</em> available
+            </p>
+            <p className="m-0 text-[14px] leading-[1.65] text-ink-soft">Try removing a filter to see more designs.</p>
+          </div>
+        ) : isLoading && !(products?.length > 0) ? (
+          <PlpGridSkeleton columns={4} count={8} />
+        ) : (
+          <></>
+        )}
 
-          {isLoadingMore && (
-            <div className="w-full flex justify-center items-center py-4">
-              <LuLoader className="h-8 w-8 animate-spin" />
-            </div>
-          )}
-        </div>
+        {isLoadingMore && (
+          <div className="flex w-full items-center justify-center gap-3 py-6 text-[10.5px] uppercase tracking-[0.16em] text-ink-soft">
+            <LuLoader className="h-5 w-5 animate-spin text-ink" />
+            Loading more
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Image } from 'antd';
 
-import { Img, Text } from '../../components';
+import { Img } from '../../components';
 
 /**
  * The section exactly as it was before the Instagram feed existed: a fixed,
@@ -10,12 +10,11 @@ import { Img, Text } from '../../components';
  *
  * It is the fallback whenever the live feed cannot be shown — backend down,
  * expired or missing token, feed switched off, or an account with no posts.
- * Keeping the original markup verbatim means a failure degrades to a design
- * that has already shipped and been reviewed, rather than to a thinner version
- * of the new one.
+ * The gallery layout is the original one; the heading block and spacing follow
+ * the live section (kicker, Cormorant title, hairline divider).
  */
 export default function CommunityGalleryFallback({
-  borderColorClass = 'border-[#3b3b3b]',
+  borderColorClass = 'border-line',
   showTopBorder = true,
 }: {
   borderColorClass?: string;
@@ -23,24 +22,23 @@ export default function CommunityGalleryFallback({
 }) {
   return (
     <div>
-      <div className={`flex flex-col items-center gap-[60px] ${showTopBorder ? `border-t border-solid ${borderColorClass}` : ''} sm:hidden`}>
-        <div className="container-xs mt-16 2xl:px-[160px] xl:px-28 lg:px-20 lg:mt-10 md:px-5">
-          <div className="flex items-start justify-between gap-5 md:flex-col">
-            <Text
-              size="text5xl"
-              as="p"
-              className="w-[32%] self-center leading-[54px] tracking-[2.20px] lg:w-[32%] lg:leading-9 md:w-full md:text-[26px] sm:text-[22px]"
-            >
-              <span className="uppercase">
-                <>@ASHCLAIR Be inspired by Our community</>
-              </span>
-            </Text>
-            <Text as="p" size="textlg" className="w-[44%] !font-light leading-8 2xl:w-[45%] lg:w-[50%] md:w-full text-justify">
-              <>Upload your photo with your new jewels on instagram and tag us at #ashclairjewelry for a chance to be featured in our gallery!</>
-            </Text>
+      <div
+        className={`flex flex-col items-center gap-10 bg-paper font-libre ${showTopBorder ? `border-t border-solid ${borderColorClass}` : ''} sm:hidden`}
+      >
+        <div className="mx-auto mt-[clamp(56px,7vw,96px)] w-full max-w-[1440px] px-[clamp(16px,3.2vw,56px)]">
+          <div className="flex items-end justify-between gap-8 md:flex-col md:items-start md:gap-4">
+            <div className="max-w-[640px]">
+              <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">@Ashclair</span>
+              <p className="m-0 mt-3 text-balance font-cormorant text-[clamp(30px,3.2vw,48px)] font-medium leading-none text-ink">
+                Be inspired by our <em className="text-gilt">community</em>
+              </p>
+            </div>
+            <p className="m-0 max-w-[440px] text-[14px] leading-[1.65] text-ink-soft">
+              Upload your photo with your new jewels on instagram and tag us at #ashclairjewelry for a chance to be featured in our gallery!
+            </p>
           </div>
         </div>
-        <div className="container-xs flex gap-2 self-stretch md:flex-col">
+        <div className="mx-auto flex w-full max-w-[1440px] gap-2 self-stretch px-[clamp(16px,3.2vw,56px)] md:flex-col">
           <div className="grid grid-cols-3 gap-2 overflow-hidden">
             <div className="flex flex-col gap-2 col-span-1 h-auto ">
               <div className="grid grid-cols-2 gap-2 w-full h-1/2 lg:h-auto">
@@ -115,18 +113,21 @@ export default function CommunityGalleryFallback({
         </div>
       </div>
 
-      <div className={`sm:flex flex-col items-center pt-5 my-3 gap-[20px] ${showTopBorder ? 'border-t border-solid border-gray-200' : ''} hidden`}>
-        <div className="container-xs sm:px-3">
-          <div className="flex items-start justify-between gap-[14px] md:flex-col">
-            <Text size="text5xl" as="p" className="px-2 text-center leading-[14px] tracking-[2px]">
-              <span className="uppercase text-center">@ASHCLAIR Be inspired by Our community</span>
-            </Text>
-            <Text as="p" size="textlg" className="px-2 !font-light leading-[14px] text-center">
-              <>Upload your photo with your new jewels on instagram and tag us at #ashclairjewelry for a chance to be featured in our gallery!</>
-            </Text>
+      <div
+        className={`hidden flex-col items-center gap-6 bg-paper pt-14 font-libre sm:flex ${showTopBorder ? 'border-t border-solid border-line' : ''}`}
+      >
+        <div className="w-full px-4">
+          <div className="flex flex-col items-start gap-3">
+            <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">@Ashclair</span>
+            <p className="m-0 text-balance font-cormorant text-[30px] font-medium leading-none text-ink">
+              Be inspired by our <em className="text-gilt">community</em>
+            </p>
+            <p className="m-0 text-[14px] leading-[1.65] text-ink-soft">
+              Upload your photo with your new jewels on instagram and tag us at #ashclairjewelry for a chance to be featured in our gallery!
+            </p>
           </div>
         </div>
-        <div className="container-xs flex justify-center sm:px-3">
+        <div className="flex w-full justify-center px-4">
           <div className="grid grid-cols-1 gap-2 overflow-hidden">
             <div className="flex flex-col gap-2 col-span-1 h-auto box-border">
               <div className="grid grid-cols-2 gap-2 w-full h-auto">

@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { Text } from '@/components';
 import { fetchProductsDetails, setSelectedProductsDetails, useAppDispatch, useAppSelector } from '@/store';
 import {
   clearSelectedDiamondFilters,
@@ -148,24 +147,69 @@ export default function ShowStepper({
     }
   }, [customVariant, selectedSettingType?.shape_id]);
 
+  // Step states for the trail (presentation only): current = the step on screen, done = a chosen diamond / setting.
+  const diamondCurrent = state === 'd';
+  const diamondDone = !diamondCurrent && !!(selectedDiamondStore && dId);
+  const settingCurrent = state === 's';
+  const settingDone = !settingCurrent && !!(selectedSettingStore && sId);
+  const completeCurrent = state === 'c';
+
+  const cellClass = (current: boolean) =>
+    `relative flex h-full items-start gap-4 px-6 py-5 lg:gap-3 lg:px-4 lg:py-4 sm:items-center sm:gap-2 sm:px-2 sm:py-3 ${
+      current ? "after:absolute after:inset-x-0 after:-bottom-px after:h-[2px] after:bg-ink after:content-['']" : ''
+    }`;
+  const dotClass = (current: boolean, done: boolean) =>
+    `grid h-7 w-7 flex-none place-items-center rounded-full border text-[11px] tabular-nums md:h-6 md:w-6 md:text-[10.5px] ${
+      current ? 'border-ink bg-ink text-paper' : done ? 'border-gilt bg-gilt text-paper' : 'border-line-strong text-ink-soft'
+    }`;
+  const titleClass = (current: boolean) =>
+    `m-0 text-[11px] font-medium uppercase tracking-[0.16em] md:text-[10.5px] ${current ? 'text-ink' : 'text-ink-soft'}`;
+  const summaryClass = 'm-0 mt-1.5 flex min-w-0 items-baseline gap-2 whitespace-nowrap text-[13px] text-ink-soft lg:text-[12px]';
+  const startLinkClass =
+    'mt-1.5 inline-block cursor-pointer text-[12.5px] text-ink-soft underline underline-offset-4 hover:text-ink sm:text-[11.5px]';
+  const changeLinkClass =
+    'm-0 cursor-pointer text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink underline underline-offset-4 hover:text-ink-soft';
+  const mobileLabelClass = (current: boolean) =>
+    `m-0 text-[10.5px] uppercase tracking-[0.12em] ${current ? 'font-medium text-ink' : 'text-ink-soft'}`;
+
   return (
-    <div>
-      <div className="flex justify-center border-b border-solid border-[#cecece60] min-h-[73.5px] lg:min-h-fit">
-        <div className="container-xs flex justify-center overflow-hidden gap-[0px] lg:gap-[0px] md:gap-[0px] 2xl:mx-[160px] xl:mx-20 lg:mx-10 sm:mx-0  md:mx-0 sm:gap-[0px] sm:px-0 sm:-ml-5">
-          <div className={`w-2/3 flex gap-[0px] relative lg:gap-[0px] md:gap-[0px] sm:gap-[0px] ${selectionRoute === 2 ? 'flex-row-reverse' : ''}`}>
-            {/* Diamond selection started here  */}
-            <div className="relative w-1/2 md:w-full">
-              <div
-                className={`relative pl-10 flex px-5 lg:pr-1 h-full pt-3 pb-3 lg:py-2 sm:pb-[10px] sm:pt-[8px] items-start cursor-default gap-[30px] lg:gap-[15px] md:gap-[15px] sm:gap-[10px] md:w-full sm:px-1 sm:pl-5 sm:flex sm:items-center ${
-                  state === 'd' || dId ? 'bg-[#e7eae1] first-step z-[10]' : 'bg-white next-try'
-                }`}
+    <div className="border-b border-line bg-paper font-libre">
+      <nav aria-label="Design your ring" className="mx-auto flex max-w-[1440px] px-[clamp(16px,3.2vw,56px)] sm:px-0">
+        <div className={`relative flex w-2/3 ${selectionRoute === 2 ? 'flex-row-reverse' : ''}`}>
+          {/* Diamond selection started here  */}
+          <div className="relative w-1/2 border-r border-line md:w-full">
+            <div aria-current={diamondCurrent ? 'step' : undefined} className={`${cellClass(diamondCurrent)} cursor-default`}>
+              <span
+                className={dotClass(diamondCurrent, diamondDone)}
+                onClick={() => {
+                  if (selectionRoute == 1) {
+                    if (selectedDiamondStore !== null) {
+                      router.push(
+                        carryForwardFilterCrumb(
+                          `/custom-jewelry?type=${selectionRoute}&state=d${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
+                          searchParams,
+                        ),
+                      );
+                    }
+                  } else {
+                    if (selectedDiamondStore !== null) {
+                      router.push(
+                        carryForwardFilterCrumb(
+                          `/custom-jewelry?type=${selectionRoute}&state=d${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
+                          searchParams,
+                        ),
+                      );
+                    } else {
+                      dispatch(setSelectedDiamondStore(null));
+                    }
+                  }
+                }}
               >
-                <Text
-                  as="p"
-                  size="textxl"
-                  className={`flex h-[40px] w-[40px] md:h-[30px] md:w-[30px] aspect-square items-center justify-center rounded-[24px] !bg-secondary !text-text_w text-center tracking-[2.40px] ${
-                    state === 'd' ? '' : ''
-                  }`}
+                {selectionRoute == 2 ? 2 : 1}
+              </span>
+              <div className="relative min-w-0 flex-1 sm:flex sm:flex-col">
+                <div
+                  className={`sm:hidden ${selectedDiamondStore ? 'cursor-pointer' : ''}`}
                   onClick={() => {
                     if (selectionRoute == 1) {
                       if (selectedDiamondStore !== null) {
@@ -190,189 +234,215 @@ export default function ShowStepper({
                     }
                   }}
                 >
-                  {selectionRoute == 2 ? 2 : 1}
-                </Text>
-                <div className={`w-full sm:flex sm:flex-col relative md:h-full`}>
-                  <div
-                    className={`sm:text-center sm:hidden  ${selectedDiamondStore ? 'cursor-pointer' : ''}`}
-                    onClick={() => {
-                      if (selectionRoute == 1) {
-                        if (selectedDiamondStore !== null) {
-                          router.push(
-                            carryForwardFilterCrumb(
-                              `/custom-jewelry?type=${selectionRoute}&state=d${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
-                              searchParams,
-                            ),
-                          );
-                        }
-                      } else {
-                        if (selectedDiamondStore !== null) {
-                          router.push(
-                            carryForwardFilterCrumb(
-                              `/custom-jewelry?type=${selectionRoute}&state=d${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
-                              searchParams,
-                            ),
-                          );
-                        } else {
-                          dispatch(setSelectedDiamondStore(null));
-                        }
+                  <p className={`${titleClass(diamondCurrent)} truncate lg:hidden`}>
+                    {selectedDiamondStore?.fullTitle && dId
+                      ? selectedDiamondStore?.fullTitle?.length > 32
+                        ? selectedDiamondStore?.fullTitle?.slice(0, 32) + '..'
+                        : selectedDiamondStore?.fullTitle
+                      : 'CHOOSE A DIAMOND'}
+                  </p>
+                  <p className={`${titleClass(diamondCurrent)} hidden lg:block`}>
+                    {selectedDiamondStore?.fullTitle && dId ? 'DIAMOND' : 'CHOOSE A DIAMOND'}
+                  </p>
+
+                  {selectionRoute == 2 && !dId && (
+                    <span onClick={startWithDiamondsFn} className={startLinkClass}>
+                      Start with diamond
+                    </span>
+                  )}
+
+                  {selectedDiamondStore && dId && (
+                    <p className={`${summaryClass} md:hidden`}>
+                      <span className="truncate">{`${selectedDiamondStore?.carats} CARATS - ${selectedDiamondStore?.shape_code} `}</span>
+                      <span className="tabular-nums text-ink">{formatCurrency(selectedDiamondStore?.price)}</span>
+                    </p>
+                  )}
+                </div>
+                <div
+                  className={`hidden h-full items-center sm:flex ${selectedDiamondStore ? 'cursor-pointer' : ''}`}
+                  onClick={() => {
+                    if (selectionRoute == 1) {
+                      if (selectedDiamondStore !== null) {
+                        router.push(
+                          carryForwardFilterCrumb(
+                            `/custom-jewelry?type=${selectionRoute}&state=d${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
+                            searchParams,
+                          ),
+                        );
                       }
-                    }}
-                  >
-                    <>
-                      <Text
-                        size="textxl"
-                        as="p"
-                        className={`w-full  lg:hidden md:w-full ${
-                          selectedDiamondStore && dId ? '' : 'mt-2 md:mt-1'
-                        } tracking-[0.50px]  lg:text-[16px] md:text-[14px] sm:text-[12px] md:w-full ${state === 'd' ? '' : ''}`}
-                      >
-                        {/* {selectedDiamond?.name ?? "CHOOSE A DIAMOND"} */}
-                        {selectedDiamondStore?.fullTitle && dId
-                          ? selectedDiamondStore?.fullTitle?.length > 32
-                            ? selectedDiamondStore?.fullTitle?.slice(0, 32) + '..'
-                            : selectedDiamondStore?.fullTitle
-                          : 'CHOOSE A DIAMOND'}
-                      </Text>
-                      <Text
-                        size="textxl"
-                        as="p"
-                        className={`w-full hidden lg:block md:w-full ${
-                          selectedDiamondStore && dId ? '' : 'mt-2 md:mt-1'
-                        } tracking-[0.50px]  lg:text-[16px] md:text-[14px] sm:text-[12px] md:w-full ${state === 'd' ? '' : ''}`}
-                      >
-                        {/* {selectedDiamondStore?.fullTitle && dId
-                          ? selectedDiamondStore?.fullTitle?.length > 22
-                            ? selectedDiamondStore?.fullTitle?.slice(0, 22) + '..'
-                            : selectedDiamondStore?.fullTitle
-                          : 'CHOOSE A DIAMOND'} */}
-                        {selectedDiamondStore?.fullTitle && dId ? 'DIAMOND' : 'CHOOSE A DIAMOND'}
-                      </Text>
-                    </>
-
-                    {selectionRoute == 2 && !dId && (
-                      <span
-                        onClick={startWithDiamondsFn}
-                        className=" hover:text-primary cursor-pointer underline text-[14px] sm:text-[12px] capitalize"
-                      >
-                        start with Diamond
-                      </span>
-                    )}
-
-                    {selectedDiamondStore && dId && (
-                      <Text
-                        as="p"
-                        size="textlg"
-                        className={`!font-thin font-sans mt-1 mb-1 flex text-nowrap w-[75%] lg:text-[12px] sm:text-[10px] md:hidden ${state === 'd' ? '' : ''}`}
-                      >
-                        <span className="flex !w-[53%] text-nowrap overflow-hidden">
-                          {`${selectedDiamondStore?.carats} CARATS - ${selectedDiamondStore?.shape_code} `}
-                        </span>
-                        <span className="pl-1 !font-castoro">{` ${formatCurrency(selectedDiamondStore?.price)}`}</span>
-                      </Text>
-                    )}
-                  </div>
-                  <div
-                    className={`hidden sm:flex items-center h-full tracking-[1.0px]  ${selectedDiamondStore ? 'cursor-pointer' : ''}`}
-                    onClick={() => {
-                      if (selectionRoute == 1) {
-                        if (selectedDiamondStore !== null) {
-                          router.push(
-                            carryForwardFilterCrumb(
-                              `/custom-jewelry?type=${selectionRoute}&state=d${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
-                              searchParams,
-                            ),
-                          );
-                        }
+                    } else {
+                      if (selectedDiamondStore !== null) {
+                        router.push(
+                          carryForwardFilterCrumb(
+                            `/custom-jewelry?type=${selectionRoute}&state=d${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
+                            searchParams,
+                          ),
+                        );
                       } else {
-                        if (selectedDiamondStore !== null) {
-                          router.push(
-                            carryForwardFilterCrumb(
-                              `/custom-jewelry?type=${selectionRoute}&state=d${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
-                              searchParams,
-                            ),
-                          );
-                        } else {
-                          dispatch(setSelectedDiamondStore(null));
-                        }
+                        dispatch(setSelectedDiamondStore(null));
                       }
-                    }}
-                  >
-                    {/* <p className="text-[12px] capitalize">choose diamond</p> */}
-                    {/* {selectionRoute == 2 && !dId && ( */}
-
-                    {/* )} */}
-                    {selectedDiamondStore && dId ? (
-                      <p className={`text-[12px] ${state === 'd' ? '' : ''}`}>Diamond</p>
-                    ) : (
-                      <p
-                        onClick={() => {
+                    }
+                  }}
+                >
+                  {selectedDiamondStore && dId ? (
+                    <p className={mobileLabelClass(diamondCurrent)}>Diamond</p>
+                  ) : (
+                    <p
+                      onClick={() => {
+                        dispatch(setCustomShapes(null));
+                        dispatch(setCustomCarats(null));
+                        dispatch(setSelectedShapesData(null));
+                        dispatch(setSelectedCaratsData(null));
+                        dispatch(setSelectedSettingStore(null));
+                        setSelectionRoute(1);
+                        router.push(carryForwardFilterCrumb('/custom-jewelry?type=1&state=d', searchParams));
+                      }}
+                      className={`${mobileLabelClass(diamondCurrent)} cursor-pointer`}
+                    >
+                      Choose diamond
+                    </p>
+                  )}
+                </div>
+                {selectedDiamondStore && dId && (
+                  <div className="mt-2 flex sm:mt-0.5">
+                    <p
+                      className={changeLinkClass}
+                      onClick={() => {
+                        setActiveStep('diamond');
+                        if (selectionRoute === 2) {
+                          router.push(
+                            carryForwardFilterCrumb(`/custom-jewelry?type=${selectionRoute}&state=d${sId ? `&id=${sId}` : ''}`, searchParams),
+                          );
+                          setSelectedDiamond(null);
+                          dispatch(setSelectedDiamondStore(null));
+                        } else {
+                          router.push(carryForwardFilterCrumb('/custom-jewelry?type=1&state=d', searchParams));
+                          setSelectedDiamond(null);
+                          setSelectedSetting(null);
                           dispatch(setCustomShapes(null));
                           dispatch(setCustomCarats(null));
                           dispatch(setSelectedShapesData(null));
                           dispatch(setSelectedCaratsData(null));
+                          dispatch(setSelectedDiamondStore(null));
                           dispatch(setSelectedSettingStore(null));
-                          setSelectionRoute(1);
-                          router.push(carryForwardFilterCrumb('/custom-jewelry?type=1&state=d', searchParams));
-                        }}
-                        className={`cursor-pointer sm:text-[12px] capitalize ${selectionRoute == 2 && !dId ? '' : ''}`}
-                      >
-                        choose diamond
-                      </p>
-                    )}
+                        }
+                      }}
+                    >
+                      Change
+                    </p>
                   </div>
-                  {selectedDiamondStore && dId && (
-                    <div className="flex absolute sm:relative bottom-0 justify-end w-full sm:justify-start">
-                      <Text
-                        as="p"
-                        size="textmd"
-                        className="cursor-pointer uppercase underline tracking-[1.0px] sm:capitalize sm:!text-[12px]"
-                        onClick={() => {
-                          // dispatch(setSelectedShapesData(null));
-                          // dispatch(setSelectedCaratsData(null));
-                          setActiveStep('diamond');
-                          if (selectionRoute === 2) {
-                            router.push(
-                              carryForwardFilterCrumb(`/custom-jewelry?type=${selectionRoute}&state=d${sId ? `&id=${sId}` : ''}`, searchParams),
-                            );
-                            setSelectedDiamond(null);
-                            dispatch(setSelectedDiamondStore(null));
-                          } else {
-                            router.push(carryForwardFilterCrumb('/custom-jewelry?type=1&state=d', searchParams));
-                            setSelectedDiamond(null);
-                            setSelectedSetting(null);
-                            dispatch(setCustomShapes(null));
-                            dispatch(setCustomCarats(null));
-                            dispatch(setSelectedShapesData(null));
-                            dispatch(setSelectedCaratsData(null));
-                            dispatch(setSelectedDiamondStore(null));
-                            dispatch(setSelectedSettingStore(null));
-                          }
-                        }}
-                      >
-                        change
-                      </Text>
-                    </div>
-                  )}
-                </div>
-                <div className="absolute top-0 -right-3 z-[10] flex flex-col justify-center items-center h-full w-[10px]">
-                  <div className="bg-secondary w-[1px] h-1/2" style={{ transform: 'skew(20deg)' }}></div>
-                  <div className="bg-secondary w-[1px] h-1/2" style={{ transform: 'skew(-20deg)' }}></div>
-                </div>
+                )}
               </div>
             </div>
-            {/* Diamond selection ended here  */}
-            {/* Setting selection started here  */}
-            <div className="relative w-1/2 md:w-full">
-              <div
-                className={`flex px-5 h-full pl-10 pt-3 pb-3 lg:pr-1 lg:py-2 sm:pb-[10px] sm:pt-[8px] cursor-default items-start gap-[30px] md:gap-[15px] lg:gap-[15px] sm:gap-[10px] md:w-full sm:pl-5 sm:px-1 sm:flex sm:items-center ${
-                  state === 's' || sId ? 'bg-[#e7eae1] first-step z-[10]' : 'bg-white next-try'
-                }`}
+          </div>
+          {/* Diamond selection ended here  */}
+          {/* Setting selection started here  */}
+          <div className="relative w-1/2 border-r border-line md:w-full">
+            <div aria-current={settingCurrent ? 'step' : undefined} className={`${cellClass(settingCurrent)} cursor-default`}>
+              <span
+                className={dotClass(settingCurrent, settingDone)}
+                onClick={() => {
+                  if (selectionRoute == 2) {
+                    if (selectedSettingStore !== null) {
+                      router.push(
+                        carryForwardFilterCrumb(
+                          `/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
+                          searchParams,
+                        ),
+                      );
+                    }
+                  } else {
+                    if (selectedSettingStore !== null) {
+                      router.push(
+                        carryForwardFilterCrumb(
+                          `/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
+                          searchParams,
+                        ),
+                      );
+                    } else {
+                      dispatch(setSelectedSettingStore(null));
+                    }
+                  }
+                }}
               >
-                <Text
-                  as="p"
-                  size="textxl"
-                  className={`flex h-[40px] w-[40px] md:h-[30px] md:w-[30px] aspect-square items-center justify-center rounded-[24px] !bg-secondary !text-text_w text-center tracking-[2.40px]`}
+                {selectionRoute == 1 ? 2 : 1}
+              </span>
+              <div className="relative min-w-0 flex-1 sm:flex sm:flex-col">
+                <div
+                  className={`sm:hidden ${selectedSettingStore && sId ? 'cursor-pointer' : ''}`}
+                  onClick={() => {
+                    if (selectionRoute == 2) {
+                      if (selectedSettingStore !== null) {
+                        router.push(
+                          carryForwardFilterCrumb(
+                            `/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
+                            searchParams,
+                          ),
+                        );
+                      }
+                    } else {
+                      if (selectedSettingStore !== null && sId) {
+                        router.push(
+                          carryForwardFilterCrumb(
+                            `/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
+                            searchParams,
+                          ),
+                        );
+                      } else {
+                        dispatch(setSelectedSettingStore(null));
+                      }
+                    }
+                  }}
+                >
+                  <p className={titleClass(settingCurrent)}>{selectedSettingStore?.product_details?.title && sId ? 'SETTING' : 'CHOOSE SETTING'}</p>
+                  {selectionRoute == 1 && !sId && (
+                    <span onClick={startWithSettingsFn} className={startLinkClass}>
+                      Start with setting
+                    </span>
+                  )}
+                  {selectedSettingStore && sId && (
+                    <>
+                      <p className={`${summaryClass} lg:hidden`}>
+                        {selectedSettingSkuData && (
+                          <>
+                            <span className="truncate">
+                              {selectedSettingStore?.product_details?.title?.length > 20
+                                ? selectedSettingStore?.product_details?.title?.slice(0, 20) + '..'
+                                : selectedSettingStore?.product_details?.title}
+                            </span>
+                            <span className="tabular-nums text-ink">
+                              {formatCurrency(
+                                selectedSettingSkuData?.discounted_price
+                                  ? selectedSettingSkuData?.discounted_price + selectedSettingRingPrice
+                                  : selectedSettingSkuData?.selling_price + selectedSettingRingPrice,
+                              )}
+                            </span>
+                          </>
+                        )}
+                      </p>
+                      <p className={`${summaryClass} hidden lg:flex md:hidden`}>
+                        {selectedSettingSkuData && (
+                          <>
+                            <span className="truncate">
+                              {selectedSettingStore?.product_details?.title?.length > 15
+                                ? selectedSettingStore?.product_details?.title?.slice(0, 15) + '..'
+                                : selectedSettingStore?.product_details?.title}
+                            </span>
+                            <span className="tabular-nums text-ink">
+                              {formatCurrency(
+                                selectedSettingSkuData?.discounted_price
+                                  ? selectedSettingSkuData?.discounted_price + selectedSettingRingPrice
+                                  : selectedSettingSkuData?.selling_price + selectedSettingRingPrice,
+                              )}
+                            </span>
+                          </>
+                        )}
+                      </p>
+                    </>
+                  )}
+                </div>
+                <div
+                  className={`hidden h-full items-center sm:flex ${selectedSettingStore ? 'cursor-pointer' : ''}`}
                   onClick={() => {
                     if (selectionRoute == 2) {
                       if (selectedSettingStore !== null) {
@@ -397,221 +467,85 @@ export default function ShowStepper({
                     }
                   }}
                 >
-                  {selectionRoute == 1 ? 2 : 1}
-                </Text>
-                <div className="w-full sm:flex sm:flex-col relative md:h-full">
-                  <div
-                    className={`sm:hidden ${selectedSettingStore && sId ? 'cursor-pointer' : ''} `}
-                    onClick={() => {
-                      if (selectionRoute == 2) {
-                        if (selectedSettingStore !== null) {
-                          router.push(
-                            carryForwardFilterCrumb(
-                              `/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
-                              searchParams,
-                            ),
-                          );
-                        }
-                      } else {
-                        if (selectedSettingStore !== null && sId) {
-                          router.push(
-                            carryForwardFilterCrumb(
-                              `/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
-                              searchParams,
-                            ),
-                          );
-                        } else {
-                          dispatch(setSelectedSettingStore(null));
-                        }
-                      }
-                    }}
-                  >
-                    <Text
-                      size="textxl"
-                      as="p"
-                      className={`w-full md:w-full lg:w-[calc(100%-50px)] ${
-                        selectedSettingStore && sId ? '' : 'mt-2 md:mt-1'
-                      } tracking-[1.20px] lg:text-[16px] md:text-[14px] sm:text-[12px]`}
+                  {selectedSettingStore && sId ? (
+                    <p className={mobileLabelClass(settingCurrent)}>Setting</p>
+                  ) : (
+                    <p
+                      onClick={() => {
+                        router.push(carryForwardFilterCrumb('/custom-jewelry?type=2&state=s', searchParams));
+                        dispatch(setSelectedDiamondStore(null));
+                        dispatch(setSelectedShapesData(null));
+                        dispatch(setSelectedCaratsData(null));
+                        setSelectionRoute(2);
+                      }}
+                      className={`${mobileLabelClass(settingCurrent)} cursor-pointer`}
                     >
-                      {selectedSettingStore?.product_details?.title && sId ? 'SETTING' : 'CHOOSE SETTING'}
-                    </Text>
-                    {selectionRoute == 1 && !sId && (
-                      <span
-                        onClick={startWithSettingsFn}
-                        // className="sm:opacity-30 underline text-[14px] sm:text-[12px] capitalize"
-                        className=" hover:text-primary z-1 cursor-pointer underline text-[14px] sm:text-[12px] capitalize"
-                      >
-                        start with Setting
-                      </span>
-                    )}
-                    {selectedSettingStore && sId && (
-                      <>
-                        <Text
-                          as="p"
-                          size="textlg"
-                          className={`lg:hidden flex !font-thin font-sans text-nowrap w-[75%] mt-1 mb-1 md:text-[12px] sm:text-[10px]`}
-                        >
-                          {selectedSettingSkuData && (
-                            <>
-                              <span className="flex !w-[53%] text-nowrap overflow-hidden">
-                                {selectedSettingStore?.product_details?.title?.length > 20
-                                  ? selectedSettingStore?.product_details?.title?.slice(0, 20) + '..'
-                                  : selectedSettingStore?.product_details?.title}
-                              </span>{' '}
-                              <span className="pl-1 !font-castoro">
-                                {formatCurrency(
-                                  selectedSettingSkuData?.discounted_price
-                                    ? selectedSettingSkuData?.discounted_price + selectedSettingRingPrice
-                                    : selectedSettingSkuData?.selling_price + selectedSettingRingPrice,
-                                )}
-                              </span>
-                            </>
-                          )}
-                        </Text>
-                        <Text
-                          as="p"
-                          size="textlg"
-                          className={`!font-castoro hidden lg:block !font-thin mt-1 mb-1 md:text-[12px] sm:text-[10px] md:hidden `}
-                        >
-                          {selectedSettingSkuData && (
-                            <>
-                              {selectedSettingStore?.product_details?.title?.length > 15
-                                ? selectedSettingStore?.product_details?.title?.slice(0, 15) + '..'
-                                : selectedSettingStore?.product_details?.title}{' '}
-                              -{' '}
-                              {formatCurrency(
-                                selectedSettingSkuData?.discounted_price
-                                  ? selectedSettingSkuData?.discounted_price + selectedSettingRingPrice
-                                  : selectedSettingSkuData?.selling_price + selectedSettingRingPrice,
-                              )}
-                            </>
-                          )}
-                        </Text>
-                      </>
-                    )}
-                  </div>
-                  <div
-                    className={`hidden sm:flex items-center h-full ${selectedSettingStore ? 'cursor-pointer' : ''}`}
-                    onClick={() => {
-                      if (selectionRoute == 2) {
-                        if (selectedSettingStore !== null) {
-                          router.push(
-                            carryForwardFilterCrumb(
-                              `/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
-                              searchParams,
-                            ),
-                          );
-                        }
-                      } else {
-                        if (selectedSettingStore !== null) {
-                          router.push(
-                            carryForwardFilterCrumb(
-                              `/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
-                              searchParams,
-                            ),
-                          );
-                        } else {
-                          dispatch(setSelectedSettingStore(null));
-                        }
-                      }
-                    }}
-                  >
-                    {selectedSettingStore && sId ? (
-                      <p className={`text-[12px] tracking-[1.0px]`}>Setting</p>
-                    ) : (
-                      <p
-                        onClick={() => {
-                          router.push(carryForwardFilterCrumb('/custom-jewelry?type=2&state=s', searchParams));
-                          dispatch(setSelectedDiamondStore(null));
-                          dispatch(setSelectedShapesData(null));
-                          dispatch(setSelectedCaratsData(null));
-                          setSelectionRoute(2);
-                        }}
-                        className={`cursor-pointer sm:text-[12px] tracking-[1.0px] capitalize ${selectionRoute == 1 && !sId ? '' : ''}`}
-                      >
-                        choose setting
-                      </p>
-                    )}
-                  </div>
-                  {selectedSettingStore && sId && (
-                    <div className={`flex absolute sm:relative bottom-0 justify-end w-full  sm:justify-start`}>
-                      <Text
-                        as="p"
-                        size="textmd"
-                        className="cursor-pointer uppercase underline tracking-[1.0px] sm:capitalize sm:!text-[12px]"
-                        onClick={() => {
-                          setActiveStep('setting');
-                          if (selectionRoute === 1) {
-                            dispatch(setSelectedProductsDetails(null));
-                            dispatch(setSelectedSettingStore(null));
-                            router.push(
-                              carryForwardFilterCrumb(`/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}`, searchParams),
-                            );
-                            setSelectedSetting(null);
-                          } else {
-                            dispatch(setSelectedShapesData(null));
-                            dispatch(setSelectedCaratsData(null));
-                            dispatch(setSelectedProductsDetails(null));
-                            dispatch(setSelectedSettingStore(null));
-                            router.push(carryForwardFilterCrumb('/custom-jewelry?type=2&state=s', searchParams));
-                            setSelectedDiamond(null);
-                            setSelectedSetting(null);
-                            dispatch(setSelectedDiamondStore(null));
-                            dispatch(clearSelectedDiamondFilters());
-                            dispatch(setDiamondPageNumber(1));
-                            dispatch(setIsSelectedDiamondFilter(false));
-                          }
-                        }}
-                      >
-                        change
-                      </Text>
-                    </div>
+                      Choose setting
+                    </p>
                   )}
                 </div>
-                <div className="absolute top-0 -right-3 z-[10] flex flex-col justify-center items-center h-full w-[10px]">
-                  <div className="bg-secondary w-[1px] h-1/2" style={{ transform: 'skew(20deg)' }}></div>
-                  <div className="bg-secondary w-[1px] h-1/2" style={{ transform: 'skew(-20deg)' }}></div>
-                </div>
+                {selectedSettingStore && sId && (
+                  <div className="mt-2 flex sm:mt-0.5">
+                    <p
+                      className={changeLinkClass}
+                      onClick={() => {
+                        setActiveStep('setting');
+                        if (selectionRoute === 1) {
+                          dispatch(setSelectedProductsDetails(null));
+                          dispatch(setSelectedSettingStore(null));
+                          router.push(
+                            carryForwardFilterCrumb(`/custom-jewelry?type=${selectionRoute}&state=s${dId ? `&did=${dId}` : ''}`, searchParams),
+                          );
+                          setSelectedSetting(null);
+                        } else {
+                          dispatch(setSelectedShapesData(null));
+                          dispatch(setSelectedCaratsData(null));
+                          dispatch(setSelectedProductsDetails(null));
+                          dispatch(setSelectedSettingStore(null));
+                          router.push(carryForwardFilterCrumb('/custom-jewelry?type=2&state=s', searchParams));
+                          setSelectedDiamond(null);
+                          setSelectedSetting(null);
+                          dispatch(setSelectedDiamondStore(null));
+                          dispatch(clearSelectedDiamondFilters());
+                          dispatch(setDiamondPageNumber(1));
+                          dispatch(setIsSelectedDiamondFilter(false));
+                        }
+                      }}
+                    >
+                      Change
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-            {/* Setting selection ended here  */}
           </div>
-          {/* complete selection started here  */}
-          <div className={`relative w-1/3`}>
-            <div
-              className={`flex w-full h-full sm:pl-5 lg:pr-1 pl-10 px-3 pt-3 pb-3 lg:py-2 sm:pb-[10px] sm:pt-[8px] gap-[30px] md:gap-[20px] sm:gap-[10px] lg:gap-[15px] sm:px-3 sm:flex sm:items-center ${
-                selectedDiamondStore && selectedSettingStore ? 'cursor-pointer' : ''
-              } ${state === 'c' ? 'cursor-pointer last-step bg-[#e7eae1]' : 'cursor-default select-none bg-white z-0'}`}
-              onClick={() => {
-                selectedDiamondStore &&
-                  selectedSettingStore &&
-                  router.push(
-                    carryForwardFilterCrumb(
-                      `/custom-jewelry?type=${selectionRoute}&state=c${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
-                      searchParams,
-                    ),
-                  );
-              }}
-            >
-              <Text
-                as="p"
-                size="textxl"
-                className="flex h-[40px] md:h-[30px] md:w-[30px] aspect-square w-[40px] items-center justify-center rounded-[24px] !bg-secondary !text-text_w text-center tracking-[2.40px]"
-              >
-                3
-              </Text>
-              <Text
-                size="textxl"
-                as="p"
-                className={`w-full sm:text-center uppercase sm:capitalize sm:w-full lg:w-[calc(100%-50px)] my-2 md:my-1 tracking-[1.20px] md:text-[14px] sm:text-[12px]`}
-              >
-                <>complete selection</>
-              </Text>
-            </div>
-          </div>
-          {/* complete selection ended here  */}
+          {/* Setting selection ended here  */}
         </div>
-      </div>
+        {/* complete selection started here  */}
+        <div className="relative w-1/3">
+          <div
+            aria-current={completeCurrent ? 'step' : undefined}
+            className={`${cellClass(completeCurrent)} ${
+              (selectedDiamondStore && selectedSettingStore) || completeCurrent ? 'cursor-pointer' : 'cursor-default select-none'
+            }`}
+            onClick={() => {
+              selectedDiamondStore &&
+                selectedSettingStore &&
+                router.push(
+                  carryForwardFilterCrumb(
+                    `/custom-jewelry?type=${selectionRoute}&state=c${dId ? `&did=${dId}` : ''}${sId ? `&id=${sId}` : ''}`,
+                    searchParams,
+                  ),
+                );
+            }}
+          >
+            <span className={dotClass(completeCurrent, false)}>3</span>
+            <p className={`${titleClass(completeCurrent)} sm:hidden`}>Complete selection</p>
+            <p className={`${mobileLabelClass(completeCurrent)} hidden sm:block`}>Complete</p>
+          </div>
+        </div>
+        {/* complete selection ended here  */}
+      </nav>
     </div>
   );
 }

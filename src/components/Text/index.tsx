@@ -29,7 +29,7 @@ const Text: React.FC<React.PropsWithChildren<TextProps>> = ({ children, classNam
   const Component = as || 'p';
 
   return (
-    <Component className={`text-[#000000] ${className} ${sizes[size]}`} {...restProps}>
+    <Component className={`text-[#111111] ${className} ${sizes[size]}`} {...restProps}>
       {children}
     </Component>
   );

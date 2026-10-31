@@ -512,7 +512,7 @@ export default function ThankYouSection() {
                       {groupPriceNew?.map((category: any, index: number) => (
                         <div
                           key={`price_${index}`}
-                          className={`flex flex-col gap-1 border-b border-gray-400 last:border-0 pb-2 sm:pb-2 ${category?.diamondData ? '' : ''}`}
+                          className={`flex flex-col gap-1 border-b border-line last:border-0 pb-2 sm:pb-2 ${category?.diamondData ? '' : ''}`}
                         >
                           <div className="grid grid-cols-3 md:grid md:grid-cols-3 justify-between gap-5 md:gap-2 sm:gap-3">
                             <div className="col-span-2 flex items-center gap-2">
@@ -640,7 +640,7 @@ export default function ThankYouSection() {
                       ))}
 
                       {orderDetails?.gst_percentage > 0 && (
-                        <div className="flex flex-wrap  border-gray-400  justify-between gap-5">
+                        <div className="flex flex-wrap  border-line  justify-between gap-5">
                           <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px] md:text-[16px] sm:!text-[13px]">
                             Tax
                           </Text>
@@ -649,7 +649,7 @@ export default function ThankYouSection() {
                           </Text>
                         </div>
                       )}
-                      <div className="flex flex-wrap  border-gray-400  justify-between gap-5">
+                      <div className="flex flex-wrap  border-line  justify-between gap-5">
                         <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px] md:text-[16px] sm:!text-[13px]">
                           Shipping Charge
                         </Text>
@@ -658,7 +658,7 @@ export default function ThankYouSection() {
                         </Text>
                       </div>
                       {orderDetails?.total_coupon_price && (
-                        <div className="flex flex-wrap border-t border-gray-400  pt-5 justify-between gap-5">
+                        <div className="flex flex-wrap border-t border-line  pt-5 justify-between gap-5">
                           <Text as="p" size="textlg" className="font-normal tracking-[0.20px] text-ink lg:text-[17px] md:text-[16px] sm:!text-[13px]">
                             Applied Promocode
                           </Text>

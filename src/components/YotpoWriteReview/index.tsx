@@ -49,10 +49,9 @@ const YotpoWriteReview = ({
   className = '',
   style,
   label = 'Write A Review',
-  // Matches Yotpo's own "Write A Review" button on the PDP reviews widget
-  // (`.yotpo-new-review-btn`, measured: 145x37, 14px/600, 0 12px padding,
-  // 100px radius, #17381D) so the two read as the same control.
-  buttonClassName = 'inline-flex h-[37px] items-center justify-center whitespace-nowrap rounded-full bg-[#17381D] px-3 text-[14px] font-semibold text-white transition-colors hover:bg-[#1f4a28] sm:h-[32px] sm:px-2.5 sm:text-[12px]',
+  // Square ink button from the design system; Yotpo's own "Write A Review"
+  // button on the PDP is restyled to match in the `Dazzbliss: Yotpo` CSS block.
+  buttonClassName = 'inline-flex h-[42px] items-center justify-center whitespace-nowrap bg-ink px-5 font-libre text-[11px] font-medium uppercase tracking-[0.18em] text-paper transition-colors hover:bg-ink-hover sm:h-[36px] sm:px-3.5 sm:text-[10px]',
 }: YotpoWriteReviewProps) => {
   const hostRef = useRef<HTMLDivElement>(null);
   // The hidden widget is only added to the DOM once the customer asks for it.
@@ -164,7 +163,7 @@ const YotpoWriteReview = ({
         {isOpening ? 'Opening…' : label}
       </button>
       {failed && (
-        <p className="mt-2 text-[14px] text-[#b3261e]" role="alert">
+        <p className="m-0 mt-2 text-[12px] text-danger" role="alert">
           We couldn’t open the review form. Please refresh the page and try again.
         </p>
       )}

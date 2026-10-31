@@ -35,7 +35,7 @@ const CheckBox = forwardRef<HTMLInputElement, CheckboxProps>(
       <>
         <div className={className + ' flex items-start gap-[5px] cursor-pointer'}>
           <input
-            className={`!text-secondary ${(size && sizes[size]) || ''} ${(variant && variants[variant]) || ''}`}
+            className={`cursor-pointer rounded-none border-line-strong !text-ink focus:ring-1 focus:ring-ink focus:ring-offset-1 ${(size && sizes[size]) || ''} ${(variant && variants[variant]) || ''}`}
             ref={ref}
             type="checkbox"
             name={name}

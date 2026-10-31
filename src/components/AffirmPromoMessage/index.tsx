@@ -138,7 +138,7 @@ export default function AffirmPromoMessage({ amountInCents, pageType = 'cart', c
     <p
       key={amountInCents}
       ref={affirmMessageRef}
-      className={`affirm-as-low-as affirm-promo-message ${className}`}
+      className={`affirm-as-low-as affirm-promo-message font-libre text-ink-soft [&_a]:text-ink [&_a]:underline-offset-[3px] ${className}`}
       data-page-type={pageType}
       data-amount={amountInCents}
     />

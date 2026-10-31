@@ -14,9 +14,9 @@ const STAR_PATH_D = 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8
 
 function StarRow({ size }: { size: number }) {
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex items-center gap-0.5 text-ink">
       {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} viewBox="0 0 24 24" width={size} height={size} fill="#f4b740">
+        <svg key={i} viewBox="0 0 24 24" width={size} height={size} fill="currentColor">
           <path d={STAR_PATH_D} />
         </svg>
       ))}
@@ -93,15 +93,15 @@ const ReviewRatingStrip = ({ className = '' }: Props) => {
       </div>
       {reviewCount ? (
         <div className={`flex w-full items-center gap-4 sm:gap-2.5 ${className}`}>
-          <div className="h-px flex-1 bg-[#e5e5e5]" />
-          <div className="flex shrink-0 items-center gap-2 sm:gap-1.5">
-            <StarRow size={14} />
-            <span className="font-sans text-[14px] font-normal leading-none tracking-[0.02em] text-[#3d3d3d] sm:text-[12px]">
+          <div className="h-px flex-1 bg-line" />
+          <div className="flex shrink-0 items-center gap-2.5 sm:gap-1.5">
+            <StarRow size={13} />
+            <span className="font-libre text-[12.5px] font-normal leading-none text-ink-soft tabular-nums sm:text-[11.5px]">
               {score ? `Rated ${score}/5 | ` : ''}
               {reviewCount} Certified Reviews
             </span>
           </div>
-          <div className="h-px flex-1 bg-[#e5e5e5]" />
+          <div className="h-px flex-1 bg-line" />
         </div>
       ) : null}
     </>

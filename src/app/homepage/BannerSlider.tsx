@@ -220,7 +220,7 @@ export default function BannerSwiper({ bannerData }: any) {
           {showNavigation && (
             <>
               <button
-                className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center hover:bg-white transition-colors"
+                className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-none border border-line bg-paper/90 text-ink transition-colors hover:bg-paper"
                 onClick={() => desktopSwiperRef.current?.swiper.slidePrev()}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -228,7 +228,7 @@ export default function BannerSwiper({ bannerData }: any) {
                 </svg>
               </button>
               <button
-                className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center hover:bg-white transition-colors"
+                className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-none border border-line bg-paper/90 text-ink transition-colors hover:bg-paper"
                 onClick={() => desktopSwiperRef.current?.swiper.slideNext()}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,7 +316,7 @@ export default function BannerSwiper({ bannerData }: any) {
           {showNavigation && (
             <>
               <button
-                className="swiper-button-prev-mobile absolute left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center hover:bg-white transition-colors"
+                className="swiper-button-prev-mobile absolute left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-none border border-line bg-paper/90 text-ink transition-colors hover:bg-paper"
                 onClick={() => mobileSwiperRef.current?.swiper.slidePrev()}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -325,7 +325,7 @@ export default function BannerSwiper({ bannerData }: any) {
               </button>
 
               <button
-                className="swiper-button-next-mobile absolute right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center hover:bg-white transition-colors"
+                className="swiper-button-next-mobile absolute right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-none border border-line bg-paper/90 text-ink transition-colors hover:bg-paper"
                 onClick={() => mobileSwiperRef.current?.swiper.slideNext()}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -8,7 +8,20 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button, Checkbox, Drawer, Image, InputNumber, Radio, RadioChangeEvent, Select, Skeleton, Slider, SliderSingleProps } from 'antd';
+import {
+  Button,
+  Checkbox,
+  ConfigProvider,
+  Drawer,
+  Image,
+  InputNumber,
+  Radio,
+  RadioChangeEvent,
+  Select,
+  Skeleton,
+  Slider,
+  SliderSingleProps,
+} from 'antd';
 import { debounce } from 'lodash';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -54,6 +67,7 @@ import { isObjectEmpty } from '@/utils/objectUtils';
 import { findSubTypesByParam, subTypeCodeToParam } from '@/utils/subTypeParam';
 
 import ChunkComponent from './ChunkComponent';
+import { plpTheme } from '../[jewelryType]/FilterDrawer';
 
 const dropDownOptions = [
   { label: <div className="flex justify-end items-center pr-[10px]">{'Sort By'}</div>, value: '' },
@@ -1184,7 +1198,7 @@ export default function DesignYourRingStackPage() {
       <div
         ref={setNodeRef}
         style={style}
-        className={`${isDragging ? 'bg-primary/10' : 'bg-white'} w-full flex items-center py-2 px-5 gap-5 border-b`}
+        className={`${isDragging ? 'bg-stone' : 'bg-paper'} w-full flex items-center py-2 px-5 gap-5 border-b border-line`}
       >
         <span
           style={{ cursor: 'pointer' }}
@@ -1214,30 +1228,24 @@ export default function DesignYourRingStackPage() {
           />
         </span>
         <div style={{ flex: 1 }}>
-          <Text
-            size="textmd"
-            className="text-[14px] font-extralight tracking-[1px] line-clamp-2 xl:text-[13px] lg:text-[12px] text-wrap px-0.5 lg:px-0.5"
-          >
+          <Text size="textmd" className="text-[14px] text-ink line-clamp-2 xl:text-[13px] lg:text-[12px] text-wrap px-0.5 lg:px-0.5">
             {/* {product.productFullTitle} */}
             {product.productName}
           </Text>
-          <Text
-            size="texts"
-            className="text-[12px] mt-1 text-gray-500 font-extralight tracking-[1px] line-clamp-2 xl:text-[13px] lg:text-[12px] text-wrap px-0.5 lg:px-0.5"
-          >
+          <Text size="texts" className="text-[12px] mt-1 text-ink-soft line-clamp-2 xl:text-[13px] lg:text-[12px] text-wrap px-0.5 lg:px-0.5">
             {masterData?.find((el: any) => el.id === product.metal_type_id)?.name}{' '}
             {masterData?.find((el: any) => el.id === product.metal_color_id)?.name}
           </Text>
           <div className="flex h-fit mt-1 items-center gap-2 sm:gap-1">
             {product?.discount_value && (
-              <Text size="textlg" as="p" className="!font-castoro tracking-[0.44px] sm:text-[13px]">
+              <Text size="textlg" as="p" className="!font-libre tracking-[0.44px] sm:text-[13px]">
                 {formatCurrency(discountedPrice)}
               </Text>
             )}
             <Text
               size="textlg"
               as="p"
-              className={`!font-castoro ${product?.discount_value ? 'line-through text-gray-400 !text-[13px] sm:!text-[11px]' : ''}`}
+              className={`!font-libre ${product?.discount_value ? 'line-through text-ink-faint !text-[13px] sm:!text-[11px]' : ''}`}
             >
               {formatCurrency(actualPrice)}
             </Text>
@@ -1285,166 +1293,1279 @@ export default function DesignYourRingStackPage() {
   }, []);
 
   return (
-    <div ref={sectionRef} className="w-full bg-[#ffffff]">
-      <div className={`flex justify-center border-b border-solid border-[#3b3b3b] md:hidden`}>
-        <div
-          className={`container-xs relative ${collectionType ? 'pb-5' : 'pb-14'} lg:pb-10 md:pb-5 mb-[22px] flex flex-col items-start justify-center lg:gap-5 md:gap-3  gap-8`}
-        >
+    <ConfigProvider theme={plpTheme}>
+      <div ref={sectionRef} className="w-full bg-paper font-libre text-ink antialiased">
+        <div className={`flex justify-center border-b border-line md:hidden`}>
           <div
-            className={`sm:hidden ${collectionType ? 'pt-5' : 'pt-6'} lg:pt-8 md:pt-5 top-0  flex flex-col items-start gap-[30px] w-[100%] 2xl:px-[50px] xl:px-[50px] lg:px-[30px] md:px-5 sm:px-5 lg:gap-[30px]`}
+            className={`mx-auto w-full max-w-[1440px] relative ${collectionType ? 'pb-5' : 'pb-14'} lg:pb-10 md:pb-5 mb-[22px] flex flex-col items-start justify-center lg:gap-5 md:gap-3  gap-8`}
           >
-            <div className="min-h-[280px] w-full bg-[#f9f9f9] flex justify-center mt-5">
-              {productStack?.length == 0 ? (
-                <div className="w-1/2 flex items-center justify-center h-full gap-5">
-                  <div className="flex flex-col items-center justify-center gap-3 w-2/3">
-                    <Text size="text5xl" as="p" className="uppercase flex items-end justify-center">
-                      Design Your Ring Stack
-                    </Text>
-                    <Text size="textxl" as="p" className="text-center flex items-end justify-center">
-                      Design your own stack of lab-grown diamond rings. Layer up to 4 styles of your choice!
-                    </Text>
+            <div
+              className={`sm:hidden ${collectionType ? 'pt-5' : 'pt-6'} lg:pt-8 md:pt-5 top-0  flex flex-col items-start gap-[30px] w-[100%] 2xl:px-[50px] xl:px-[50px] lg:px-[30px] md:px-5 sm:px-5 lg:gap-[30px]`}
+            >
+              <div className="min-h-[280px] w-full bg-stone flex justify-center mt-5">
+                {productStack?.length == 0 ? (
+                  <div className="w-1/2 flex items-center justify-center h-full gap-5">
+                    <div className="flex flex-col items-center justify-center gap-3 w-2/3">
+                      <h1 className="m-0 text-center font-cormorant text-[clamp(32px,3.6vw,48px)] font-medium leading-none text-ink">
+                        Design your <em className="text-gilt">ring stack</em>
+                      </h1>
+                      <Text size="textxl" as="p" className="!text-[15px] !leading-[1.65] text-center text-ink-soft">
+                        Design your own stack of lab-grown diamond rings. Layer up to 4 styles of your choice!
+                      </Text>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="w-full flex items-center justify-center h-full overflow-hidden">
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
-                    modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
-                  >
-                    <SortableContext items={productStack.map((p) => p.stackId)} strategy={verticalListSortingStrategy}>
-                      <div className="w-1/2 relative flex justify-center h-full">
-                        <div className="flex flex-col items-center justify-center border w-full h-full">
-                          <div className="flex flex-col items-center w-full">
-                            {productStack.map((product) => (
-                              <SortableImage key={product.stackId} product={product} />
-                            ))}
-                          </div>
+                ) : (
+                  <div className="w-full flex items-center justify-center h-full overflow-hidden">
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                      modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+                    >
+                      <SortableContext items={productStack.map((p) => p.stackId)} strategy={verticalListSortingStrategy}>
+                        <div className="w-1/2 relative flex justify-center h-full">
+                          <div className="flex flex-col items-center justify-center border w-full h-full">
+                            <div className="flex flex-col items-center w-full">
+                              {productStack.map((product) => (
+                                <SortableImage key={product.stackId} product={product} />
+                              ))}
+                            </div>
 
-                          <div className="pointer-events-auto absolute right-6 top-6 z-30 sm:right-1">
-                            <button
-                              type="button"
-                              aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-                              className="flex min-h-[44px] min-w-[44px] cursor-pointer touch-manipulation items-center justify-center rounded-sm border-0 bg-transparent p-0 text-primary [-webkit-tap-highlight-color:transparent]"
-                              onPointerDown={(e) => e.stopPropagation()}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                void handleAddtoWishlist();
-                              }}
-                            >
-                              {isInWishlist ? (
-                                <FaHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
-                              ) : (
-                                <FaRegHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
-                              )}
-                            </button>
+                            <div className="pointer-events-auto absolute right-6 top-6 z-30 sm:right-1">
+                              <button
+                                type="button"
+                                aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                                className="flex min-h-[44px] min-w-[44px] cursor-pointer touch-manipulation items-center justify-center rounded-none border-0 bg-transparent p-0 text-ink [-webkit-tap-highlight-color:transparent]"
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  void handleAddtoWishlist();
+                                }}
+                              >
+                                {isInWishlist ? (
+                                  <FaHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
+                                ) : (
+                                  <FaRegHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
+                                )}
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </SortableContext>
-                  </DndContext>
+                      </SortableContext>
+                    </DndContext>
 
-                  <div className="w-1/2 px-5 flex flex-col h-full items-center bg-white overflow-hidden">
-                    <div className="w-full flex flex-col items-center justify-between mb-5">
-                      <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={handleDragEnd}
-                        modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
-                      >
-                        <SortableContext items={productStack?.map((item) => item.stackId)} strategy={verticalListSortingStrategy}>
-                          {productStack?.map((product) => (
-                            <SortableItem key={product.stackId} product={product} selectedRing={selectedRing} />
-                          ))}
-                        </SortableContext>
-                        <div className="min-h-16 w-full mt-5 flex justify-between lg:flex-col lg:gap-3">
-                          <div className="flex flex-col lg:flex-row items-start gap-[10px] self-stretch relative">
-                            <div className="flex items-center justify-between gap-5 self-stretch">
-                              <Text size="textmd" className="!font-light !font-sans">
-                                RING SIZE
-                              </Text>
-                            </div>
-
-                            <div className="w-full lg:w-fit">
-                              <div className="flex gap-[10px] self-stretch">
-                                <Select
-                                  // showSearch
-                                  className={`!w-[150px] ${errorMessage ? '!outline outline-[0.6px] !outline-red-500' : ''}`}
-                                  placeholder="Select a Ring Size"
-                                  defaultValue={ringSizeMaster?.[0]?.value}
-                                  value={selectedRing}
-                                  onChange={(value: number | string) => {
-                                    setSelectedRing(value);
-                                  }}
-                                  options={ringSizeMaster}
-                                />
+                    <div className="w-1/2 px-5 flex flex-col h-full items-center bg-white overflow-hidden">
+                      <div className="w-full flex flex-col items-center justify-between mb-5">
+                        <DndContext
+                          sensors={sensors}
+                          collisionDetection={closestCenter}
+                          onDragEnd={handleDragEnd}
+                          modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+                        >
+                          <SortableContext items={productStack?.map((item) => item.stackId)} strategy={verticalListSortingStrategy}>
+                            {productStack?.map((product) => (
+                              <SortableItem key={product.stackId} product={product} selectedRing={selectedRing} />
+                            ))}
+                          </SortableContext>
+                          <div className="min-h-16 w-full mt-5 flex justify-between lg:flex-col lg:gap-3">
+                            <div className="flex flex-col lg:flex-row items-start gap-[10px] self-stretch relative">
+                              <div className="flex items-center justify-between gap-5 self-stretch">
+                                <Text size="textmd" className="!text-[10.5px] uppercase tracking-[0.16em] text-ink-soft">
+                                  RING SIZE
+                                </Text>
                               </div>
-                              {errorMessage && (
-                                <div className="relative">
-                                  <Text className="!text-[10px] text-nowrap absolute" style={{ color: 'red', marginTop: '8px' }}>
-                                    {errorMessage}
-                                  </Text>
+
+                              <div className="w-full lg:w-fit">
+                                <div className="flex gap-[10px] self-stretch">
+                                  <Select
+                                    // showSearch
+                                    className={`!w-[150px] ${errorMessage ? '!outline outline-[0.6px] !outline-red-500' : ''}`}
+                                    placeholder="Select a Ring Size"
+                                    defaultValue={ringSizeMaster?.[0]?.value}
+                                    value={selectedRing}
+                                    onChange={(value: number | string) => {
+                                      setSelectedRing(value);
+                                    }}
+                                    options={ringSizeMaster}
+                                  />
                                 </div>
-                              )}
+                                {errorMessage && (
+                                  <div className="relative">
+                                    <Text className="!text-[10px] text-nowrap absolute" style={{ color: 'red', marginTop: '8px' }}>
+                                      {errorMessage}
+                                    </Text>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <div className="h-full w-2/3 lg:w-full flex justify-end items-center lg:justify-between px-3 lg:px-0 gap-5">
-                            <div className="flex mt-2 items-center gap-2 sm:gap-1">
-                              Total Price:
-                              {productStack?.some((prod) => prod?.discount_value) && (
-                                <Text size="textlg" as="p" className="!font-castoro tracking-[0.44px] lg:!text-[18px]">
+                            <div className="h-full w-2/3 lg:w-full flex justify-end items-center lg:justify-between px-3 lg:px-0 gap-5">
+                              <div className="flex mt-2 items-center gap-2 sm:gap-1">
+                                Total Price:
+                                {productStack?.some((prod) => prod?.discount_value) && (
+                                  <Text size="textlg" as="p" className="!font-libre tracking-[0.44px] lg:!text-[18px]">
+                                    {formatCurrency(
+                                      productStack?.reduce((accumulator, currentValue: any) => {
+                                        const selectedRingId = ringSizeMasterData?.find((el: any) => el?.name == selectedRing)?.id;
+                                        const ringPrice = getPriceViaRingAndMetal(selectedRingId, currentValue?.metal_type_id);
+                                        return (
+                                          accumulator +
+                                          ringPrice +
+                                          (currentValue?.discounted_price ? +currentValue?.discounted_price : +currentValue?.productPrice)
+                                        );
+                                      }, 0),
+                                    )}
+                                  </Text>
+                                )}
+                                <Text
+                                  size="textlg"
+                                  as="p"
+                                  className={`!font-libre ${productStack?.some((prod) => prod?.discount_value) ? 'line-through text-ink-faint !text-[13px] lg:!text-[14px]' : ''}`}
+                                >
                                   {formatCurrency(
                                     productStack?.reduce((accumulator, currentValue: any) => {
                                       const selectedRingId = ringSizeMasterData?.find((el: any) => el?.name == selectedRing)?.id;
                                       const ringPrice = getPriceViaRingAndMetal(selectedRingId, currentValue?.metal_type_id);
-                                      return (
-                                        accumulator +
-                                        ringPrice +
-                                        (currentValue?.discounted_price ? +currentValue?.discounted_price : +currentValue?.productPrice)
-                                      );
+                                      return accumulator + +currentValue?.productPrice + ringPrice;
                                     }, 0),
                                   )}
                                 </Text>
-                              )}
-                              <Text
-                                size="textlg"
-                                as="p"
-                                className={`!font-castoro ${productStack?.some((prod) => prod?.discount_value) ? 'line-through text-gray-400 !text-[13px] lg:!text-[14px]' : ''}`}
+                              </div>
+                              <Button
+                                type="default"
+                                className="w-1/3 lg:w-2/5 !h-11 !rounded-none !border-0 !bg-ink !px-6 !text-[11.5px] !font-medium uppercase !tracking-[0.2em] !text-paper hover:!bg-ink-hover disabled:!bg-ink/40 disabled:!text-paper mt-1"
+                                loading={loading}
+                                onClick={handleAddtocart}
+                                disabled={count < 1}
                               >
-                                {formatCurrency(
-                                  productStack?.reduce((accumulator, currentValue: any) => {
-                                    const selectedRingId = ringSizeMasterData?.find((el: any) => el?.name == selectedRing)?.id;
-                                    const ringPrice = getPriceViaRingAndMetal(selectedRingId, currentValue?.metal_type_id);
-                                    return accumulator + +currentValue?.productPrice + ringPrice;
-                                  }, 0),
-                                )}
-                              </Text>
+                                Add to Cart
+                              </Button>
                             </div>
-                            <Button
-                              type="default"
-                              className="w-1/3 lg:w-2/5 !text-text_w !bg-secondary lg:text-[18px] sm:px-4 uppercase tracking-[1px] mt-1 border-2 "
-                              loading={loading}
-                              onClick={handleAddtocart}
-                              disabled={count < 1}
-                            >
-                              Add to Cart
-                            </Button>
                           </div>
+                        </DndContext>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className={`flex flex-col items-start gap-[20px] w-full`}>
+                <div className="flex flex-col gap-5 w-full lg:gap-5">
+                  <div className="relative">
+                    <div className="flex flex-wrap w-[80%] lg:w-[87%] gap-5 lg:gap-3 md:gap-3 ">
+                      {/* PRICE */}
+                      <div
+                        className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'price' ? 'bg-stone' : ''}`}
+                      >
+                        <div
+                          className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
+                          onClick={() => setIsFilterOpen(isFilterOpen == 'price' ? null : 'price')}
+                        >
+                          {price && price?.length > 0 && (
+                            <FiX
+                              className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
+                              onClick={() => {
+                                const value = [filters?.price_range?.min_price, filters?.price_range?.max_price];
+                                handleFilterChange('price', value);
+                                dispatch(
+                                  setFilterData({
+                                    ...filtersData,
+                                    min_price: value[0],
+                                    max_price: value[1],
+                                  }),
+                                );
+                              }}
+                            />
+                          )}
+                          <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
+                            PRICE
+                          </Text>
+                          {isFilterOpen !== 'price' ? (
+                            <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('price')} />
+                          ) : (
+                            <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
+                          )}
                         </div>
-                      </DndContext>
+                        {isFilterOpen === 'price' && (
+                          <div
+                            ref={FilterDropdownRef}
+                            className="sm:hidden flex flex-col gap-5 absolute border border-line bg-paper min-w-[320px] top-10 left-0 py-5 px-5 z-[2]"
+                          >
+                            <div className="flex justify-between items-center">
+                              <Text size="textlg" as="p" className="font-medium ">
+                                PRICE
+                              </Text>
+                              <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
+                            </div>
+                            <div className="w-full">
+                              <div className="flex justify-between">
+                                <div className="flex items-center gap-1">
+                                  <p>{filters?.currency_symbol}</p>
+                                  <InputNumber
+                                    size="small"
+                                    min={0}
+                                    max={filters?.price_range?.max_price}
+                                    style={{ color: 'black' }}
+                                    // prefix="$"
+                                    value={selectedFilters?.min_price}
+                                    onChange={(value: any) => {
+                                      setSelectedFilters((prevFilters: any) => ({
+                                        ...prevFilters,
+                                        min_price: value ?? 0,
+                                        // max_price: value[1],
+                                      }));
+                                      handleFilterChange('price', [value ?? 0, selectedFilters?.max_price]);
+
+                                      dispatch(
+                                        setFilterData({
+                                          ...filtersData,
+                                          min_price: value ?? filters?.price_range?.min_price ?? 0,
+                                          // max_price: value[1],
+                                        }),
+                                      );
+                                    }}
+                                  />
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <p>{filters?.currency_symbol}</p>
+                                  <InputNumber
+                                    size="small"
+                                    min={0}
+                                    max={filters?.price_range?.max_price}
+                                    style={{ color: 'black' }}
+                                    // prefix="$"
+                                    // style={{ margin: "0 16px" }}
+                                    value={selectedFilters?.max_price}
+                                    onChange={(value: any) => {
+                                      setSelectedFilters((prevFilters: any) => ({
+                                        ...prevFilters,
+                                        // min_price: value[0],
+                                        max_price: value ?? filters?.price_range?.max_price ?? 0,
+                                      }));
+                                      handleFilterChange('price', [selectedFilters?.min_price, value ?? filters?.price_range?.max_price ?? 0]);
+                                      dispatch(
+                                        setFilterData({
+                                          ...filtersData,
+                                          // min_price: value[0],
+                                          max_price: value ?? filters?.price_range?.max_price ?? 0,
+                                        }),
+                                      );
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="w-full px-0">
+                                <Slider
+                                  range
+                                  min={filters?.price_range?.min_price}
+                                  max={filters?.price_range?.max_price}
+                                  defaultValue={[filters?.price_range?.min_price, filters?.price_range?.max_price]}
+                                  value={[selectedFilters.min_price, selectedFilters.max_price]}
+                                  onChange={(value: any) => {
+                                    // setTimeout(() => {
+                                    setSelectedFilters((prevFilters: any) => ({
+                                      ...prevFilters,
+                                      min_price: value[0],
+                                      max_price: value[1],
+                                    }));
+                                    // }, 300);
+                                  }}
+                                  onChangeComplete={(value: any) => {
+                                    // setTimeout(() => {
+                                    handleFilterChange('price', value);
+                                    dispatch(
+                                      setFilterData({
+                                        ...filtersData,
+                                        min_price: value[0],
+                                        max_price: value[1],
+                                      }),
+                                    );
+                                    // }, 300);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      {/* METAL */}
+                      <div
+                        className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'metal' ? 'bg-stone' : ''}`}
+                      >
+                        <div
+                          className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
+                          onClick={() => setIsFilterOpen(isFilterOpen == 'metal' ? null : 'metal')}
+                        >
+                          {metal && metal?.length > 0 && (
+                            <FiX
+                              className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
+                              onClick={() => {
+                                handleFilterChange('metal', []);
+                                dispatch(
+                                  setFilterData({
+                                    ...filtersData,
+                                    metal: [],
+                                  }),
+                                );
+                              }}
+                            />
+                          )}
+                          <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
+                            {metal && metal?.length > 0 ? `METAL (${filtersData?.metal?.length})` : `METAL`}
+                          </Text>
+                          {isFilterOpen !== 'metal' ? (
+                            <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('metal')} />
+                          ) : (
+                            <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
+                          )}
+                        </div>
+                        {isFilterOpen == 'metal' && (
+                          <div
+                            ref={FilterDropdownRef}
+                            className="sm:hidden flex flex-col gap-5 absolute border border-line bg-paper min-w-[290px] top-10 left-0 py-5 px-5 z-[2]"
+                          >
+                            <div className="flex justify-between items-center">
+                              <Text size="textlg" as="p" className="font-medium ">
+                                METAL
+                              </Text>
+                              <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
+                            </div>
+
+                            <div className="pb-4">
+                              <div className="flex flex-col gap-3">
+                                {metalFilterMasterRows.map((item: any, index: number) => {
+                                  const isSelected = filtersData?.metal?.includes(item.id);
+                                  // const isSelected = selectedFilters?.metal?.includes(item.id);
+
+                                  return (
+                                    <div key={index}>
+                                      <Checkbox
+                                        checked={isSelected}
+                                        onClick={() => {
+                                          const updatedMetals = isSelected
+                                            ? filtersData?.metal?.filter((metalId: any) => metalId !== item.id)
+                                            : [...(filtersData?.metal || []), item.id];
+                                          // setSelectedFilters({ ...selectedFilters, metal: updatedMetals });
+                                          handleFilterChange('metal', updatedMetals);
+                                          dispatch(
+                                            setFilterData({
+                                              ...filtersData,
+                                              metal: updatedMetals,
+                                            }),
+                                          );
+                                        }}
+                                      >
+                                        <Text
+                                          as="p"
+                                          size="textmd"
+                                          // onClick={() => {
+                                          //   const updatedMetals = isSelected
+                                          //     ? filtersData?.metal?.filter(
+                                          //         (metalId) => metalId !== item.id
+                                          //       )
+                                          //     : [
+                                          //         ...(filtersData?.metal || []),
+                                          //         item.id,
+                                          //       ];
+
+                                          //   dispatch(
+                                          //     setFilterData({
+                                          //       ...filtersData,
+                                          //       metal: updatedMetals,
+                                          //     })
+                                          //   );
+                                          // }}
+                                          className={` text-ink-soft cursor-pointer ${isSelected ? '!font-semibold !text-ink' : ''}`}
+                                        >
+                                          {item?.name}
+                                        </Text>
+                                      </Checkbox>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      {/* SUBSTYLE */}
+                      <div
+                        className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'sub_style' ? 'bg-stone' : ''}`}
+                      >
+                        <div
+                          className={`flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4`}
+                          onClick={() => setIsFilterOpen(isFilterOpen == 'sub_style' ? null : 'sub_style')}
+                        >
+                          {filtersData.subTypes.length > 0 && (
+                            <FiX
+                              className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
+                              onClick={() => {
+                                handleFilterChange('subTypes', []);
+                                dispatch(
+                                  setFilterData({
+                                    ...filtersData,
+                                    subTypes: [],
+                                  }),
+                                );
+                              }}
+                            />
+                          )}
+                          <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
+                            {filtersData.subTypes.length > 0 ? `SUBSTYLE (${filtersData.subTypes.length})` : `SUBSTYLE`}
+                          </Text>
+                          {isFilterOpen !== 'sub_style' ? (
+                            <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('sub_style')} />
+                          ) : (
+                            <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
+                          )}
+                        </div>
+
+                        {isFilterOpen == 'sub_style' && (
+                          <div
+                            ref={FilterDropdownRef}
+                            className="sm:hidden flex flex-col gap-5 absolute border border-line bg-paper min-w-[290px] top-10 left-0 pt-2 px-2 z-[2]"
+                          >
+                            <div className="flex justify-between items-center px-2">
+                              <Text size="textlg" as="p" className="font-medium">
+                                SUBSTYLE
+                              </Text>
+                              <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
+                            </div>
+                            <div className="relative flex flex-col overflow-scroll pr-2 h-fit max-h-[300px] scrollbar-visible">
+                              {filters?.subTypes?.map((item: any, index: number) => (
+                                <div
+                                  key={index}
+                                  className={`flex gap-5 relative items-center border-b select-none justify-center min-h-10 cursor-pointer ${filtersData.subTypes.includes(item?.id) ? '' : ''}`}
+                                  onClick={() => {
+                                    const updatedStyles = filtersData.subTypes.includes(item?.id)
+                                      ? filtersData.subTypes.filter((subType: any) => subType !== item.id)
+                                      : [...filtersData.subTypes, item.id];
+                                    handleFilterChange('subTypes', updatedStyles);
+                                    dispatch(
+                                      setFilterData({
+                                        ...filtersData,
+                                        subTypes: updatedStyles,
+                                      }),
+                                    );
+                                  }}
+                                >
+                                  <Image
+                                    preview={false}
+                                    className="px-0 lg:px-1 !w-10"
+                                    fallback="/images/no_images.svg"
+                                    src={masterData.find((el: any) => el.id === item.id)?.image?.[0] ?? '/images/no_images.svg'}
+                                    alt={masterData.find((el: any) => el.id === item.id)?.name}
+                                  />
+                                  <Text
+                                    size="textmd"
+                                    className="text-[14px] text-ink w-full xl:text-[13px] lg:text-[12px] text-nowrap overflow-hidden px-0.5 lg:px-0.5"
+                                  >
+                                    {masterData.find((el: any) => el.id === item.id)?.name}
+                                  </Text>
+                                  {filtersData.subTypes.includes(item?.id) && (
+                                    <FaCheck className="absolute h-6 w-6 text-ink right-4 cursor-pointer" />
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      {/* DIAMOND COLOR */}
+                      <div
+                        className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'diamond_color' ? 'bg-stone' : ''}`}
+                      >
+                        <div
+                          className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
+                          onClick={() => setIsFilterOpen(isFilterOpen == 'diamond_color' ? null : 'diamond_color')}
+                        >
+                          {diamondColor && diamondColor?.length > 0 && (
+                            <FiX
+                              className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
+                              onClick={() => {
+                                handleFilterChange('diamondColor', []);
+                                dispatch(
+                                  setFilterData({
+                                    ...filtersData,
+                                    diamond_color: [],
+                                  }),
+                                );
+                              }}
+                            />
+                          )}
+                          <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
+                            {diamondColor && diamondColor?.length > 0 ? `DIAMOND COLOR (${filtersData?.diamond_color?.length})` : `DIAMOND COLOR`}
+                          </Text>
+                          {isFilterOpen !== 'diamond_color' ? (
+                            <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('diamond_color')} />
+                          ) : (
+                            <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
+                          )}
+                        </div>
+                        {isFilterOpen === 'diamond_color' && (
+                          <div
+                            ref={FilterDropdownRef}
+                            className="sm:hidden  flex flex-col gap-5 absolute border border-line bg-paper min-w-[290px] top-10 left-0 py-5 px-5 z-[2]"
+                          >
+                            <div className="flex justify-between items-center">
+                              <Text size="textlg" as="p" className="font-medium ">
+                                DIAMOND COLOR
+                              </Text>
+                              <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
+                            </div>
+                            <div className="pb-4">
+                              <div className="flex flex-col gap-3">
+                                {diamondColorFilterMasterRows?.map((item: any, index: number) => {
+                                  const isItemSelected = filtersData?.diamond_color?.includes(item.id);
+
+                                  return (
+                                    <Checkbox
+                                      checked={isItemSelected}
+                                      key={index}
+                                      onClick={() => {
+                                        const updatedColors = isItemSelected
+                                          ? filtersData?.diamond_color?.filter((colorId: any) => colorId !== item.id)
+                                          : [...(filtersData?.diamond_color || []), item.id];
+                                        handleFilterChange('diamondColor', updatedColors);
+                                        dispatch(
+                                          setFilterData({
+                                            ...filtersData,
+                                            diamond_color: updatedColors,
+                                          }),
+                                        );
+                                      }}
+                                    >
+                                      <Text
+                                        as="p"
+                                        // key={index}
+                                        size="textmd"
+                                        // onClick={() => {
+                                        //   const updatedColors = isItemSelected
+                                        //     ? filtersData?.diamond_color?.filter(
+                                        //         (colorId) => colorId !== item.id
+                                        //       )
+                                        //     : [
+                                        //         ...(filtersData?.diamond_color || []),
+                                        //         item.id,
+                                        //       ];
+
+                                        //   dispatch(
+                                        //     setFilterData({
+                                        //       ...filtersData,
+                                        //       diamond_color: updatedColors,
+                                        //     })
+                                        //   );
+                                        // }}
+                                        className={` text-ink-soft cursor-pointer ${isItemSelected ? '!font-semibold !text-ink' : ''}`}
+                                      >
+                                        {item?.name}
+                                      </Text>
+                                    </Checkbox>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      {/* SHAPE */}
+                      <div
+                        className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'shape' ? 'bg-stone' : ''}`}
+                      >
+                        <div
+                          className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
+                          onClick={() => setIsFilterOpen(isFilterOpen == 'shape' ? null : 'shape')}
+                        >
+                          {shape && shape?.length > 0 && (
+                            <FiX
+                              className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
+                              onClick={() => {
+                                handleFilterChange('shape', []);
+                                dispatch(
+                                  setFilterData({
+                                    ...filtersData,
+                                    shape: [],
+                                  }),
+                                );
+                              }}
+                            />
+                          )}
+                          <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
+                            {shape && shape?.length > 0 ? `SHAPE (${filtersData?.shape?.length})` : `SHAPE`}
+                          </Text>
+                          {isFilterOpen !== 'shape' ? (
+                            <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('shape')} />
+                          ) : (
+                            <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
+                          )}
+                        </div>
+                        {isFilterOpen == 'shape' && (
+                          <div
+                            ref={FilterDropdownRef}
+                            className="sm:hidden  flex flex-col gap-5 absolute border border-line bg-paper min-w-[290px] top-10 left-0 py-5 px-5 z-[2]"
+                          >
+                            <div className="flex justify-between items-center">
+                              <Text size="textlg" as="p" className="font-medium ">
+                                SHAPE
+                              </Text>
+                              <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
+                            </div>
+                            <div className="pb-4">
+                              <div className="flex flex-col gap-3">
+                                {shapeFilterMasterRows?.map((item: any, index: number) => {
+                                  const isItemSelected = filtersData?.shape?.includes(item.id);
+
+                                  return (
+                                    <Checkbox
+                                      key={index}
+                                      checked={isItemSelected}
+                                      onClick={() => {
+                                        const updatedShapes = isItemSelected
+                                          ? filtersData?.shape?.filter((shapeId: any) => shapeId !== item.id)
+                                          : [...(filtersData?.shape || []), item.id];
+                                        handleFilterChange('shape', updatedShapes);
+                                        dispatch(
+                                          setFilterData({
+                                            ...filtersData,
+                                            shape: updatedShapes,
+                                          }),
+                                        );
+                                      }}
+                                    >
+                                      <Text
+                                        as="p"
+                                        size="textmd"
+                                        className={` text-ink-soft cursor-pointer ${isItemSelected ? '!font-semibold !text-ink' : ''}`}
+                                      >
+                                        {item?.name}
+                                      </Text>
+                                    </Checkbox>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      {/* CARAT WEIGHT */}
+                      <div
+                        className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'carat' ? 'bg-stone' : ''}`}
+                      >
+                        <div
+                          className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
+                          onClick={() => setIsFilterOpen(isFilterOpen == 'carat' ? null : 'carat')}
+                        >
+                          {carat && carat?.length > 0 && (
+                            <FiX
+                              className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
+                              onClick={() => {
+                                const value = [
+                                  Math.min(...Object.keys(caratWeight as any).map(Number)),
+                                  Math.max(...Object.keys(caratWeight as any).map(Number)),
+                                ];
+                                handleFilterChange('carat', value);
+                                handleSliderChange(value);
+                              }}
+                            />
+                          )}
+                          <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
+                            CARAT WEIGHT
+                          </Text>
+                          {isFilterOpen !== 'carat' ? (
+                            <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('carat')} />
+                          ) : (
+                            <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
+                          )}
+                        </div>
+                        {isFilterOpen == 'carat' && (
+                          <div
+                            ref={FilterDropdownRef}
+                            className="sm:hidden flex flex-col gap-5 absolute border border-line bg-paper min-w-[320px] top-10 left-0 py-5 px-5 z-[2]"
+                          >
+                            <div className="flex justify-between items-center">
+                              <Text size="textlg" as="p" className="font-medium ">
+                                CARAT WEIGHT
+                              </Text>
+                              <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
+                            </div>
+                            <div className="w-full px-2 pb-4">
+                              <div className="flex justify-between">
+                                <div className="flex items-center gap-1">
+                                  <InputNumber
+                                    size="small"
+                                    min={Math.min(...Object.keys(caratWeight as any).map(Number))}
+                                    max={Math.max(...Object.keys(caratWeight as any).map(Number))}
+                                    style={{ color: 'black' }}
+                                    step={0.01}
+                                    // prefix="$"
+                                    value={selectedFilters?.min_carat ?? Math.min(...Object.keys(caratWeight as any).map(Number))}
+                                    onChange={(value: any) => {
+                                      setSelectedFilters((prevFilters: any) => ({
+                                        ...prevFilters,
+                                        min_carat: value ?? 0,
+                                        // max_price: value[1],
+                                      }));
+                                      handleFilterChange('carat', [value ?? 0, selectedFilters?.max_carat]);
+                                      dispatch(
+                                        setFilterData({
+                                          ...filtersData,
+                                          min_price: value ?? 0,
+                                          // max_price: value[1],
+                                        }),
+                                      );
+                                    }}
+                                  />
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <InputNumber
+                                    size="small"
+                                    min={Math.min(...Object.keys(caratWeight as any).map(Number))}
+                                    max={Math.max(...Object.keys(caratWeight as any).map(Number))}
+                                    style={{ color: 'black' }}
+                                    step={0.01}
+                                    // prefix="$"
+                                    // style={{ margin: "0 16px" }}
+                                    value={selectedFilters?.max_carat ?? Math.max(...Object.keys(caratWeight as any).map(Number))}
+                                    onChange={(value: any) => {
+                                      setSelectedFilters((prevFilters: any) => ({
+                                        ...prevFilters,
+                                        // min_price: value[0],
+                                        max_carat: value ?? Math.max(...Object.keys(caratWeight as any).map(Number)) ?? 0,
+                                      }));
+                                      handleFilterChange('carat', [
+                                        selectedFilters?.min_carat,
+                                        selectedFilters?.max_carat ?? Math.max(...Object.keys(caratWeight as any).map(Number)),
+                                      ]);
+                                      dispatch(
+                                        setFilterData({
+                                          ...filtersData,
+                                          // min_price: value[0],
+                                          max_price: value ?? Math.max(...Object.keys(caratWeight as any).map(Number)) ?? 0,
+                                        }),
+                                      );
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="w-full">
+                                <Slider
+                                  // marks={caratWeight}
+                                  // included={true}
+                                  range
+                                  step={0.01}
+                                  defaultValue={[
+                                    Math.min(...Object.keys(caratWeight as any).map(Number)),
+                                    Math.max(...Object.keys(caratWeight as any).map(Number)),
+                                  ]}
+                                  value={[selectedFilters.min_carat, selectedFilters.max_carat]}
+                                  min={Math.min(...Object.keys(caratWeight as any).map(Number))}
+                                  max={Math.max(...Object.keys(caratWeight as any).map(Number))}
+
+                                  onChange={(value: any) => {
+                                    setSelectedFilters((prevFilters: any) => ({
+                                      ...prevFilters,
+                                      min_carat: value[0],
+                                      max_carat: value[1],
+                                    }));
+                                  }}
+                                  onChangeComplete={(value: any) => {
+                                    handleFilterChange('carat', value);
+                                    handleSliderChange(value);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex absolute top-0 right-0 gap-4 lg:gap-3 2xl:gap-3 md:gap-1 self-stretch min-h-10 md:flex-col">
+                      <div className="flex relative w-[19%] md:pb-2 items-center justify-end gap-4 md:w-full self-start 2xl:gap-1 2xl:w-fit ">
+                        <Select
+                          placeholder={`SORT BY`}
+                          options={dropDownOptions}
+                          defaultValue={dropDownOptions[0]}
+                          value={filtersData.sort_order}
+                          onChange={(option: any) => {
+                            handleFilterChange('sort', option);
+                            dispatch(
+                              setFilterData({
+                                ...filtersData,
+                                sort_order: option,
+                              }),
+                            );
+                          }}
+                          className="sorting-selection !h-8 gap-2.5 w-[126px] whitespace-nowrap placeholder:text-black text-[16px] lg:text-[14px] 2xl:gap-2"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-[14px] text-ink-soft w-[80%]">
+                    {carat && filtersData?.carats?.length > 0 && (
+                      <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                        <p>{carat}</p>
+                        <FiX
+                          className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                          onClick={() => {
+                            const value = [
+                              Math.min(...Object.keys(caratWeight as any).map(Number)),
+                              Math.max(...Object.keys(caratWeight as any).map(Number)),
+                            ];
+                            handleFilterChange('carat', value);
+                            handleSliderChange(value);
+                          }}
+                        />
+                      </div>
+                    )}
+                    {price && filtersData?.min_price && filtersData?.max_price && (
+                      <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                        <p>{`${formatCurrency(filtersData?.min_price)} - ${formatCurrency(filtersData?.max_price)}`}</p>
+                        <FiX
+                          className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                          onClick={() => {
+                            const value = [filters?.price_range?.min_price, filters?.price_range?.max_price];
+                            handleFilterChange('price', value);
+                            dispatch(
+                              setFilterData({
+                                ...filtersData,
+                                min_price: value[0],
+                                max_price: value[1],
+                              }),
+                            );
+                          }}
+                        />
+                      </div>
+                    )}
+                    {gender && filtersData?.gender_category != 3 && (
+                      <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                        <p>{filtersData?.gender_category == 2 ? `Men` : `Women`}</p>
+                        <FiX
+                          className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                          onClick={() => {
+                            handleFilterChange('gender', 3);
+                            dispatch(
+                              setFilterData({
+                                ...filtersData,
+                                gender_category: 3,
+                              }),
+                            );
+                          }}
+                        />
+                      </div>
+                    )}
+                    {/* {diamondType && diamondType !== 'both' && filtersData?.diamond_type != 1 && (
+                    <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                      <p>{filtersData?.diamond_type == 2 ? `Natural Diamonds` : `Lab Grown Diamonds`}</p>
+                      <FiX
+                        className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                        onClick={() => {
+                          handleFilterChange('diamond_type', 1);
+                          dispatch(
+                            setFilterData({
+                              ...filtersData,
+                              diamond_type: 1,
+                            }),
+                          );
+                        }}
+                      />
+                    </div>
+                  )} */}
+                    {masterData
+                      ?.filter((item: any) => filtersData?.subTypes?.includes(item?.id))
+                      ?.map((el: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                          <p>{el?.name}</p>
+                          <FiX
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                            onClick={() => {
+                              const updatedStyles = filtersData.subTypes.includes(el?.id)
+                                ? filtersData.subTypes.filter((subType: any) => subType !== el?.id)
+                                : [...filtersData.subTypes, el?.id];
+                              handleFilterChange('subTypes', updatedStyles);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  subTypes: updatedStyles,
+                                }),
+                              );
+                            }}
+                          />{' '}
+                        </div>
+                      ))}
+                    {masterData
+                      .filter((item: any) => filtersData?.metal?.includes(item?.id))
+                      .map((el: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                          <p>{el?.name}</p>
+                          <FiX
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                            onClick={() => {
+                              const updatedMetals = filtersData?.metal?.includes(el?.id)
+                                ? filtersData?.metal?.filter((metalId: any) => metalId !== el?.id)
+                                : [...(filtersData?.metal || []), el?.id];
+                              // setSelectedFilters({ ...selectedFilters, metal: updatedMetals });
+                              handleFilterChange('metal', updatedMetals);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  metal: updatedMetals,
+                                }),
+                              );
+                            }}
+                          />{' '}
+                        </div>
+                      ))}
+                    {masterData
+                      .filter((item: any) => filtersData?.shape?.includes(item?.id))
+                      .map((el: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                          <p>{el?.name}</p>
+                          <FiX
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                            onClick={() => {
+                              const updatedShapes = filtersData?.shape?.includes(el?.id)
+                                ? filtersData?.shape?.filter((shapeId: any) => shapeId !== el?.id)
+                                : [...(filtersData?.shape || []), el?.id];
+                              handleFilterChange('shape', updatedShapes);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  shape: updatedShapes,
+                                }),
+                              );
+                            }}
+                          />{' '}
+                        </div>
+                      ))}
+                    {masterData
+                      .filter((item: any) => filtersData?.diamond_color?.includes(item?.id))
+                      .map((el: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                          <p>{el?.name}</p>
+                          <FiX
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                            onClick={() => {
+                              const updatedColors = filtersData?.diamond_color?.includes(el?.id)
+                                ? filtersData?.diamond_color?.filter((colorId: any) => colorId !== el?.id)
+                                : [...(filtersData?.diamond_color || []), el?.id];
+                              handleFilterChange('diamondColor', updatedColors);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  diamond_color: updatedColors,
+                                }),
+                              );
+                            }}
+                          />{' '}
+                        </div>
+                      ))}
+                    {((gender && gender !== 'for_her') || carat || shape || metal || diamondColor || price || subTypes) && (
+                      // ||
+                      // (diamondType && diamondType !== 'both')
+                      <div className="flex items-center gap-2 justify-between w-fit">
+                        <span
+                          className="inline text-ink-faint cursor-pointer pl-1"
+                          onClick={() => {
+                            // router.push(`/${jewelryType}`);
+                            window?.history.replaceState(null, '', `${pathname}`);
+                          }}
+                        >
+                          Reset Filters
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ref={divRef} className={`flex flex-col w-[100%] gap-10 self-start lg:gap-6 sm:w-full relative`}>
+              {isAtTop && productStack?.length !== 0 && (
+                <div className="w-full min-h-[120px] h-fit !sticky top-0 left-0 z-20 border bg-stone flex justify-center items-center">
+                  <div className="flex justify-center items-center gap-5 w-[90%] h-full p-4">
+                    <div className="font-cormorant text-[24px] font-medium leading-none text-ink">Your Ring Stack</div>
+                    <div className="flex items-center gap-4">
+                      {productStack.map((product, index) => (
+                        <div key={index} className="flex items-center gap-0">
+                          <span>{index + 1}.</span>
+                          <Image
+                            src={product.stackable_image ?? '/images/no_images.svg'}
+                            alt={product.productName}
+                            // width={140}
+                            // height={35}
+                            className="!w-[75%] !max-w-[240px] object-contain ml-2"
+                            preview={false}
+                            style={{
+                              mixBlendMode: 'multiply',
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex flex-col items-center">
+                      {productStack.map((product, index) => (
+                        <Image
+                          key={index}
+                          src={product.stackable_image ?? '/images/no_images.svg'}
+                          alt={product.productName}
+                          // width={140}
+                          // height={35}
+                          preview={false}
+                          className="!w-[70%] !max-w-[270px] object-contain"
+                          style={{
+                            mixBlendMode: 'multiply',
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div>
+                      <Button
+                        type="default"
+                        className="w-full !h-11 !rounded-none !border-0 !bg-ink !px-6 !text-[11.5px] !font-medium uppercase !tracking-[0.2em] !text-paper hover:!bg-ink-hover disabled:!bg-ink/40 disabled:!text-paper"
+                        onClick={() => {
+                          sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                      >
+                        Customize
+                      </Button>
                     </div>
                   </div>
                 </div>
               )}
+              <div className="flex flex-col gap-10 w-full 2xl:px-[50px] xl:px-[50px] lg:px-[30px] md:px-5 sm:px-5">
+                {isLoading && (
+                  <>
+                    <div className="w-full flex justify-center items-center min-h-[30vh]">
+                      <LuLoader className="h-10 w-10 animate-spin" />
+                    </div>
+                  </>
+                )}
+                {!isLoading && products?.length === 0 && (
+                  <div className="px-8 w-full flex flex-col items-center justify-center gap-[10px] lg:ml-0 md:ml-0 sm:gap-[30px] min-h-[30vh]">
+                    <p className="m-0 text-center font-cormorant text-[24px] leading-[1.2] text-ink">
+                      We found no results that match your search criteria.
+                    </p>
+                    <p className="m-0 text-center font-cormorant text-[24px] leading-[1.2] text-ink">
+                      Please expand your search or
+                      <span
+                        className="inline cursor-pointer pl-1 text-teal underline underline-offset-[3px]"
+                        onClick={() => {
+                          // router.push(`/${jewelryType}`);
+                          window?.history.replaceState(null, '', `${pathname}`);
+                        }}
+                      >
+                        reset your filters
+                      </span>
+                      .
+                    </p>
+                  </div>
+                )}
+                {!isLoading && products?.length > 0 && (
+                  <div className="w-full flex flex-col items-center">
+                    <div className="w-full grid grid-cols-4 gap-4 mb-4 sm:mb-2 md:grid-cols-3 sm:grid-cols-2 sm:gap-2">
+                      {chunkedData?.map((chunk: any, index: number) => (
+                        <div key={index} className="col-span-1">
+                          <ProductProfile {...chunk} is_stackable={true} isStatic={true} key={'group2652' + index} className={`w-full`} />
+                          {/* <ChunkComponent key={index} chunk={chunk} index={index} bannerData={[]} /> */}
+                        </div>
+                      ))}
+                    </div>
+                    {isLoadingMore && (
+                      <div className="w-full flex justify-center items-center py-4">
+                        <LuLoader className="h-8 w-8 animate-spin" />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-            <div className={`flex flex-col items-start gap-[20px] w-full`}>
-              <div className="flex flex-col gap-5 w-full lg:gap-5">
+          </div>
+        </div>
+
+        {/* Mobile + Tab screen */}
+        <div className="md:!flex !hidden justify-center border-b border-line py-14 lg:py-10 md:py-5 sm:py-4">
+          <div className="mx-auto w-full max-w-[1440px] !flex flex-col px-5 sm:px-3">
+            <div className="flex items-start justify-between flex-wrap">
+              <div className="min-h-[280px] mb-5 w-full bg-stone flex justify-center items-center">
+                {productStack?.length == 0 ? (
+                  <div className="w-full flex sm:flex-col py-5 items-center justify-center h-full gap-5">
+                    <div className="flex flex-col items-center justify-center gap-3 w-2/3">
+                      <h1 className="m-0 text-center font-cormorant text-[clamp(32px,3.6vw,48px)] font-medium leading-none text-ink">
+                        Design your <em className="text-gilt">ring stack</em>
+                      </h1>
+                      <Text size="textxl" as="p" className="!text-[15px] !leading-[1.65] text-center text-ink-soft">
+                        Design your own stack of lab-grown diamond rings. Layer up to 4 styles of your choice!
+                      </Text>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full flex flex-col items-center justify-center">
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                      modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+                    >
+                      <SortableContext items={productStack.map((p) => p.stackId)} strategy={verticalListSortingStrategy}>
+                        <div className="min-h-[240px] w-full h-full relative flex items-center justify-center">
+                          <div className="flex flex-col items-center justify-center w-[180px] max-w-[500px]">
+                            {productStack.map((product) => (
+                              <SortableImage key={product.stackId} product={product} />
+                            ))}
+                            <div className="pointer-events-auto absolute top-4 right-4 z-30 sm:top-1 sm:right-1 p-1">
+                              <button
+                                type="button"
+                                aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                                className="flex min-h-[44px] min-w-[44px] cursor-pointer touch-manipulation items-center justify-center rounded-none border-0 bg-transparent p-0 text-ink [-webkit-tap-highlight-color:transparent]"
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  void handleAddtoWishlist();
+                                }}
+                              >
+                                {isInWishlist ? (
+                                  <FaHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
+                                ) : (
+                                  <FaRegHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </SortableContext>
+                    </DndContext>
+
+                    <div className="w-full flex flex-col h-full items-center bg-white ">
+                      <div className="w-full flex flex-col items-center justify-between mb-5">
+                        <DndContext
+                          sensors={sensors}
+                          collisionDetection={closestCenter}
+                          onDragEnd={handleDragEnd}
+                          modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+                        >
+                          <SortableContext items={productStack?.map((item) => item.stackId)} strategy={verticalListSortingStrategy}>
+                            {productStack?.map((product) => (
+                              <SortableItem key={product.stackId} product={product} selectedRing={selectedRing} />
+                            ))}
+                          </SortableContext>
+                          <div className="min-h-16 w-full mt-5 flex md:flex-col md:gap-2 sm:flex-col justify-between sm:gap-2">
+                            <div className="md:w-full flex md:flex-row sm:flex-row flex-col items-start gap-[10px] md:gap-[10px] self-stretch relative">
+                              <div className="flex items-center justify-between gap-5 self-stretch">
+                                <Text size="textmd" className="!text-[10.5px] uppercase tracking-[0.16em] text-ink-soft sm:text-[14px]">
+                                  RING SIZE
+                                </Text>
+                              </div>
+
+                              <div className="w-full md:w-fit">
+                                <div className="flex gap-[10px] self-stretch">
+                                  <Select
+                                    // showSearch
+                                    className={`!w-[150px] ${errorMessage ? '!outline !outline-red-500' : ''}`}
+                                    placeholder="Select a Ring Size"
+                                    defaultValue={ringSizeMaster?.[0]?.value}
+                                    value={selectedRing}
+                                    onChange={(value: number | string) => {
+                                      setSelectedRing(value);
+                                    }}
+                                    options={ringSizeMaster}
+                                  />
+                                </div>
+                                {errorMessage && (
+                                  <div className="relative">
+                                    <Text className="!text-[10px] text-nowrap absolute" style={{ color: 'red', marginTop: '8px' }}>
+                                      {errorMessage}
+                                    </Text>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="h-full w-2/3 md:w-full flex sm:flex-col justify-end sm:justify-normal md:justify-between items-center px-3 md:px-0 sm:gap-2 gap-5">
+                              <div className="flex sm:w-full mt-2 items-center sm:text-[14px] gap-2 sm:gap-2">
+                                Total Price:
+                                {productStack?.some((prod) => prod?.discount_value) && (
+                                  <Text size="textlg" as="p" className="!font-libre tracking-[0.44px] md:!text-[20px] sm:!text-[16px]">
+                                    {formatCurrency(
+                                      productStack?.reduce((accumulator, currentValue: any) => {
+                                        const selectedRingId = ringSizeMasterData?.find((el: any) => el?.name == selectedRing)?.id;
+                                        const ringPrice = getPriceViaRingAndMetal(selectedRingId, currentValue?.metal_type_id);
+                                        return (
+                                          accumulator +
+                                          ringPrice +
+                                          (currentValue?.discounted_price ? +currentValue?.discounted_price : +currentValue?.productPrice)
+                                        );
+                                      }, 0),
+                                    )}
+                                  </Text>
+                                )}
+                                <Text
+                                  size="textlg"
+                                  as="p"
+                                  className={`!font-libre ${productStack?.some((prod) => prod?.discount_value) ? 'line-through text-ink-faint !text-[13px] md:!text-[15px] sm:!text-[12px]' : ''}`}
+                                >
+                                  {formatCurrency(
+                                    productStack?.reduce((accumulator, currentValue: any) => {
+                                      const selectedRingId = ringSizeMasterData?.find((el: any) => el?.name == selectedRing)?.id;
+                                      const ringPrice = getPriceViaRingAndMetal(selectedRingId, currentValue?.metal_type_id);
+                                      return accumulator + +currentValue?.productPrice + ringPrice;
+                                    }, 0),
+                                  )}
+                                </Text>
+                              </div>
+                              <Button
+                                type="default"
+                                className="w-1/3 md:w-1/2 sm:w-full !h-11 !rounded-none !border-0 !bg-ink !px-6 !text-[11.5px] !font-medium uppercase !tracking-[0.2em] !text-paper hover:!bg-ink-hover disabled:!bg-ink/40 disabled:!text-paper mt-1"
+                                loading={loading}
+                                onClick={handleAddtocart}
+                                disabled={count < 1}
+                              >
+                                Add to Cart
+                              </Button>
+                            </div>
+                          </div>
+                        </DndContext>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className=" flex flex-col gap-3 items-start justify-between w-full ">
                 <div className="relative">
-                  <div className="flex flex-wrap w-[80%] lg:w-[87%] gap-5 lg:gap-3 md:gap-3 ">
+                  <div className="flex max-w-[95vw] w-[100%] gap-5 lg:gap-3 md:gap-3 sm:gap-3 overflow-x-auto pb-2 text-nowrap">
+                    {/* GENDER  */}
+                    <>
+                      {/* <div
+                    className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'gender' ? 'bg-stone' : ''}`}
+                  >
+                    <div
+                      className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
+                      onClick={() => setIsFilterOpen(isFilterOpen === 'gender' ? null : 'gender')}
+                    >
+                      {gender && gender?.length > 0 && (
+                        <FiX
+                          className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
+                          onClick={() => {
+                            handleFilterChange('gender', 3);
+                            dispatch(
+                              setFilterData({
+                                ...filtersData,
+                                gender_category: 3,
+                              }),
+                            );
+                          }}
+                        />
+                      )}
+                      <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
+                        {`GENDER ${filtersData?.gender_category == 2 ? `(Men)` : filtersData?.gender_category == 3 ? `(Women)` : ''}`}
+                      </Text>
+                      {isFilterOpen !== 'gender' ? (
+                        <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('gender')} />
+                      ) : (
+                        <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
+                      )}
+                    </div>
+                  </div> */}
+                    </>
                     {/* PRICE */}
                     <div
-                      className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'price' ? 'bg-[#f8f8f8]' : ''}`}
+                      className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'price' ? 'bg-stone' : ''}`}
                     >
                       <div
                         className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
@@ -1452,7 +2573,7 @@ export default function DesignYourRingStackPage() {
                       >
                         {price && price?.length > 0 && (
                           <FiX
-                            className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
                             onClick={() => {
                               const value = [filters?.price_range?.min_price, filters?.price_range?.max_price];
                               handleFilterChange('price', value);
@@ -1466,120 +2587,19 @@ export default function DesignYourRingStackPage() {
                             }}
                           />
                         )}
-                        <Text size="textmd" as="p" className="font-light text-gray-500 ">
+                        <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
                           PRICE
                         </Text>
                         {isFilterOpen !== 'price' ? (
-                          <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('price')} />
+                          <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('price')} />
                         ) : (
-                          <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
+                          <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
                         )}
                       </div>
-                      {isFilterOpen === 'price' && (
-                        <div
-                          ref={FilterDropdownRef}
-                          className="sm:hidden flex flex-col gap-5 absolute bg-white shadow-md min-w-[320px] top-10 left-0 py-5 px-5 rounded-lg z-[2]"
-                        >
-                          <div className="flex justify-between items-center">
-                            <Text size="textlg" as="p" className="font-medium ">
-                              PRICE
-                            </Text>
-                            <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
-                          </div>
-                          <div className="w-full">
-                            <div className="flex justify-between">
-                              <div className="flex items-center gap-1">
-                                <p>{filters?.currency_symbol}</p>
-                                <InputNumber
-                                  size="small"
-                                  min={0}
-                                  max={filters?.price_range?.max_price}
-                                  style={{ color: 'black' }}
-                                  // prefix="$"
-                                  value={selectedFilters?.min_price}
-                                  onChange={(value: any) => {
-                                    setSelectedFilters((prevFilters: any) => ({
-                                      ...prevFilters,
-                                      min_price: value ?? 0,
-                                      // max_price: value[1],
-                                    }));
-                                    handleFilterChange('price', [value ?? 0, selectedFilters?.max_price]);
-
-                                    dispatch(
-                                      setFilterData({
-                                        ...filtersData,
-                                        min_price: value ?? filters?.price_range?.min_price ?? 0,
-                                        // max_price: value[1],
-                                      }),
-                                    );
-                                  }}
-                                />
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <p>{filters?.currency_symbol}</p>
-                                <InputNumber
-                                  size="small"
-                                  min={0}
-                                  max={filters?.price_range?.max_price}
-                                  style={{ color: 'black' }}
-                                  // prefix="$"
-                                  // style={{ margin: "0 16px" }}
-                                  value={selectedFilters?.max_price}
-                                  onChange={(value: any) => {
-                                    setSelectedFilters((prevFilters: any) => ({
-                                      ...prevFilters,
-                                      // min_price: value[0],
-                                      max_price: value ?? filters?.price_range?.max_price ?? 0,
-                                    }));
-                                    handleFilterChange('price', [selectedFilters?.min_price, value ?? filters?.price_range?.max_price ?? 0]);
-                                    dispatch(
-                                      setFilterData({
-                                        ...filtersData,
-                                        // min_price: value[0],
-                                        max_price: value ?? filters?.price_range?.max_price ?? 0,
-                                      }),
-                                    );
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <div className="w-full px-0">
-                              <Slider
-                                range
-                                min={filters?.price_range?.min_price}
-                                max={filters?.price_range?.max_price}
-                                defaultValue={[filters?.price_range?.min_price, filters?.price_range?.max_price]}
-                                value={[selectedFilters.min_price, selectedFilters.max_price]}
-                                onChange={(value: any) => {
-                                  // setTimeout(() => {
-                                  setSelectedFilters((prevFilters: any) => ({
-                                    ...prevFilters,
-                                    min_price: value[0],
-                                    max_price: value[1],
-                                  }));
-                                  // }, 300);
-                                }}
-                                onChangeComplete={(value: any) => {
-                                  // setTimeout(() => {
-                                  handleFilterChange('price', value);
-                                  dispatch(
-                                    setFilterData({
-                                      ...filtersData,
-                                      min_price: value[0],
-                                      max_price: value[1],
-                                    }),
-                                  );
-                                  // }, 300);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                     {/* METAL */}
                     <div
-                      className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'metal' ? 'bg-[#f8f8f8]' : ''}`}
+                      className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'metal' ? 'bg-stone' : ''}`}
                     >
                       <div
                         className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
@@ -1587,7 +2607,7 @@ export default function DesignYourRingStackPage() {
                       >
                         {metal && metal?.length > 0 && (
                           <FiX
-                            className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
                             onClick={() => {
                               handleFilterChange('metal', []);
                               dispatch(
@@ -1599,170 +2619,51 @@ export default function DesignYourRingStackPage() {
                             }}
                           />
                         )}
-                        <Text size="textmd" as="p" className="font-light text-gray-500">
+                        <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
                           {metal && metal?.length > 0 ? `METAL (${filtersData?.metal?.length})` : `METAL`}
                         </Text>
                         {isFilterOpen !== 'metal' ? (
-                          <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('metal')} />
+                          <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('metal')} />
                         ) : (
-                          <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
+                          <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
                         )}
                       </div>
-                      {isFilterOpen == 'metal' && (
-                        <div
-                          ref={FilterDropdownRef}
-                          className="sm:hidden flex flex-col gap-5 absolute bg-white shadow-md min-w-[290px] top-10 left-0 py-5 px-5 rounded-lg z-[2]"
-                        >
-                          <div className="flex justify-between items-center">
-                            <Text size="textlg" as="p" className="font-medium ">
-                              METAL
-                            </Text>
-                            <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
-                          </div>
-
-                          <div className="pb-4">
-                            <div className="flex flex-col gap-3">
-                              {metalFilterMasterRows.map((item: any, index: number) => {
-                                const isSelected = filtersData?.metal?.includes(item.id);
-                                // const isSelected = selectedFilters?.metal?.includes(item.id);
-
-                                return (
-                                  <div key={index}>
-                                    <Checkbox
-                                      checked={isSelected}
-                                      onClick={() => {
-                                        const updatedMetals = isSelected
-                                          ? filtersData?.metal?.filter((metalId: any) => metalId !== item.id)
-                                          : [...(filtersData?.metal || []), item.id];
-                                        // setSelectedFilters({ ...selectedFilters, metal: updatedMetals });
-                                        handleFilterChange('metal', updatedMetals);
-                                        dispatch(
-                                          setFilterData({
-                                            ...filtersData,
-                                            metal: updatedMetals,
-                                          }),
-                                        );
-                                      }}
-                                    >
-                                      <Text
-                                        as="p"
-                                        size="textmd"
-                                        // onClick={() => {
-                                        //   const updatedMetals = isSelected
-                                        //     ? filtersData?.metal?.filter(
-                                        //         (metalId) => metalId !== item.id
-                                        //       )
-                                        //     : [
-                                        //         ...(filtersData?.metal || []),
-                                        //         item.id,
-                                        //       ];
-
-                                        //   dispatch(
-                                        //     setFilterData({
-                                        //       ...filtersData,
-                                        //       metal: updatedMetals,
-                                        //     })
-                                        //   );
-                                        // }}
-                                        className={` font-extralight tracking-[1px]  cursor-pointer ${isSelected ? '!font-bold text-[#18381d]' : ''}`}
-                                      >
-                                        {item?.name}
-                                      </Text>
-                                    </Checkbox>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
-                    {/* SUBSTYLE */}
+                    {/* DIAMOND TYPE */}
+                    {/* <div
+                    className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong  hover:bg-stone ${isFilterOpen == 'diamond_type' ? 'bg-stone' : ''}`}
+                  >
                     <div
-                      className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'sub_style' ? 'bg-[#f8f8f8]' : ''}`}
+                      className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
+                      onClick={() => setIsFilterOpen(isFilterOpen === 'diamond_type' ? null : 'diamond_type')}
                     >
-                      <div
-                        className={`flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4`}
-                        onClick={() => setIsFilterOpen(isFilterOpen == 'sub_style' ? null : 'sub_style')}
-                      >
-                        {filtersData.subTypes.length > 0 && (
-                          <FiX
-                            className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
-                            onClick={() => {
-                              handleFilterChange('subTypes', []);
-                              dispatch(
-                                setFilterData({
-                                  ...filtersData,
-                                  subTypes: [],
-                                }),
-                              );
-                            }}
-                          />
-                        )}
-                        <Text size="textmd" as="p" className="font-light text-gray-500">
-                          {filtersData.subTypes.length > 0 ? `SUBSTYLE (${filtersData.subTypes.length})` : `SUBSTYLE`}
-                        </Text>
-                        {isFilterOpen !== 'sub_style' ? (
-                          <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('sub_style')} />
-                        ) : (
-                          <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
-                        )}
-                      </div>
-
-                      {isFilterOpen == 'sub_style' && (
-                        <div
-                          ref={FilterDropdownRef}
-                          className="sm:hidden flex flex-col gap-5 absolute bg-white shadow-md min-w-[290px] top-10 left-0 pt-2 px-2 rounded-lg z-[2]"
-                        >
-                          <div className="flex justify-between items-center px-2">
-                            <Text size="textlg" as="p" className="font-medium">
-                              SUBSTYLE
-                            </Text>
-                            <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
-                          </div>
-                          <div className="relative flex flex-col overflow-scroll pr-2 h-fit max-h-[300px] scrollbar-visible">
-                            {filters?.subTypes?.map((item: any, index: number) => (
-                              <div
-                                key={index}
-                                className={`flex gap-5 relative items-center border-b select-none justify-center min-h-10 cursor-pointer ${filtersData.subTypes.includes(item?.id) ? '' : ''}`}
-                                onClick={() => {
-                                  const updatedStyles = filtersData.subTypes.includes(item?.id)
-                                    ? filtersData.subTypes.filter((subType: any) => subType !== item.id)
-                                    : [...filtersData.subTypes, item.id];
-                                  handleFilterChange('subTypes', updatedStyles);
-                                  dispatch(
-                                    setFilterData({
-                                      ...filtersData,
-                                      subTypes: updatedStyles,
-                                    }),
-                                  );
-                                }}
-                              >
-                                <Image
-                                  preview={false}
-                                  className="px-0 lg:px-1 !w-10"
-                                  fallback="/images/no_images.svg"
-                                  src={masterData.find((el: any) => el.id === item.id)?.image?.[0] ?? '/images/no_images.svg'}
-                                  alt={masterData.find((el: any) => el.id === item.id)?.name}
-                                />
-                                <Text
-                                  size="textmd"
-                                  className="text-[14px] font-extralight tracking-[1px] w-full xl:text-[13px] lg:text-[12px] text-nowrap overflow-hidden px-0.5 lg:px-0.5"
-                                >
-                                  {masterData.find((el: any) => el.id === item.id)?.name}
-                                </Text>
-                                {filtersData.subTypes.includes(item?.id) && (
-                                  <FaCheck className="absolute h-6 w-6 text-primary right-4 cursor-pointer" />
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
+                      {diamondType && diamondType !== 'both' && diamondType?.length > 0 && (
+                        <FiX
+                          className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
+                          onClick={() => {
+                            handleFilterChange('diamond_type', 1);
+                            dispatch(
+                              setFilterData({
+                                ...filtersData,
+                                gender_category: 1,
+                              }),
+                            );
+                          }}
+                        />
+                      )}
+                      <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
+                        {`DIAMOND TYPE ${filtersData?.diamond_type == 2 ? `(Natural)` : filtersData?.diamond_type == 3 ? `(Lab Grown)` : ''}`}
+                      </Text>
+                      {isFilterOpen !== 'diamond_type' ? (
+                        <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('diamond_type')} />
+                      ) : (
+                        <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
                       )}
                     </div>
+                  </div> */}
                     {/* DIAMOND COLOR */}
                     <div
-                      className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'diamond_color' ? 'bg-[#f8f8f8]' : ''}`}
+                      className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong  hover:bg-stone ${isFilterOpen == 'diamond_color' ? 'bg-stone' : ''}`}
                     >
                       <div
                         className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
@@ -1770,7 +2671,7 @@ export default function DesignYourRingStackPage() {
                       >
                         {diamondColor && diamondColor?.length > 0 && (
                           <FiX
-                            className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
                             onClick={() => {
                               handleFilterChange('diamondColor', []);
                               dispatch(
@@ -1782,84 +2683,19 @@ export default function DesignYourRingStackPage() {
                             }}
                           />
                         )}
-                        <Text size="textmd" as="p" className="font-light text-gray-500">
+                        <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
                           {diamondColor && diamondColor?.length > 0 ? `DIAMOND COLOR (${filtersData?.diamond_color?.length})` : `DIAMOND COLOR`}
                         </Text>
                         {isFilterOpen !== 'diamond_color' ? (
-                          <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('diamond_color')} />
+                          <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('diamond_color')} />
                         ) : (
-                          <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
+                          <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
                         )}
                       </div>
-                      {isFilterOpen === 'diamond_color' && (
-                        <div
-                          ref={FilterDropdownRef}
-                          className="sm:hidden  flex flex-col gap-5 absolute bg-white shadow-md min-w-[290px] top-10 left-0 py-5 px-5 rounded-lg z-[2]"
-                        >
-                          <div className="flex justify-between items-center">
-                            <Text size="textlg" as="p" className="font-medium ">
-                              DIAMOND COLOR
-                            </Text>
-                            <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
-                          </div>
-                          <div className="pb-4">
-                            <div className="flex flex-col gap-3">
-                              {diamondColorFilterMasterRows?.map((item: any, index: number) => {
-                                const isItemSelected = filtersData?.diamond_color?.includes(item.id);
-
-                                return (
-                                  <Checkbox
-                                    checked={isItemSelected}
-                                    key={index}
-                                    onClick={() => {
-                                      const updatedColors = isItemSelected
-                                        ? filtersData?.diamond_color?.filter((colorId: any) => colorId !== item.id)
-                                        : [...(filtersData?.diamond_color || []), item.id];
-                                      handleFilterChange('diamondColor', updatedColors);
-                                      dispatch(
-                                        setFilterData({
-                                          ...filtersData,
-                                          diamond_color: updatedColors,
-                                        }),
-                                      );
-                                    }}
-                                  >
-                                    <Text
-                                      as="p"
-                                      // key={index}
-                                      size="textmd"
-                                      // onClick={() => {
-                                      //   const updatedColors = isItemSelected
-                                      //     ? filtersData?.diamond_color?.filter(
-                                      //         (colorId) => colorId !== item.id
-                                      //       )
-                                      //     : [
-                                      //         ...(filtersData?.diamond_color || []),
-                                      //         item.id,
-                                      //       ];
-
-                                      //   dispatch(
-                                      //     setFilterData({
-                                      //       ...filtersData,
-                                      //       diamond_color: updatedColors,
-                                      //     })
-                                      //   );
-                                      // }}
-                                      className={` font-extralight tracking-[1px]  cursor-pointer ${isItemSelected ? '!font-semibold' : ''}`}
-                                    >
-                                      {item?.name}
-                                    </Text>
-                                  </Checkbox>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                     {/* SHAPE */}
                     <div
-                      className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'shape' ? 'bg-[#f8f8f8]' : ''}`}
+                      className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong  hover:bg-stone ${isFilterOpen == 'shape' ? 'bg-stone' : ''}`}
                     >
                       <div
                         className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
@@ -1867,7 +2703,7 @@ export default function DesignYourRingStackPage() {
                       >
                         {shape && shape?.length > 0 && (
                           <FiX
-                            className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
                             onClick={() => {
                               handleFilterChange('shape', []);
                               dispatch(
@@ -1879,66 +2715,19 @@ export default function DesignYourRingStackPage() {
                             }}
                           />
                         )}
-                        <Text size="textmd" as="p" className="font-light text-gray-500">
+                        <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
                           {shape && shape?.length > 0 ? `SHAPE (${filtersData?.shape?.length})` : `SHAPE`}
                         </Text>
                         {isFilterOpen !== 'shape' ? (
-                          <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('shape')} />
+                          <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('shape')} />
                         ) : (
-                          <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
+                          <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
                         )}
                       </div>
-                      {isFilterOpen == 'shape' && (
-                        <div
-                          ref={FilterDropdownRef}
-                          className="sm:hidden  flex flex-col gap-5 absolute bg-white shadow-md min-w-[290px] top-10 left-0 py-5 px-5 rounded-lg z-[2]"
-                        >
-                          <div className="flex justify-between items-center">
-                            <Text size="textlg" as="p" className="font-medium ">
-                              SHAPE
-                            </Text>
-                            <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
-                          </div>
-                          <div className="pb-4">
-                            <div className="flex flex-col gap-3">
-                              {shapeFilterMasterRows?.map((item: any, index: number) => {
-                                const isItemSelected = filtersData?.shape?.includes(item.id);
-
-                                return (
-                                  <Checkbox
-                                    key={index}
-                                    checked={isItemSelected}
-                                    onClick={() => {
-                                      const updatedShapes = isItemSelected
-                                        ? filtersData?.shape?.filter((shapeId: any) => shapeId !== item.id)
-                                        : [...(filtersData?.shape || []), item.id];
-                                      handleFilterChange('shape', updatedShapes);
-                                      dispatch(
-                                        setFilterData({
-                                          ...filtersData,
-                                          shape: updatedShapes,
-                                        }),
-                                      );
-                                    }}
-                                  >
-                                    <Text
-                                      as="p"
-                                      size="textmd"
-                                      className={` font-extralight tracking-[1px]  cursor-pointer ${isItemSelected ? '!font-semibold' : ''}`}
-                                    >
-                                      {item?.name}
-                                    </Text>
-                                  </Checkbox>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                     {/* CARAT WEIGHT */}
                     <div
-                      className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'carat' ? 'bg-[#f8f8f8]' : ''}`}
+                      className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong  hover:bg-stone ${isFilterOpen == 'carat' ? 'bg-stone' : ''}`}
                     >
                       <div
                         className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
@@ -1946,623 +2735,86 @@ export default function DesignYourRingStackPage() {
                       >
                         {carat && carat?.length > 0 && (
                           <FiX
-                            className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
                             onClick={() => {
-                              const value = [
-                                Math.min(...Object.keys(caratWeight as any).map(Number)),
-                                Math.max(...Object.keys(caratWeight as any).map(Number)),
-                              ];
+                              const value = [caratBounds.min, caratBounds.max];
                               handleFilterChange('carat', value);
                               handleSliderChange(value);
                             }}
                           />
                         )}
-                        <Text size="textmd" as="p" className="font-light text-gray-500">
+                        <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
                           CARAT WEIGHT
                         </Text>
                         {isFilterOpen !== 'carat' ? (
-                          <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('carat')} />
+                          <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('carat')} />
                         ) : (
-                          <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
+                          <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
                         )}
                       </div>
-                      {isFilterOpen == 'carat' && (
-                        <div
-                          ref={FilterDropdownRef}
-                          className="sm:hidden flex flex-col gap-5 absolute bg-white shadow-md min-w-[320px] top-10 left-0 py-5 px-5 rounded-lg z-[2]"
-                        >
-                          <div className="flex justify-between items-center">
-                            <Text size="textlg" as="p" className="font-medium ">
-                              CARAT WEIGHT
-                            </Text>
-                            <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} />
-                          </div>
-                          <div className="w-full px-2 pb-4">
-                            <div className="flex justify-between">
-                              <div className="flex items-center gap-1">
-                                <InputNumber
-                                  size="small"
-                                  min={Math.min(...Object.keys(caratWeight as any).map(Number))}
-                                  max={Math.max(...Object.keys(caratWeight as any).map(Number))}
-                                  style={{ color: 'black' }}
-                                  step={0.01}
-                                  // prefix="$"
-                                  value={selectedFilters?.min_carat ?? Math.min(...Object.keys(caratWeight as any).map(Number))}
-                                  onChange={(value: any) => {
-                                    setSelectedFilters((prevFilters: any) => ({
-                                      ...prevFilters,
-                                      min_carat: value ?? 0,
-                                      // max_price: value[1],
-                                    }));
-                                    handleFilterChange('carat', [value ?? 0, selectedFilters?.max_carat]);
-                                    dispatch(
-                                      setFilterData({
-                                        ...filtersData,
-                                        min_price: value ?? 0,
-                                        // max_price: value[1],
-                                      }),
-                                    );
-                                  }}
-                                />
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <InputNumber
-                                  size="small"
-                                  min={Math.min(...Object.keys(caratWeight as any).map(Number))}
-                                  max={Math.max(...Object.keys(caratWeight as any).map(Number))}
-                                  style={{ color: 'black' }}
-                                  step={0.01}
-                                  // prefix="$"
-                                  // style={{ margin: "0 16px" }}
-                                  value={selectedFilters?.max_carat ?? Math.max(...Object.keys(caratWeight as any).map(Number))}
-                                  onChange={(value: any) => {
-                                    setSelectedFilters((prevFilters: any) => ({
-                                      ...prevFilters,
-                                      // min_price: value[0],
-                                      max_carat: value ?? Math.max(...Object.keys(caratWeight as any).map(Number)) ?? 0,
-                                    }));
-                                    handleFilterChange('carat', [
-                                      selectedFilters?.min_carat,
-                                      selectedFilters?.max_carat ?? Math.max(...Object.keys(caratWeight as any).map(Number)),
-                                    ]);
-                                    dispatch(
-                                      setFilterData({
-                                        ...filtersData,
-                                        // min_price: value[0],
-                                        max_price: value ?? Math.max(...Object.keys(caratWeight as any).map(Number)) ?? 0,
-                                      }),
-                                    );
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <div className="w-full">
-                              <Slider
-                                // marks={caratWeight}
-                                // included={true}
-                                range
-                                step={0.01}
-                                defaultValue={[
-                                  Math.min(...Object.keys(caratWeight as any).map(Number)),
-                                  Math.max(...Object.keys(caratWeight as any).map(Number)),
-                                ]}
-                                value={[selectedFilters.min_carat, selectedFilters.max_carat]}
-                                min={Math.min(...Object.keys(caratWeight as any).map(Number))}
-                                max={Math.max(...Object.keys(caratWeight as any).map(Number))}
-                                style={{ color: '#c5ccb4' }}
-                                onChange={(value: any) => {
-                                  setSelectedFilters((prevFilters: any) => ({
-                                    ...prevFilters,
-                                    min_carat: value[0],
-                                    max_carat: value[1],
-                                  }));
-                                }}
-                                onChangeComplete={(value: any) => {
-                                  handleFilterChange('carat', value);
-                                  handleSliderChange(value);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
-                  </div>
-
-                  <div className="flex absolute top-0 right-0 gap-4 lg:gap-3 2xl:gap-3 md:gap-1 self-stretch min-h-10 md:flex-col">
-                    <div className="flex relative w-[19%] md:pb-2 items-center justify-end gap-4 md:w-full self-start 2xl:gap-1 2xl:w-fit ">
-                      <Select
-                        placeholder={`SORT BY`}
-                        options={dropDownOptions}
-                        defaultValue={dropDownOptions[0]}
-                        value={filtersData.sort_order}
-                        onChange={(option: any) => {
-                          handleFilterChange('sort', option);
-                          dispatch(
-                            setFilterData({
-                              ...filtersData,
-                              sort_order: option,
-                            }),
-                          );
-                        }}
-                        className="sorting-selection !h-8 gap-2.5 w-[126px] whitespace-nowrap placeholder:text-black text-[16px] lg:text-[14px] 2xl:gap-2"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2 text-[14px] text-gray-500 w-[80%]">
-                  {carat && filtersData?.carats?.length > 0 && (
-                    <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                      <p>{carat}</p>
-                      <FiX
-                        className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          const value = [
-                            Math.min(...Object.keys(caratWeight as any).map(Number)),
-                            Math.max(...Object.keys(caratWeight as any).map(Number)),
-                          ];
-                          handleFilterChange('carat', value);
-                          handleSliderChange(value);
-                        }}
-                      />
-                    </div>
-                  )}
-                  {price && filtersData?.min_price && filtersData?.max_price && (
-                    <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                      <p>{`${formatCurrency(filtersData?.min_price)} - ${formatCurrency(filtersData?.max_price)}`}</p>
-                      <FiX
-                        className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          const value = [filters?.price_range?.min_price, filters?.price_range?.max_price];
-                          handleFilterChange('price', value);
-                          dispatch(
-                            setFilterData({
-                              ...filtersData,
-                              min_price: value[0],
-                              max_price: value[1],
-                            }),
-                          );
-                        }}
-                      />
-                    </div>
-                  )}
-                  {gender && filtersData?.gender_category != 3 && (
-                    <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                      <p>{filtersData?.gender_category == 2 ? `Men` : `Women`}</p>
-                      <FiX
-                        className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          handleFilterChange('gender', 3);
-                          dispatch(
-                            setFilterData({
-                              ...filtersData,
-                              gender_category: 3,
-                            }),
-                          );
-                        }}
-                      />
-                    </div>
-                  )}
-                  {/* {diamondType && diamondType !== 'both' && filtersData?.diamond_type != 1 && (
-                    <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                      <p>{filtersData?.diamond_type == 2 ? `Natural Diamonds` : `Lab Grown Diamonds`}</p>
-                      <FiX
-                        className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          handleFilterChange('diamond_type', 1);
-                          dispatch(
-                            setFilterData({
-                              ...filtersData,
-                              diamond_type: 1,
-                            }),
-                          );
-                        }}
-                      />
-                    </div>
-                  )} */}
-                  {masterData
-                    ?.filter((item: any) => filtersData?.subTypes?.includes(item?.id))
-                    ?.map((el: any, i: number) => (
-                      <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                        <p>{el?.name}</p>
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => {
-                            const updatedStyles = filtersData.subTypes.includes(el?.id)
-                              ? filtersData.subTypes.filter((subType: any) => subType !== el?.id)
-                              : [...filtersData.subTypes, el?.id];
-                            handleFilterChange('subTypes', updatedStyles);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                subTypes: updatedStyles,
-                              }),
-                            );
-                          }}
-                        />{' '}
-                      </div>
-                    ))}
-                  {masterData
-                    .filter((item: any) => filtersData?.metal?.includes(item?.id))
-                    .map((el: any, i: number) => (
-                      <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                        <p>{el?.name}</p>
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => {
-                            const updatedMetals = filtersData?.metal?.includes(el?.id)
-                              ? filtersData?.metal?.filter((metalId: any) => metalId !== el?.id)
-                              : [...(filtersData?.metal || []), el?.id];
-                            // setSelectedFilters({ ...selectedFilters, metal: updatedMetals });
-                            handleFilterChange('metal', updatedMetals);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                metal: updatedMetals,
-                              }),
-                            );
-                          }}
-                        />{' '}
-                      </div>
-                    ))}
-                  {masterData
-                    .filter((item: any) => filtersData?.shape?.includes(item?.id))
-                    .map((el: any, i: number) => (
-                      <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                        <p>{el?.name}</p>
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => {
-                            const updatedShapes = filtersData?.shape?.includes(el?.id)
-                              ? filtersData?.shape?.filter((shapeId: any) => shapeId !== el?.id)
-                              : [...(filtersData?.shape || []), el?.id];
-                            handleFilterChange('shape', updatedShapes);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                shape: updatedShapes,
-                              }),
-                            );
-                          }}
-                        />{' '}
-                      </div>
-                    ))}
-                  {masterData
-                    .filter((item: any) => filtersData?.diamond_color?.includes(item?.id))
-                    .map((el: any, i: number) => (
-                      <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                        <p>{el?.name}</p>
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => {
-                            const updatedColors = filtersData?.diamond_color?.includes(el?.id)
-                              ? filtersData?.diamond_color?.filter((colorId: any) => colorId !== el?.id)
-                              : [...(filtersData?.diamond_color || []), el?.id];
-                            handleFilterChange('diamondColor', updatedColors);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                diamond_color: updatedColors,
-                              }),
-                            );
-                          }}
-                        />{' '}
-                      </div>
-                    ))}
-                  {((gender && gender !== 'for_her') || carat || shape || metal || diamondColor || price || subTypes) && (
-                    // ||
-                    // (diamondType && diamondType !== 'both')
-                    <div className="flex items-center gap-2 justify-between w-fit">
-                      <span
-                        className="inline text-gray-400 cursor-pointer pl-1"
-                        onClick={() => {
-                          // router.push(`/${jewelryType}`);
-                          window?.history.replaceState(null, '', `${pathname}`);
-                        }}
+                    {/* SUBSTYLE */}
+                    <div
+                      className={`flex flex-col items-start gap-1 h-fit relative border border-line-strong hover:bg-stone ${isFilterOpen == 'sub_style' ? 'bg-stone' : ''}`}
+                    >
+                      <div
+                        className={`flex relative items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4`}
+                        onClick={() => setIsFilterOpen(isFilterOpen == 'sub_style' ? null : 'sub_style')}
                       >
-                        Reset Filters
-                      </span>
+                        {filtersData.subTypes.length > 0 && (
+                          <FiX
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-white cursor-pointer z-[2]"
+                            onClick={() => {
+                              handleFilterChange('subTypes', []);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  subTypes: [],
+                                }),
+                              );
+                            }}
+                          />
+                        )}
+                        <Text size="textmd" as="p" className="!text-[11px] uppercase tracking-[0.16em] text-ink-soft">
+                          {filtersData.subTypes.length > 0 ? `SUBSTYLE (${filtersData.subTypes.length})` : `SUBSTYLE`}
+                        </Text>
+                        {isFilterOpen !== 'sub_style' ? (
+                          <GoChevronDown className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen('sub_style')} />
+                        ) : (
+                          <GoChevronUp className="h-5 w-5 cursor-pointer text-ink-soft" onClick={() => setIsFilterOpen(null)} />
+                        )}
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div ref={divRef} className={`flex flex-col w-[100%] gap-10 self-start lg:gap-6 sm:w-full relative`}>
-            {isAtTop && productStack?.length !== 0 && (
-              <div className="w-full min-h-[120px] h-fit !sticky top-0 left-0 z-20 border bg-[#f9f9f9] flex justify-center items-center">
-                <div className="flex justify-center items-center gap-5 w-[90%] h-full p-4">
-                  <div className="text-[18px]">Your Ring Stack</div>
-                  <div className="flex items-center gap-4">
-                    {productStack.map((product, index) => (
-                      <div key={index} className="flex items-center gap-0">
-                        <span>{index + 1}.</span>
-                        <Image
-                          src={product.stackable_image ?? '/images/no_images.svg'}
-                          alt={product.productName}
-                          // width={140}
-                          // height={35}
-                          className="!w-[75%] !max-w-[240px] object-contain ml-2"
-                          preview={false}
-                          style={{
-                            mixBlendMode: 'multiply',
+
+                {((gender && gender !== 'for_her') ||
+                  // (diamondType && diamondType !== 'both') ||
+                  carat ||
+                  shape ||
+                  metal ||
+                  diamondColor ||
+                  price ||
+                  subTypes) && (
+                  <div className="flex flex-wrap gap-2 text-[14px] text-ink-soft w-[100%] ">
+                    {carat && filtersData?.carats?.length > 0 && (
+                      <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                        <p>{`${filtersData?.carats?.[0]} - ${filtersData?.carats?.[1]}`}</p>
+                        <FiX
+                          className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                          onClick={() => {
+                            const value = [caratBounds.min, caratBounds.max];
+                            handleFilterChange('carat', value);
+                            handleSliderChange(value);
                           }}
                         />
                       </div>
-                    ))}
-                  </div>
-                  <div className="flex flex-col items-center">
-                    {productStack.map((product, index) => (
-                      <Image
-                        key={index}
-                        src={product.stackable_image ?? '/images/no_images.svg'}
-                        alt={product.productName}
-                        // width={140}
-                        // height={35}
-                        preview={false}
-                        className="!w-[70%] !max-w-[270px] object-contain"
-                        style={{
-                          mixBlendMode: 'multiply',
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div>
-                    <Button
-                      type="default"
-                      className="w-full !text-text_w !bg-secondary lg:text-[18px] sm:px-4 uppercase tracking-[1px] border-2 "
-                      onClick={() => {
-                        sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                    >
-                      Customize
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div className="flex flex-col gap-10 w-full 2xl:px-[50px] xl:px-[50px] lg:px-[30px] md:px-5 sm:px-5">
-              {isLoading && (
-                <>
-                  <div className="w-full flex justify-center items-center min-h-[30vh]">
-                    <LuLoader className="h-10 w-10 animate-spin" />
-                  </div>
-                </>
-              )}
-              {!isLoading && products?.length === 0 && (
-                <div className="px-8 w-full flex flex-col items-center justify-center gap-[10px] lg:ml-0 md:ml-0 sm:gap-[30px] min-h-[30vh]">
-                  <p className="text-[22px]">We found no results that match your search criteria.</p>
-                  <p className="text-[22px]">
-                    Please expand your search or
-                    <span
-                      className="inline underline cursor-pointer pl-1"
-                      onClick={() => {
-                        // router.push(`/${jewelryType}`);
-                        window?.history.replaceState(null, '', `${pathname}`);
-                      }}
-                    >
-                      reset your filters
-                    </span>
-                    .
-                  </p>
-                </div>
-              )}
-              {!isLoading && products?.length > 0 && (
-                <div className="w-full flex flex-col items-center">
-                  <div className="w-full grid grid-cols-4 gap-4 mb-4 sm:mb-2 md:grid-cols-3 sm:grid-cols-2 sm:gap-2">
-                    {chunkedData?.map((chunk: any, index: number) => (
-                      <div key={index} className="col-span-1">
-                        <ProductProfile {...chunk} is_stackable={true} isStatic={true} key={'group2652' + index} className={`w-full`} />
-                        {/* <ChunkComponent key={index} chunk={chunk} index={index} bannerData={[]} /> */}
-                      </div>
-                    ))}
-                  </div>
-                  {isLoadingMore && (
-                    <div className="w-full flex justify-center items-center py-4">
-                      <LuLoader className="h-8 w-8 animate-spin" />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile + Tab screen */}
-      <div className="md:!flex !hidden justify-center border-b border-solid border-[#3b3b3b] py-14 lg:py-10 md:py-5 sm:py-4">
-        <div className="container-xs !flex flex-col px-5 sm:px-3">
-          <div className="flex items-start justify-between flex-wrap">
-            <div className="min-h-[280px] mb-5 w-full bg-[#f9f9f9] flex justify-center items-center">
-              {productStack?.length == 0 ? (
-                <div className="w-full flex sm:flex-col py-5 items-center justify-center h-full gap-5">
-                  <div className="flex flex-col items-center justify-center gap-3 w-2/3">
-                    <Text size="text5xl" as="p" className="uppercase flex items-end text-center justify-center">
-                      Design Your Ring Stack
-                    </Text>
-                    <Text size="textxl" as="p" className="text-center flex items-end justify-center">
-                      Design your own stack of lab-grown diamond rings. Layer up to 4 styles of your choice!
-                    </Text>
-                  </div>
-                </div>
-              ) : (
-                <div className="w-full flex flex-col items-center justify-center">
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
-                    modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
-                  >
-                    <SortableContext items={productStack.map((p) => p.stackId)} strategy={verticalListSortingStrategy}>
-                      <div className="min-h-[240px] w-full h-full relative flex items-center justify-center">
-                        <div className="flex flex-col items-center justify-center w-[180px] max-w-[500px]">
-                          {productStack.map((product) => (
-                            <SortableImage key={product.stackId} product={product} />
-                          ))}
-                          <div className="pointer-events-auto absolute top-4 right-4 z-30 sm:top-1 sm:right-1 p-1">
-                            <button
-                              type="button"
-                              aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-                              className="flex min-h-[44px] min-w-[44px] cursor-pointer touch-manipulation items-center justify-center rounded-sm border-0 bg-transparent p-0 text-primary [-webkit-tap-highlight-color:transparent]"
-                              onPointerDown={(e) => e.stopPropagation()}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                void handleAddtoWishlist();
-                              }}
-                            >
-                              {isInWishlist ? (
-                                <FaHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
-                              ) : (
-                                <FaRegHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-
-                  <div className="w-full flex flex-col h-full items-center bg-white ">
-                    <div className="w-full flex flex-col items-center justify-between mb-5">
-                      <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={handleDragEnd}
-                        modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
-                      >
-                        <SortableContext items={productStack?.map((item) => item.stackId)} strategy={verticalListSortingStrategy}>
-                          {productStack?.map((product) => (
-                            <SortableItem key={product.stackId} product={product} selectedRing={selectedRing} />
-                          ))}
-                        </SortableContext>
-                        <div className="min-h-16 w-full mt-5 flex md:flex-col md:gap-2 sm:flex-col justify-between sm:gap-2">
-                          <div className="md:w-full flex md:flex-row sm:flex-row flex-col items-start gap-[10px] md:gap-[10px] self-stretch relative">
-                            <div className="flex items-center justify-between gap-5 self-stretch">
-                              <Text size="textmd" className="!font-light !font-sans sm:text-[14px]">
-                                RING SIZE
-                              </Text>
-                            </div>
-
-                            <div className="w-full md:w-fit">
-                              <div className="flex gap-[10px] self-stretch">
-                                <Select
-                                  // showSearch
-                                  className={`!w-[150px] ${errorMessage ? '!outline !outline-red-500' : ''}`}
-                                  placeholder="Select a Ring Size"
-                                  defaultValue={ringSizeMaster?.[0]?.value}
-                                  value={selectedRing}
-                                  onChange={(value: number | string) => {
-                                    setSelectedRing(value);
-                                  }}
-                                  options={ringSizeMaster}
-                                />
-                              </div>
-                              {errorMessage && (
-                                <div className="relative">
-                                  <Text className="!text-[10px] text-nowrap absolute" style={{ color: 'red', marginTop: '8px' }}>
-                                    {errorMessage}
-                                  </Text>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          <div className="h-full w-2/3 md:w-full flex sm:flex-col justify-end sm:justify-normal md:justify-between items-center px-3 md:px-0 sm:gap-2 gap-5">
-                            <div className="flex sm:w-full mt-2 items-center sm:text-[14px] gap-2 sm:gap-2">
-                              Total Price:
-                              {productStack?.some((prod) => prod?.discount_value) && (
-                                <Text size="textlg" as="p" className="!font-castoro tracking-[0.44px] md:!text-[20px] sm:!text-[16px]">
-                                  {formatCurrency(
-                                    productStack?.reduce((accumulator, currentValue: any) => {
-                                      const selectedRingId = ringSizeMasterData?.find((el: any) => el?.name == selectedRing)?.id;
-                                      const ringPrice = getPriceViaRingAndMetal(selectedRingId, currentValue?.metal_type_id);
-                                      return (
-                                        accumulator +
-                                        ringPrice +
-                                        (currentValue?.discounted_price ? +currentValue?.discounted_price : +currentValue?.productPrice)
-                                      );
-                                    }, 0),
-                                  )}
-                                </Text>
-                              )}
-                              <Text
-                                size="textlg"
-                                as="p"
-                                className={`!font-castoro ${productStack?.some((prod) => prod?.discount_value) ? 'line-through text-gray-400 !text-[13px] md:!text-[15px] sm:!text-[12px]' : ''}`}
-                              >
-                                {formatCurrency(
-                                  productStack?.reduce((accumulator, currentValue: any) => {
-                                    const selectedRingId = ringSizeMasterData?.find((el: any) => el?.name == selectedRing)?.id;
-                                    const ringPrice = getPriceViaRingAndMetal(selectedRingId, currentValue?.metal_type_id);
-                                    return accumulator + +currentValue?.productPrice + ringPrice;
-                                  }, 0),
-                                )}
-                              </Text>
-                            </div>
-                            <Button
-                              type="default"
-                              className="w-1/3 md:w-1/2 sm:w-full !text-text_w !bg-secondary lg:text-[18px] sm:px-4 uppercase tracking-[1px] mt-1 border-2 "
-                              loading={loading}
-                              onClick={handleAddtocart}
-                              disabled={count < 1}
-                            >
-                              Add to Cart
-                            </Button>
-                          </div>
-                        </div>
-                      </DndContext>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className=" flex flex-col gap-3 items-start justify-between w-full ">
-              <div className="relative">
-                <div className="flex max-w-[95vw] w-[100%] gap-5 lg:gap-3 md:gap-3 sm:gap-3 overflow-x-auto pb-2 text-nowrap">
-                  {/* GENDER  */}
-                  <>
-                    {/* <div
-                    className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'gender' ? 'bg-[#f8f8f8]' : ''}`}
-                  >
-                    <div
-                      className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
-                      onClick={() => setIsFilterOpen(isFilterOpen === 'gender' ? null : 'gender')}
-                    >
-                      {gender && gender?.length > 0 && (
+                    )}
+                    {price && filtersData?.min_price && filtersData?.max_price && (
+                      <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                        <p>{`${formatCurrency(filtersData?.min_price)} - ${formatCurrency(filtersData?.max_price)}`}</p>
                         <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
-                          onClick={() => {
-                            handleFilterChange('gender', 3);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                gender_category: 3,
-                              }),
-                            );
-                          }}
-                        />
-                      )}
-                      <Text size="textmd" as="p" className="font-light text-gray-500">
-                        {`GENDER ${filtersData?.gender_category == 2 ? `(Men)` : filtersData?.gender_category == 3 ? `(Women)` : ''}`}
-                      </Text>
-                      {isFilterOpen !== 'gender' ? (
-                        <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('gender')} />
-                      ) : (
-                        <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
-                      )}
-                    </div>
-                  </div> */}
-                  </>
-                  {/* PRICE */}
-                  <div
-                    className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'price' ? 'bg-[#f8f8f8]' : ''}`}
-                  >
-                    <div
-                      className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
-                      onClick={() => setIsFilterOpen(isFilterOpen == 'price' ? null : 'price')}
-                    >
-                      {price && price?.length > 0 && (
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
+                          className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
                           onClick={() => {
                             const value = [filters?.price_range?.min_price, filters?.price_range?.max_price];
                             handleFilterChange('price', value);
@@ -2575,271 +2827,30 @@ export default function DesignYourRingStackPage() {
                             );
                           }}
                         />
-                      )}
-                      <Text size="textmd" as="p" className="font-light text-gray-500 ">
-                        PRICE
-                      </Text>
-                      {isFilterOpen !== 'price' ? (
-                        <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('price')} />
-                      ) : (
-                        <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
-                      )}
-                    </div>
-                  </div>
-                  {/* METAL */}
-                  <div
-                    className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'metal' ? 'bg-[#f8f8f8]' : ''}`}
-                  >
-                    <div
-                      className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
-                      onClick={() => setIsFilterOpen(isFilterOpen == 'metal' ? null : 'metal')}
-                    >
-                      {metal && metal?.length > 0 && (
+                      </div>
+                    )}
+                    {gender && gender !== 'for_her' && filtersData?.gender_category != 3 && (
+                      <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                        <p>{filtersData?.gender_category == 2 ? `Men` : `Women`}</p>
                         <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
+                          className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
                           onClick={() => {
-                            handleFilterChange('metal', []);
+                            handleFilterChange('gender', 3);
                             dispatch(
                               setFilterData({
                                 ...filtersData,
-                                metal: [],
+                                gender_category: 3,
                               }),
                             );
                           }}
                         />
-                      )}
-                      <Text size="textmd" as="p" className="font-light text-gray-500">
-                        {metal && metal?.length > 0 ? `METAL (${filtersData?.metal?.length})` : `METAL`}
-                      </Text>
-                      {isFilterOpen !== 'metal' ? (
-                        <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('metal')} />
-                      ) : (
-                        <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
-                      )}
-                    </div>
-                  </div>
-                  {/* DIAMOND TYPE */}
-                  {/* <div
-                    className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400  hover:bg-[#f8f8f8] ${isFilterOpen == 'diamond_type' ? 'bg-[#f8f8f8]' : ''}`}
-                  >
-                    <div
-                      className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
-                      onClick={() => setIsFilterOpen(isFilterOpen === 'diamond_type' ? null : 'diamond_type')}
-                    >
-                      {diamondType && diamondType !== 'both' && diamondType?.length > 0 && (
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
-                          onClick={() => {
-                            handleFilterChange('diamond_type', 1);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                gender_category: 1,
-                              }),
-                            );
-                          }}
-                        />
-                      )}
-                      <Text size="textmd" as="p" className="font-light text-gray-500">
-                        {`DIAMOND TYPE ${filtersData?.diamond_type == 2 ? `(Natural)` : filtersData?.diamond_type == 3 ? `(Lab Grown)` : ''}`}
-                      </Text>
-                      {isFilterOpen !== 'diamond_type' ? (
-                        <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('diamond_type')} />
-                      ) : (
-                        <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
-                      )}
-                    </div>
-                  </div> */}
-                  {/* DIAMOND COLOR */}
-                  <div
-                    className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400  hover:bg-[#f8f8f8] ${isFilterOpen == 'diamond_color' ? 'bg-[#f8f8f8]' : ''}`}
-                  >
-                    <div
-                      className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
-                      onClick={() => setIsFilterOpen(isFilterOpen == 'diamond_color' ? null : 'diamond_color')}
-                    >
-                      {diamondColor && diamondColor?.length > 0 && (
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
-                          onClick={() => {
-                            handleFilterChange('diamondColor', []);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                diamond_color: [],
-                              }),
-                            );
-                          }}
-                        />
-                      )}
-                      <Text size="textmd" as="p" className="font-light text-gray-500">
-                        {diamondColor && diamondColor?.length > 0 ? `DIAMOND COLOR (${filtersData?.diamond_color?.length})` : `DIAMOND COLOR`}
-                      </Text>
-                      {isFilterOpen !== 'diamond_color' ? (
-                        <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('diamond_color')} />
-                      ) : (
-                        <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
-                      )}
-                    </div>
-                  </div>
-                  {/* SHAPE */}
-                  <div
-                    className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400  hover:bg-[#f8f8f8] ${isFilterOpen == 'shape' ? 'bg-[#f8f8f8]' : ''}`}
-                  >
-                    <div
-                      className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
-                      onClick={() => setIsFilterOpen(isFilterOpen == 'shape' ? null : 'shape')}
-                    >
-                      {shape && shape?.length > 0 && (
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
-                          onClick={() => {
-                            handleFilterChange('shape', []);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                shape: [],
-                              }),
-                            );
-                          }}
-                        />
-                      )}
-                      <Text size="textmd" as="p" className="font-light text-gray-500">
-                        {shape && shape?.length > 0 ? `SHAPE (${filtersData?.shape?.length})` : `SHAPE`}
-                      </Text>
-                      {isFilterOpen !== 'shape' ? (
-                        <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('shape')} />
-                      ) : (
-                        <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
-                      )}
-                    </div>
-                  </div>
-                  {/* CARAT WEIGHT */}
-                  <div
-                    className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400  hover:bg-[#f8f8f8] ${isFilterOpen == 'carat' ? 'bg-[#f8f8f8]' : ''}`}
-                  >
-                    <div
-                      className="flex items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4"
-                      onClick={() => setIsFilterOpen(isFilterOpen == 'carat' ? null : 'carat')}
-                    >
-                      {carat && carat?.length > 0 && (
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
-                          onClick={() => {
-                            const value = [caratBounds.min, caratBounds.max];
-                            handleFilterChange('carat', value);
-                            handleSliderChange(value);
-                          }}
-                        />
-                      )}
-                      <Text size="textmd" as="p" className="font-light text-gray-500">
-                        CARAT WEIGHT
-                      </Text>
-                      {isFilterOpen !== 'carat' ? (
-                        <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('carat')} />
-                      ) : (
-                        <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
-                      )}
-                    </div>
-                  </div>
-                  {/* SUBSTYLE */}
-                  <div
-                    className={`flex flex-col items-start gap-1 h-fit relative border border-gray-400 hover:bg-[#f8f8f8] ${isFilterOpen == 'sub_style' ? 'bg-[#f8f8f8]' : ''}`}
-                  >
-                    <div
-                      className={`flex relative items-center justify-center  gap-2 self-stretch cursor-pointer py-1 px-4`}
-                      onClick={() => setIsFilterOpen(isFilterOpen == 'sub_style' ? null : 'sub_style')}
-                    >
-                      {filtersData.subTypes.length > 0 && (
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-white cursor-pointer z-[2]"
-                          onClick={() => {
-                            handleFilterChange('subTypes', []);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                subTypes: [],
-                              }),
-                            );
-                          }}
-                        />
-                      )}
-                      <Text size="textmd" as="p" className="font-light text-gray-500">
-                        {filtersData.subTypes.length > 0 ? `SUBSTYLE (${filtersData.subTypes.length})` : `SUBSTYLE`}
-                      </Text>
-                      {isFilterOpen !== 'sub_style' ? (
-                        <GoChevronDown className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen('sub_style')} />
-                      ) : (
-                        <GoChevronUp className="h-5 w-5 cursor-pointer text-gray-500" onClick={() => setIsFilterOpen(null)} />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {((gender && gender !== 'for_her') ||
-                // (diamondType && diamondType !== 'both') ||
-                carat ||
-                shape ||
-                metal ||
-                diamondColor ||
-                price ||
-                subTypes) && (
-                <div className="flex flex-wrap gap-2 text-[14px] text-gray-500 w-[100%] ">
-                  {carat && filtersData?.carats?.length > 0 && (
-                    <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                      <p>{`${filtersData?.carats?.[0]} - ${filtersData?.carats?.[1]}`}</p>
-                      <FiX
-                        className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          const value = [caratBounds.min, caratBounds.max];
-                          handleFilterChange('carat', value);
-                          handleSliderChange(value);
-                        }}
-                      />
-                    </div>
-                  )}
-                  {price && filtersData?.min_price && filtersData?.max_price && (
-                    <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                      <p>{`${formatCurrency(filtersData?.min_price)} - ${formatCurrency(filtersData?.max_price)}`}</p>
-                      <FiX
-                        className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          const value = [filters?.price_range?.min_price, filters?.price_range?.max_price];
-                          handleFilterChange('price', value);
-                          dispatch(
-                            setFilterData({
-                              ...filtersData,
-                              min_price: value[0],
-                              max_price: value[1],
-                            }),
-                          );
-                        }}
-                      />
-                    </div>
-                  )}
-                  {gender && gender !== 'for_her' && filtersData?.gender_category != 3 && (
-                    <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                      <p>{filtersData?.gender_category == 2 ? `Men` : `Women`}</p>
-                      <FiX
-                        className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          handleFilterChange('gender', 3);
-                          dispatch(
-                            setFilterData({
-                              ...filtersData,
-                              gender_category: 3,
-                            }),
-                          );
-                        }}
-                      />
-                    </div>
-                  )}
-                  {/* {diamondType && diamondType !== 'both' && filtersData?.diamond_type != 1 && (
+                      </div>
+                    )}
+                    {/* {diamondType && diamondType !== 'both' && filtersData?.diamond_type != 1 && (
                     <div className="flex items-center gap-2 justify-between w-fit border-r px-2">
                       <p>{filtersData?.diamond_type == 2 ? `Natural` : `Lab Grown`}</p>
                       <FiX
-                        className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
+                        className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
                         onClick={() => {
                           handleFilterChange('diamond_type', 1);
                           dispatch(
@@ -2852,135 +2863,135 @@ export default function DesignYourRingStackPage() {
                       />
                     </div>
                   )} */}
-                  {masterData
-                    .filter((item: any) => filtersData?.subTypes?.includes(item?.id))
-                    .map((el: any, i: number) => (
-                      <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                        <p>{el?.name}</p>
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
+                    {masterData
+                      .filter((item: any) => filtersData?.subTypes?.includes(item?.id))
+                      .map((el: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                          <p>{el?.name}</p>
+                          <FiX
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                            onClick={() => {
+                              const updatedStyles = filtersData.subTypes.includes(el?.id)
+                                ? filtersData.subTypes.filter((subType: any) => subType !== el?.id)
+                                : [...filtersData.subTypes, el?.id];
+                              handleFilterChange('subTypes', updatedStyles);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  subTypes: updatedStyles,
+                                }),
+                              );
+                            }}
+                          />{' '}
+                        </div>
+                      ))}
+                    {masterData
+                      .filter((item: any) => filtersData?.metal?.includes(item?.id))
+                      .map((el: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                          <p>{el?.name}</p>
+                          <FiX
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                            onClick={() => {
+                              const updatedMetals = filtersData?.metal?.includes(el?.id)
+                                ? filtersData?.metal?.filter((metalId: any) => metalId !== el?.id)
+                                : [...(filtersData?.metal || []), el?.id];
+                              // setSelectedFilters({ ...selectedFilters, metal: updatedMetals });
+                              handleFilterChange('metal', updatedMetals);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  metal: updatedMetals,
+                                }),
+                              );
+                            }}
+                          />{' '}
+                        </div>
+                      ))}
+                    {masterData
+                      .filter((item: any) => filtersData?.shape?.includes(item?.id))
+                      .map((el: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                          <p>{el?.name}</p>
+                          <FiX
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                            onClick={() => {
+                              const updatedShapes = filtersData?.shape?.includes(el?.id)
+                                ? filtersData?.shape?.filter((shapeId: any) => shapeId !== el?.id)
+                                : [...(filtersData?.shape || []), el?.id];
+                              handleFilterChange('shape', updatedShapes);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  shape: updatedShapes,
+                                }),
+                              );
+                            }}
+                          />{' '}
+                        </div>
+                      ))}
+                    {masterData
+                      ?.filter((item: any) => filtersData?.diamond_color?.includes(item?.id))
+                      ?.map((el: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
+                          <p>{el?.name}</p>
+                          <FiX
+                            className=" h-[20px] w-[20px] text-ink-soft hover:bg-stone cursor-pointer"
+                            onClick={() => {
+                              const updatedColors = filtersData?.diamond_color?.includes(el?.id)
+                                ? filtersData?.diamond_color?.filter((colorId: any) => colorId !== el?.id)
+                                : [...(filtersData?.diamond_color || []), el?.id];
+                              handleFilterChange('diamondColor', updatedColors);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  diamond_color: updatedColors,
+                                }),
+                              );
+                            }}
+                          />{' '}
+                        </div>
+                      ))}
+                    {((gender && gender !== 'for_her') ||
+                      // (diamondType && diamondType !== 'both') ||
+                      carat ||
+                      shape ||
+                      metal ||
+                      diamondColor ||
+                      price ||
+                      subTypes) && (
+                      <div className="flex items-center gap-2 justify-between w-fit">
+                        <span
+                          className="inline text-ink-faint cursor-pointer pl-1"
                           onClick={() => {
-                            const updatedStyles = filtersData.subTypes.includes(el?.id)
-                              ? filtersData.subTypes.filter((subType: any) => subType !== el?.id)
-                              : [...filtersData.subTypes, el?.id];
-                            handleFilterChange('subTypes', updatedStyles);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                subTypes: updatedStyles,
-                              }),
-                            );
+                            // router.push(`/${jewelryType}`);
+                            window?.history.replaceState(null, '', `${pathname}`);
                           }}
-                        />{' '}
+                        >
+                          Reset Filters
+                        </span>
                       </div>
-                    ))}
-                  {masterData
-                    .filter((item: any) => filtersData?.metal?.includes(item?.id))
-                    .map((el: any, i: number) => (
-                      <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                        <p>{el?.name}</p>
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => {
-                            const updatedMetals = filtersData?.metal?.includes(el?.id)
-                              ? filtersData?.metal?.filter((metalId: any) => metalId !== el?.id)
-                              : [...(filtersData?.metal || []), el?.id];
-                            // setSelectedFilters({ ...selectedFilters, metal: updatedMetals });
-                            handleFilterChange('metal', updatedMetals);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                metal: updatedMetals,
-                              }),
-                            );
-                          }}
-                        />{' '}
-                      </div>
-                    ))}
-                  {masterData
-                    .filter((item: any) => filtersData?.shape?.includes(item?.id))
-                    .map((el: any, i: number) => (
-                      <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                        <p>{el?.name}</p>
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => {
-                            const updatedShapes = filtersData?.shape?.includes(el?.id)
-                              ? filtersData?.shape?.filter((shapeId: any) => shapeId !== el?.id)
-                              : [...(filtersData?.shape || []), el?.id];
-                            handleFilterChange('shape', updatedShapes);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                shape: updatedShapes,
-                              }),
-                            );
-                          }}
-                        />{' '}
-                      </div>
-                    ))}
-                  {masterData
-                    ?.filter((item: any) => filtersData?.diamond_color?.includes(item?.id))
-                    ?.map((el: any, i: number) => (
-                      <div key={i} className="flex items-center gap-2 justify-between w-fit border-r px-2">
-                        <p>{el?.name}</p>
-                        <FiX
-                          className=" h-[20px] w-[20px] rounded-full text-gray-500 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => {
-                            const updatedColors = filtersData?.diamond_color?.includes(el?.id)
-                              ? filtersData?.diamond_color?.filter((colorId: any) => colorId !== el?.id)
-                              : [...(filtersData?.diamond_color || []), el?.id];
-                            handleFilterChange('diamondColor', updatedColors);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                diamond_color: updatedColors,
-                              }),
-                            );
-                          }}
-                        />{' '}
-                      </div>
-                    ))}
-                  {((gender && gender !== 'for_her') ||
-                    // (diamondType && diamondType !== 'both') ||
-                    carat ||
-                    shape ||
-                    metal ||
-                    diamondColor ||
-                    price ||
-                    subTypes) && (
-                    <div className="flex items-center gap-2 justify-between w-fit">
-                      <span
-                        className="inline text-gray-400 cursor-pointer pl-1"
-                        onClick={() => {
-                          // router.push(`/${jewelryType}`);
-                          window?.history.replaceState(null, '', `${pathname}`);
-                        }}
-                      >
-                        Reset Filters
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className="relative self-end mb-3">
-                <Select
-                  placeholder={`SORT BY`}
-                  defaultValue={dropDownOptions[0]}
-                  options={dropDownOptions}
-                  value={filtersData.sort_order}
-                  onChange={(option: any) => {
-                    handleFilterChange('sort', option);
-                    dispatch(
-                      setFilterData({
-                        ...filtersData,
-                        sort_order: option.value,
-                      }),
-                    );
-                  }}
-                  className="sorting-selection gap-2.5 min-w-[110px] whitespace-nowrap placeholder:!text-black text-[16px] lg:text-[14px] 2xl:gap-2 sm:!h-[29px] sm:min-w-[97px] sm:placeholder:text-[14px]"
-                />
-                {/* {isFasterPopup && isFasterPopupShow && products?.length > 0 && (
+                    )}
+                  </div>
+                )}
+                <div className="relative self-end mb-3">
+                  <Select
+                    placeholder={`SORT BY`}
+                    defaultValue={dropDownOptions[0]}
+                    options={dropDownOptions}
+                    value={filtersData.sort_order}
+                    onChange={(option: any) => {
+                      handleFilterChange('sort', option);
+                      dispatch(
+                        setFilterData({
+                          ...filtersData,
+                          sort_order: option.value,
+                        }),
+                      );
+                    }}
+                    className="sorting-selection gap-2.5 min-w-[110px] whitespace-nowrap placeholder:!text-black text-[16px] lg:text-[14px] 2xl:gap-2 sm:!h-[29px] sm:min-w-[97px] sm:placeholder:text-[14px]"
+                  />
+                  {/* {isFasterPopup && isFasterPopupShow && products?.length > 0 && (
                   <div className="absolute top-[45px] right-0 z-[11] w-[276px]">
                     <div className="flex items-center relative bg-white gap-2 p-2 py-3 rounded-md shadow-[0px_0px_6px_rgba(0,0,0,0.2)] before:content-[''] before:rotate-45 before:absolute before:-top-[9px] before:right-[65px] before:border-t before:border-l  before:w-[16px] before:h-[16px] before:bg-white before:clip-path-[polygon(100%_0,0_0,100%_100%)]">
                       <div className="w-1/6 flex items-center justify-center">
@@ -3013,259 +3024,259 @@ export default function DesignYourRingStackPage() {
                     </div>
                   </div>
                 )} */}
+                </div>
               </div>
             </div>
-          </div>
-          {/* filters sideMenu started */}
-          {windowWidth <= 768 && (
-            <Drawer
-              placement="bottom"
-              closable
-              onClose={() => setIsFilterOpen(null)}
-              rootClassName="ring-stack-mobile-filter-drawer"
-              zIndex={10001}
-              getContainer={typeof document !== 'undefined' ? document.body : undefined}
-              open={isFilterOpen !== null}
-              closeIcon={
-                <div className="flex gap-1 justify-between items-center pl-4">
-                  <FiX className=" cursor-pointer text-gray-400" />
-                  <Text size="textxl" as="p" className="font-medium text-gray-500">
-                    Close
-                  </Text>
-                </div>
-              }
-              key="bottom"
-              // fit-content breaks bottom-sheet height on iOS Safari (often resolves to 0 / off-screen).
-              height="85dvh"
-              styles={{
-                wrapper: {
-                  maxHeight: '50dvh',
-                  minHeight: 'min(40dvh, 320px)',
-                },
-                body: {
-                  maxHeight: '78dvh',
-                  minHeight: 0,
-                  overflowY: 'auto',
-                  WebkitOverflowScrolling: 'touch',
-                  paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
-                },
-              }}
-              extra={
-                <span
-                  className="inline text-gray-400 cursor-pointer pl-1"
-                  onClick={() => {
-                    // router.push(`/${jewelryType}`);
-                    window?.history.replaceState(null, '', `/${pathname}`);
-                  }}
-                >
-                  Reset Filters
-                </span>
-              }
-            >
-              <div className="flex !min-h-fit flex-wrap w-[100%] gap-5 lg:gap-3 md:gap-3 sm:gap-3 mb-[55px]">
-                {/* GENDER  */}
-                {isFilterOpen === 'gender' && (
-                  <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
-                    <div className="flex justify-between items-center">
-                      <Text size="textxl" as="p" className="font-medium">
-                        GENDER
-                      </Text>
-                      {/* <FiX className=" h-[18px] w-[18px] cursor-pointer text-gray-700" onClick={() => setIsFilterOpen(null)} /> */}
-                    </div>
-                    <div className="radio-group-plp ">
-                      <Radio.Group
-                        className="!flex !flex-col w-full justify-evenly lg:!grid lg:!grid-cols-3 lg:gap-0 gap-3 lg:!text-[10px]"
-                        onChange={(e: RadioChangeEvent) => {
-                          handleFilterChange('gender', e.target.value);
-                          dispatch(
-                            setFilterData({
-                              ...filtersData,
-                              gender_category: e.target.value,
-                            }),
-                          );
-                        }}
-                        value={filtersData.gender_category}
-                      >
-                        <Radio value={1} className="lg:my-auto lg:self-center lg:!text-[11px]">
-                          BOTH
-                        </Radio>
-                        <Radio value={2} className="lg:my-auto lg:self-center lg:!text-[11px] lg:!pr-0">
-                          FOR HIM
-                        </Radio>
-                        <Radio value={3} className="lg:my-auto lg:self-center lg:!text-[11px] lg:!pr-0">
-                          FOR HER
-                        </Radio>
-                      </Radio.Group>
-                    </div>
+            {/* filters sideMenu started */}
+            {windowWidth <= 768 && (
+              <Drawer
+                placement="bottom"
+                closable
+                onClose={() => setIsFilterOpen(null)}
+                rootClassName="ring-stack-mobile-filter-drawer"
+                zIndex={10001}
+                getContainer={typeof document !== 'undefined' ? document.body : undefined}
+                open={isFilterOpen !== null}
+                closeIcon={
+                  <div className="flex gap-1 justify-between items-center pl-4">
+                    <FiX className=" cursor-pointer text-ink-faint" />
+                    <Text size="textxl" as="p" className="font-medium text-ink-soft">
+                      Close
+                    </Text>
                   </div>
-                )}
-                {/* PRICE */}
-                {isFilterOpen === 'price' && (
-                  <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
-                    <div className="flex justify-between items-center">
-                      <Text size="textxl" as="p" className="font-medium ">
-                        PRICE
-                      </Text>
-                      {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
-                    </div>
-                    <div className="w-full">
-                      <div className="flex justify-between">
-                        <div className="flex items-center gap-1">
-                          <p>{filters?.currency_symbol}</p>
-                          <InputNumber
-                            size="small"
-                            min={0}
-                            max={filters?.price_range?.max_price}
-                            style={{ color: 'black' }}
-                            // prefix="$"
-                            value={selectedFilters?.min_price}
-                            onChange={(value: any) => {
-                              setSelectedFilters((prevFilters: any) => ({
-                                ...prevFilters,
-                                min_price: value ?? 0,
-                                // max_price: value[1],
-                              }));
-                              handleFilterChange('price', [value ?? 0, selectedFilters?.max_price]);
-
-                              dispatch(
-                                setFilterData({
-                                  ...filtersData,
-                                  min_price: value ?? filters?.price_range?.min_price ?? 0,
-                                  // max_price: value[1],
-                                }),
-                              );
-                            }}
-                          />
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <p>{filters?.currency_symbol}</p>
-                          <InputNumber
-                            size="small"
-                            min={0}
-                            max={filters?.price_range?.max_price}
-                            style={{ color: 'black' }}
-                            // prefix="$"
-                            // style={{ margin: "0 16px" }}
-                            value={selectedFilters?.max_price}
-                            onChange={(value: any) => {
-                              setSelectedFilters((prevFilters: any) => ({
-                                ...prevFilters,
-                                // min_price: value[0],
-                                max_price: value ?? filters?.price_range?.max_price ?? 0,
-                              }));
-                              handleFilterChange('price', [selectedFilters?.min_price, value ?? filters?.price_range?.max_price ?? 0]);
-                              dispatch(
-                                setFilterData({
-                                  ...filtersData,
-                                  // min_price: value[0],
-                                  max_price: value ?? filters?.price_range?.max_price ?? 0,
-                                }),
-                              );
-                            }}
-                          />
-                        </div>
+                }
+                key="bottom"
+                // fit-content breaks bottom-sheet height on iOS Safari (often resolves to 0 / off-screen).
+                height="85dvh"
+                styles={{
+                  wrapper: {
+                    maxHeight: '50dvh',
+                    minHeight: 'min(40dvh, 320px)',
+                  },
+                  body: {
+                    maxHeight: '78dvh',
+                    minHeight: 0,
+                    overflowY: 'auto',
+                    WebkitOverflowScrolling: 'touch',
+                    paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
+                  },
+                }}
+                extra={
+                  <span
+                    className="inline text-ink-faint cursor-pointer pl-1"
+                    onClick={() => {
+                      // router.push(`/${jewelryType}`);
+                      window?.history.replaceState(null, '', `/${pathname}`);
+                    }}
+                  >
+                    Reset Filters
+                  </span>
+                }
+              >
+                <div className="flex !min-h-fit flex-wrap w-[100%] gap-5 lg:gap-3 md:gap-3 sm:gap-3 mb-[55px]">
+                  {/* GENDER  */}
+                  {isFilterOpen === 'gender' && (
+                    <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
+                      <div className="flex justify-between items-center">
+                        <Text size="textxl" as="p" className="font-medium">
+                          GENDER
+                        </Text>
+                        {/* <FiX className=" h-[18px] w-[18px] cursor-pointer text-gray-700" onClick={() => setIsFilterOpen(null)} /> */}
                       </div>
-                      <div className="w-full px-0">
-                        <Slider
-                          range
-                          min={filters?.price_range?.min_price}
-                          max={filters?.price_range?.max_price}
-                          defaultValue={[filters?.price_range?.min_price, filters?.price_range?.max_price]}
-                          value={[selectedFilters.min_price, selectedFilters.max_price]}
-                          onChange={(value: any) => {
-                            // setTimeout(() => {
-                            setSelectedFilters((prevFilters: any) => ({
-                              ...prevFilters,
-                              min_price: value[0],
-                              max_price: value[1],
-                            }));
-                            // }, 300);
-                          }}
-                          onChangeComplete={(value: any) => {
-                            // setTimeout(() => {
-                            handleFilterChange('price', value);
+                      <div className="radio-group-plp ">
+                        <Radio.Group
+                          className="!flex !flex-col w-full justify-evenly lg:!grid lg:!grid-cols-3 lg:gap-0 gap-3 lg:!text-[10px]"
+                          onChange={(e: RadioChangeEvent) => {
+                            handleFilterChange('gender', e.target.value);
                             dispatch(
                               setFilterData({
                                 ...filtersData,
-                                min_price: value[0],
-                                max_price: value[1],
+                                gender_category: e.target.value,
                               }),
                             );
-                            // }, 300);
                           }}
-                        />
+                          value={filtersData.gender_category}
+                        >
+                          <Radio value={1} className="lg:my-auto lg:self-center lg:!text-[11px]">
+                            BOTH
+                          </Radio>
+                          <Radio value={2} className="lg:my-auto lg:self-center lg:!text-[11px] lg:!pr-0">
+                            FOR HIM
+                          </Radio>
+                          <Radio value={3} className="lg:my-auto lg:self-center lg:!text-[11px] lg:!pr-0">
+                            FOR HER
+                          </Radio>
+                        </Radio.Group>
                       </div>
                     </div>
-                  </div>
-                )}
-                {/* METAL */}
-                {isFilterOpen == 'metal' && (
-                  <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
-                    <div className="flex justify-between items-center">
-                      <Text size="textlg" as="p" className="font-medium ">
-                        METAL
-                      </Text>
-                      {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
+                  )}
+                  {/* PRICE */}
+                  {isFilterOpen === 'price' && (
+                    <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
+                      <div className="flex justify-between items-center">
+                        <Text size="textxl" as="p" className="font-medium ">
+                          PRICE
+                        </Text>
+                        {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
+                      </div>
+                      <div className="w-full">
+                        <div className="flex justify-between">
+                          <div className="flex items-center gap-1">
+                            <p>{filters?.currency_symbol}</p>
+                            <InputNumber
+                              size="small"
+                              min={0}
+                              max={filters?.price_range?.max_price}
+                              style={{ color: 'black' }}
+                              // prefix="$"
+                              value={selectedFilters?.min_price}
+                              onChange={(value: any) => {
+                                setSelectedFilters((prevFilters: any) => ({
+                                  ...prevFilters,
+                                  min_price: value ?? 0,
+                                  // max_price: value[1],
+                                }));
+                                handleFilterChange('price', [value ?? 0, selectedFilters?.max_price]);
+
+                                dispatch(
+                                  setFilterData({
+                                    ...filtersData,
+                                    min_price: value ?? filters?.price_range?.min_price ?? 0,
+                                    // max_price: value[1],
+                                  }),
+                                );
+                              }}
+                            />
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <p>{filters?.currency_symbol}</p>
+                            <InputNumber
+                              size="small"
+                              min={0}
+                              max={filters?.price_range?.max_price}
+                              style={{ color: 'black' }}
+                              // prefix="$"
+                              // style={{ margin: "0 16px" }}
+                              value={selectedFilters?.max_price}
+                              onChange={(value: any) => {
+                                setSelectedFilters((prevFilters: any) => ({
+                                  ...prevFilters,
+                                  // min_price: value[0],
+                                  max_price: value ?? filters?.price_range?.max_price ?? 0,
+                                }));
+                                handleFilterChange('price', [selectedFilters?.min_price, value ?? filters?.price_range?.max_price ?? 0]);
+                                dispatch(
+                                  setFilterData({
+                                    ...filtersData,
+                                    // min_price: value[0],
+                                    max_price: value ?? filters?.price_range?.max_price ?? 0,
+                                  }),
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="w-full px-0">
+                          <Slider
+                            range
+                            min={filters?.price_range?.min_price}
+                            max={filters?.price_range?.max_price}
+                            defaultValue={[filters?.price_range?.min_price, filters?.price_range?.max_price]}
+                            value={[selectedFilters.min_price, selectedFilters.max_price]}
+                            onChange={(value: any) => {
+                              // setTimeout(() => {
+                              setSelectedFilters((prevFilters: any) => ({
+                                ...prevFilters,
+                                min_price: value[0],
+                                max_price: value[1],
+                              }));
+                              // }, 300);
+                            }}
+                            onChangeComplete={(value: any) => {
+                              // setTimeout(() => {
+                              handleFilterChange('price', value);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  min_price: value[0],
+                                  max_price: value[1],
+                                }),
+                              );
+                              // }, 300);
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
+                  )}
+                  {/* METAL */}
+                  {isFilterOpen == 'metal' && (
+                    <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
+                      <div className="flex justify-between items-center">
+                        <Text size="textlg" as="p" className="font-medium ">
+                          METAL
+                        </Text>
+                        {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
+                      </div>
 
-                    <div className="pb-4">
-                      <div className="flex flex-col gap-3">
-                        {metalFilterMasterRows.map((item: any, index: number) => {
-                          const isSelected = filtersData?.metal?.includes(item.id);
-                          // const isSelected = selectedFilters?.metal?.includes(item.id);
+                      <div className="pb-4">
+                        <div className="flex flex-col gap-3">
+                          {metalFilterMasterRows.map((item: any, index: number) => {
+                            const isSelected = filtersData?.metal?.includes(item.id);
+                            // const isSelected = selectedFilters?.metal?.includes(item.id);
 
-                          return (
-                            <div key={index}>
-                              <Checkbox
-                                checked={isSelected}
-                                onClick={() => {
-                                  const updatedMetals = isSelected
-                                    ? filtersData?.metal?.filter((metalId: any) => metalId !== item.id)
-                                    : [...(filtersData?.metal || []), item.id];
-                                  // setSelectedFilters({ ...selectedFilters, metal: updatedMetals });
-                                  handleFilterChange('metal', updatedMetals);
-                                  dispatch(
-                                    setFilterData({
-                                      ...filtersData,
-                                      metal: updatedMetals,
-                                    }),
-                                  );
-                                }}
-                              >
-                                <Text
-                                  as="p"
-                                  size="textmd"
-                                  // onClick={() => {
-                                  //   const updatedMetals = isSelected
-                                  //     ? filtersData?.metal?.filter(
-                                  //         (metalId) => metalId !== item.id
-                                  //       )
-                                  //     : [
-                                  //         ...(filtersData?.metal || []),
-                                  //         item.id,
-                                  //       ];
-
-                                  //   dispatch(
-                                  //     setFilterData({
-                                  //       ...filtersData,
-                                  //       metal: updatedMetals,
-                                  //     })
-                                  //   );
-                                  // }}
-                                  className={` font-extralight tracking-[1px]  cursor-pointer ${isSelected ? '!font-bold text-[#18381d]' : ''}`}
+                            return (
+                              <div key={index}>
+                                <Checkbox
+                                  checked={isSelected}
+                                  onClick={() => {
+                                    const updatedMetals = isSelected
+                                      ? filtersData?.metal?.filter((metalId: any) => metalId !== item.id)
+                                      : [...(filtersData?.metal || []), item.id];
+                                    // setSelectedFilters({ ...selectedFilters, metal: updatedMetals });
+                                    handleFilterChange('metal', updatedMetals);
+                                    dispatch(
+                                      setFilterData({
+                                        ...filtersData,
+                                        metal: updatedMetals,
+                                      }),
+                                    );
+                                  }}
                                 >
-                                  {item?.name}
-                                </Text>
-                              </Checkbox>
-                            </div>
-                          );
-                        })}
+                                  <Text
+                                    as="p"
+                                    size="textmd"
+                                    // onClick={() => {
+                                    //   const updatedMetals = isSelected
+                                    //     ? filtersData?.metal?.filter(
+                                    //         (metalId) => metalId !== item.id
+                                    //       )
+                                    //     : [
+                                    //         ...(filtersData?.metal || []),
+                                    //         item.id,
+                                    //       ];
+
+                                    //   dispatch(
+                                    //     setFilterData({
+                                    //       ...filtersData,
+                                    //       metal: updatedMetals,
+                                    //     })
+                                    //   );
+                                    // }}
+                                    className={` text-ink-soft cursor-pointer ${isSelected ? '!font-semibold !text-ink' : ''}`}
+                                  >
+                                    {item?.name}
+                                  </Text>
+                                </Checkbox>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-                {/* DIAMOND TYPE  */}
-                {/* {isFilterOpen === 'diamond_type' && (
+                  )}
+                  {/* DIAMOND TYPE  */}
+                  {/* {isFilterOpen === 'diamond_type' && (
                   <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
                     <div className="flex justify-between items-center">
                       <Text size="textxl" as="p" className="font-medium">
@@ -3299,102 +3310,58 @@ export default function DesignYourRingStackPage() {
                     </div>
                   </div>
                 )} */}
-                {/* DIAMOND COLOR */}
-                {isFilterOpen === 'diamond_color' && (
-                  <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full h-full bg-white">
-                    <div className="flex justify-between items-center">
-                      <Text size="textxl" as="p" className="font-medium ">
-                        DIAMOND COLOR
-                      </Text>
-                      {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
-                    </div>
-                    <div className="flex flex-col gap-3 max-h-[50vh] scrollbar-visible overflow-y-auto pb-4">
-                      {diamondColorFilterMasterRows?.map((item: any, index: number) => {
-                        const isItemSelected = filtersData?.diamond_color?.includes(item.id);
-
-                        return (
-                          <Checkbox
-                            checked={isItemSelected}
-                            key={index}
-                            onClick={() => {
-                              const updatedColors = isItemSelected
-                                ? filtersData?.diamond_color?.filter((colorId: any) => colorId !== item.id)
-                                : [...(filtersData?.diamond_color || []), item.id];
-                              handleFilterChange('diamondColor', updatedColors);
-                              dispatch(
-                                setFilterData({
-                                  ...filtersData,
-                                  diamond_color: updatedColors,
-                                }),
-                              );
-                            }}
-                          >
-                            <Text
-                              as="p"
-                              // key={index}
-                              size="textlg"
-                              // onClick={() => {
-                              //   const updatedColors = isItemSelected
-                              //     ? filtersData?.diamond_color?.filter(
-                              //         (colorId) => colorId !== item.id
-                              //       )
-                              //     : [
-                              //         ...(filtersData?.diamond_color || []),
-                              //         item.id,
-                              //       ];
-
-                              //   dispatch(
-                              //     setFilterData({
-                              //       ...filtersData,
-                              //       diamond_color: updatedColors,
-                              //     })
-                              //   );
-                              // }}
-                              className={` font-extralight tracking-[1px]  cursor-pointer ${isItemSelected ? '!font-semibold' : ''}`}
-                            >
-                              {item?.name}
-                            </Text>
-                          </Checkbox>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-                {/* SHAPE */}
-                {isFilterOpen == 'shape' && (
-                  <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
-                    <div className="flex justify-between items-center">
-                      <Text size="textlg" as="p" className="font-medium ">
-                        SHAPE
-                      </Text>
-                      {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
-                    </div>
-                    <div className="pb-4">
-                      <div className="flex flex-col gap-3">
-                        {shapeFilterMasterRows?.map((item: any, index: number) => {
-                          const isItemSelected = filtersData?.shape?.includes(item.id);
+                  {/* DIAMOND COLOR */}
+                  {isFilterOpen === 'diamond_color' && (
+                    <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full h-full bg-white">
+                      <div className="flex justify-between items-center">
+                        <Text size="textxl" as="p" className="font-medium ">
+                          DIAMOND COLOR
+                        </Text>
+                        {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
+                      </div>
+                      <div className="flex flex-col gap-3 max-h-[50vh] scrollbar-visible overflow-y-auto pb-4">
+                        {diamondColorFilterMasterRows?.map((item: any, index: number) => {
+                          const isItemSelected = filtersData?.diamond_color?.includes(item.id);
 
                           return (
                             <Checkbox
-                              key={index}
                               checked={isItemSelected}
+                              key={index}
                               onClick={() => {
-                                const updatedShapes = isItemSelected
-                                  ? filtersData?.shape?.filter((shapeId: any) => shapeId !== item.id)
-                                  : [...(filtersData?.shape || []), item.id];
-                                handleFilterChange('shape', updatedShapes);
+                                const updatedColors = isItemSelected
+                                  ? filtersData?.diamond_color?.filter((colorId: any) => colorId !== item.id)
+                                  : [...(filtersData?.diamond_color || []), item.id];
+                                handleFilterChange('diamondColor', updatedColors);
                                 dispatch(
                                   setFilterData({
                                     ...filtersData,
-                                    shape: updatedShapes,
+                                    diamond_color: updatedColors,
                                   }),
                                 );
                               }}
                             >
                               <Text
                                 as="p"
-                                size="textmd"
-                                className={` font-extralight tracking-[1px]  cursor-pointer ${isItemSelected ? '!font-semibold' : ''}`}
+                                // key={index}
+                                size="textlg"
+                                // onClick={() => {
+                                //   const updatedColors = isItemSelected
+                                //     ? filtersData?.diamond_color?.filter(
+                                //         (colorId) => colorId !== item.id
+                                //       )
+                                //     : [
+                                //         ...(filtersData?.diamond_color || []),
+                                //         item.id,
+                                //       ];
+
+                                //   dispatch(
+                                //     setFilterData({
+                                //       ...filtersData,
+                                //       diamond_color: updatedColors,
+                                //     })
+                                //   );
+                                // }}
+                                className={` text-ink-soft cursor-pointer ${isItemSelected ? '!font-semibold !text-ink' : ''}`}
                               >
                                 {item?.name}
                               </Text>
@@ -3403,279 +3370,328 @@ export default function DesignYourRingStackPage() {
                         })}
                       </div>
                     </div>
-                  </div>
-                )}
-                {/* CARAT WEIGHT */}
-                {isFilterOpen == 'carat' && (
-                  <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
-                    <div className="flex justify-between items-center">
-                      <Text size="textlg" as="p" className="font-medium ">
-                        CARAT WEIGHT
-                      </Text>
-                      {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
-                    </div>
-                    <div className="w-full px-2 pb-4">
-                      <div className="flex justify-between">
-                        <div className="flex items-center gap-1">
-                          <InputNumber
-                            size="small"
-                            min={caratBounds.min}
-                            max={caratBounds.max}
-                            style={{ color: 'black' }}
-                            step={0.01}
-                            disabled={!caratBounds.hasRange}
-                            // prefix="$"
-                            value={selectedFilters?.min_carat ?? caratBounds.min}
-                            onChange={(value: any) => {
-                              setSelectedFilters((prevFilters: any) => ({
-                                ...prevFilters,
-                                min_carat: value ?? 0,
-                                // max_price: value[1],
-                              }));
-                              handleFilterChange('carat', [value ?? 0, selectedFilters?.max_carat]);
-                              dispatch(
-                                setFilterData({
-                                  ...filtersData,
-                                  min_price: value ?? 0,
-                                  // max_price: value[1],
-                                }),
-                              );
-                            }}
-                          />
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <InputNumber
-                            size="small"
-                            min={caratBounds.min}
-                            max={caratBounds.max}
-                            style={{ color: 'black' }}
-                            step={0.01}
-                            disabled={!caratBounds.hasRange}
-                            // prefix="$"
-                            // style={{ margin: "0 16px" }}
-                            value={selectedFilters?.max_carat ?? caratBounds.max}
-                            onChange={(value: any) => {
-                              setSelectedFilters((prevFilters: any) => ({
-                                ...prevFilters,
-                                // min_price: value[0],
-                                max_carat: value ?? caratBounds.max ?? 0,
-                              }));
-                              handleFilterChange('carat', [selectedFilters?.min_carat, selectedFilters?.max_carat ?? caratBounds.max]);
-                              dispatch(
-                                setFilterData({
-                                  ...filtersData,
-                                  // min_price: value[0],
-                                  max_price: value ?? caratBounds.max ?? 0,
-                                }),
-                              );
-                            }}
-                          />
-                        </div>
+                  )}
+                  {/* SHAPE */}
+                  {isFilterOpen == 'shape' && (
+                    <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
+                      <div className="flex justify-between items-center">
+                        <Text size="textlg" as="p" className="font-medium ">
+                          SHAPE
+                        </Text>
+                        {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
                       </div>
-                      <div className="w-full">
-                        <Slider
-                          // marks={caratWeight}
-                          // included={true}
-                          range
-                          step={0.01}
-                          disabled={!caratBounds.hasRange}
-                          defaultValue={[caratBounds.min, caratBounds.max]}
-                          value={[selectedFilters.min_carat, selectedFilters.max_carat]}
-                          min={caratBounds.min}
-                          max={caratBounds.max}
-                          style={{ color: '#c5ccb4' }}
-                          onChange={(value: any) => {
-                            setSelectedFilters((prevFilters: any) => ({
-                              ...prevFilters,
-                              min_carat: value[0],
-                              max_carat: value[1],
-                            }));
-                          }}
-                          onChangeComplete={(value: any) => {
-                            handleFilterChange('carat', value);
-                            handleSliderChange(value);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {/* SUBSTYLE */}
-                {isFilterOpen == 'sub_style' && (
-                  <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
-                    <div className="flex justify-between items-center px-2">
-                      <Text size="textlg" as="p" className="font-medium ">
-                        SUBSTYLE
-                      </Text>
-                      {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
-                    </div>
-                    <div className="relative flex flex-col overflow-scroll pr-2 h-fit max-h-[300px] scrollbar-visible">
-                      {filters?.subTypes?.map((item: any, index: number) => (
-                        <div
-                          key={index}
-                          className={`flex gap-5 relative items-center border-b select-none justify-center min-h-10 cursor-pointer ${filtersData.subTypes.includes(item?.id) ? '' : ''}`}
-                          onClick={() => {
-                            const updatedStyles = filtersData.subTypes.includes(item?.id)
-                              ? filtersData.subTypes.filter((subType: any) => subType !== item.id)
-                              : [...filtersData.subTypes, item.id];
-                            handleFilterChange('subTypes', updatedStyles);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                subTypes: updatedStyles,
-                              }),
+                      <div className="pb-4">
+                        <div className="flex flex-col gap-3">
+                          {shapeFilterMasterRows?.map((item: any, index: number) => {
+                            const isItemSelected = filtersData?.shape?.includes(item.id);
+
+                            return (
+                              <Checkbox
+                                key={index}
+                                checked={isItemSelected}
+                                onClick={() => {
+                                  const updatedShapes = isItemSelected
+                                    ? filtersData?.shape?.filter((shapeId: any) => shapeId !== item.id)
+                                    : [...(filtersData?.shape || []), item.id];
+                                  handleFilterChange('shape', updatedShapes);
+                                  dispatch(
+                                    setFilterData({
+                                      ...filtersData,
+                                      shape: updatedShapes,
+                                    }),
+                                  );
+                                }}
+                              >
+                                <Text
+                                  as="p"
+                                  size="textmd"
+                                  className={` text-ink-soft cursor-pointer ${isItemSelected ? '!font-semibold !text-ink' : ''}`}
+                                >
+                                  {item?.name}
+                                </Text>
+                              </Checkbox>
                             );
-                          }}
-                        >
-                          <Image
-                            preview={false}
-                            className="px-0 lg:px-1 !w-10"
-                            fallback="/images/no_images.svg"
-                            src={masterData.find((el: any) => el.id === item.id)?.image?.[0]}
-                            alt={masterData.find((el: any) => el.id === item.id)?.name}
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {/* CARAT WEIGHT */}
+                  {isFilterOpen == 'carat' && (
+                    <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
+                      <div className="flex justify-between items-center">
+                        <Text size="textlg" as="p" className="font-medium ">
+                          CARAT WEIGHT
+                        </Text>
+                        {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
+                      </div>
+                      <div className="w-full px-2 pb-4">
+                        <div className="flex justify-between">
+                          <div className="flex items-center gap-1">
+                            <InputNumber
+                              size="small"
+                              min={caratBounds.min}
+                              max={caratBounds.max}
+                              style={{ color: 'black' }}
+                              step={0.01}
+                              disabled={!caratBounds.hasRange}
+                              // prefix="$"
+                              value={selectedFilters?.min_carat ?? caratBounds.min}
+                              onChange={(value: any) => {
+                                setSelectedFilters((prevFilters: any) => ({
+                                  ...prevFilters,
+                                  min_carat: value ?? 0,
+                                  // max_price: value[1],
+                                }));
+                                handleFilterChange('carat', [value ?? 0, selectedFilters?.max_carat]);
+                                dispatch(
+                                  setFilterData({
+                                    ...filtersData,
+                                    min_price: value ?? 0,
+                                    // max_price: value[1],
+                                  }),
+                                );
+                              }}
+                            />
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <InputNumber
+                              size="small"
+                              min={caratBounds.min}
+                              max={caratBounds.max}
+                              style={{ color: 'black' }}
+                              step={0.01}
+                              disabled={!caratBounds.hasRange}
+                              // prefix="$"
+                              // style={{ margin: "0 16px" }}
+                              value={selectedFilters?.max_carat ?? caratBounds.max}
+                              onChange={(value: any) => {
+                                setSelectedFilters((prevFilters: any) => ({
+                                  ...prevFilters,
+                                  // min_price: value[0],
+                                  max_carat: value ?? caratBounds.max ?? 0,
+                                }));
+                                handleFilterChange('carat', [selectedFilters?.min_carat, selectedFilters?.max_carat ?? caratBounds.max]);
+                                dispatch(
+                                  setFilterData({
+                                    ...filtersData,
+                                    // min_price: value[0],
+                                    max_price: value ?? caratBounds.max ?? 0,
+                                  }),
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="w-full">
+                          <Slider
+                            // marks={caratWeight}
+                            // included={true}
+                            range
+                            step={0.01}
+                            disabled={!caratBounds.hasRange}
+                            defaultValue={[caratBounds.min, caratBounds.max]}
+                            value={[selectedFilters.min_carat, selectedFilters.max_carat]}
+                            min={caratBounds.min}
+                            max={caratBounds.max}
+
+                            onChange={(value: any) => {
+                              setSelectedFilters((prevFilters: any) => ({
+                                ...prevFilters,
+                                min_carat: value[0],
+                                max_carat: value[1],
+                              }));
+                            }}
+                            onChangeComplete={(value: any) => {
+                              handleFilterChange('carat', value);
+                              handleSliderChange(value);
+                            }}
                           />
-                          <Text
-                            size="textmd"
-                            className="text-[14px] font-extralight tracking-[1px] w-full xl:text-[13px] lg:text-[12px] text-nowrap overflow-hidden px-0.5 lg:px-0.5"
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {/* SUBSTYLE */}
+                  {isFilterOpen == 'sub_style' && (
+                    <div ref={FilterDropdownRef} className="flex flex-col gap-5 w-full bg-white">
+                      <div className="flex justify-between items-center px-2">
+                        <Text size="textlg" as="p" className="font-medium ">
+                          SUBSTYLE
+                        </Text>
+                        {/* <FiX className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsFilterOpen(null)} /> */}
+                      </div>
+                      <div className="relative flex flex-col overflow-scroll pr-2 h-fit max-h-[300px] scrollbar-visible">
+                        {filters?.subTypes?.map((item: any, index: number) => (
+                          <div
+                            key={index}
+                            className={`flex gap-5 relative items-center border-b select-none justify-center min-h-10 cursor-pointer ${filtersData.subTypes.includes(item?.id) ? '' : ''}`}
+                            onClick={() => {
+                              const updatedStyles = filtersData.subTypes.includes(item?.id)
+                                ? filtersData.subTypes.filter((subType: any) => subType !== item.id)
+                                : [...filtersData.subTypes, item.id];
+                              handleFilterChange('subTypes', updatedStyles);
+                              dispatch(
+                                setFilterData({
+                                  ...filtersData,
+                                  subTypes: updatedStyles,
+                                }),
+                              );
+                            }}
                           >
-                            {masterData.find((el: any) => el.id === item.id)?.name}
-                          </Text>
-                          {filtersData.subTypes.includes(item?.id) && <FaCheck className="absolute h-6 w-6 text-primary right-4 cursor-pointer" />}
+                            <Image
+                              preview={false}
+                              className="px-0 lg:px-1 !w-10"
+                              fallback="/images/no_images.svg"
+                              src={masterData.find((el: any) => el.id === item.id)?.image?.[0]}
+                              alt={masterData.find((el: any) => el.id === item.id)?.name}
+                            />
+                            <Text
+                              size="textmd"
+                              className="text-[14px] text-ink w-full xl:text-[13px] lg:text-[12px] text-nowrap overflow-hidden px-0.5 lg:px-0.5"
+                            >
+                              {masterData.find((el: any) => el.id === item.id)?.name}
+                            </Text>
+                            {filtersData.subTypes.includes(item?.id) && <FaCheck className="absolute h-6 w-6 text-ink right-4 cursor-pointer" />}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="absolute bottom-0 left-0 w-full px-3 py-3">
+                  <Button
+                    variant="filled"
+                    className="w-full !h-11 !rounded-none !border-0 !bg-ink !px-6 !text-[11.5px] !font-medium uppercase !tracking-[0.2em] !text-paper hover:!bg-ink-hover disabled:!bg-ink/40 disabled:!text-paper"
+                    onClick={() => setIsFilterOpen(null)}
+                  >
+                    view results
+                  </Button>
+                </div>
+              </Drawer>
+            )}
+            {/* filters sideMenu ended */}
+            <div ref={divMobileRef} className="flex w-[100%] flex-col gap-5 self-center sm:gap-2 relative">
+              {/* {productsLoading ? ( */}
+              {isAtTop && productStack?.length !== 0 && (
+                <div className="w-full min-h-[120px] h-fit !sticky top-0 sm:top-[85px] left-0 z-20 border bg-stone flex justify-center items-center">
+                  <div className="flex justify-center items-center gap-5 w-[90%] h-full p-4">
+                    <div className="font-cormorant text-[24px] font-medium leading-none text-ink">Your Ring Stack</div>
+                    <div className="flex sm:hidden items-center gap-4">
+                      {productStack.map((product, index) => (
+                        <div key={index} className="flex items-center gap-0">
+                          <span>{index + 1}.</span>
+                          <Image
+                            src={product.stackable_image ?? '/images/no_images.svg'}
+                            alt={product.productName}
+                            // width={100}
+                            // height={35}
+                            preview={false}
+                            className="md:w-[80px] object-contain"
+                            style={{
+                              mixBlendMode: 'multiply',
+                            }}
+                          />
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
-              </div>
-              <div className="absolute bottom-0 left-0 w-full px-3 py-3">
-                <Button variant="filled" className="w-full capitalize !bg-primary !text-text_w" onClick={() => setIsFilterOpen(null)}>
-                  view results
-                </Button>
-              </div>
-            </Drawer>
-          )}
-          {/* filters sideMenu ended */}
-          <div ref={divMobileRef} className="flex w-[100%] flex-col gap-5 self-center sm:gap-2 relative">
-            {/* {productsLoading ? ( */}
-            {isAtTop && productStack?.length !== 0 && (
-              <div className="w-full min-h-[120px] h-fit !sticky top-0 sm:top-[85px] left-0 z-20 border bg-[#f9f9f9] flex justify-center items-center">
-                <div className="flex justify-center items-center gap-5 w-[90%] h-full p-4">
-                  <div className="text-[18px]">Your Ring Stack</div>
-                  <div className="flex sm:hidden items-center gap-4">
-                    {productStack.map((product, index) => (
-                      <div key={index} className="flex items-center gap-0">
-                        <span>{index + 1}.</span>
+                    <div className="flex flex-col items-center">
+                      {productStack.map((product, index) => (
                         <Image
+                          key={index}
                           src={product.stackable_image ?? '/images/no_images.svg'}
                           alt={product.productName}
-                          // width={100}
+                          // width={140}
                           // height={35}
                           preview={false}
-                          className="md:w-[80px] object-contain"
+                          className="md:w-[80px] sm:w-[120px] object-contain"
                           style={{
                             mixBlendMode: 'multiply',
                           }}
                         />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex flex-col items-center">
-                    {productStack.map((product, index) => (
-                      <Image
-                        key={index}
-                        src={product.stackable_image ?? '/images/no_images.svg'}
-                        alt={product.productName}
-                        // width={140}
-                        // height={35}
-                        preview={false}
-                        className="md:w-[80px] sm:w-[120px] object-contain"
-                        style={{
-                          mixBlendMode: 'multiply',
+                      ))}
+                    </div>
+                    <div>
+                      <Button
+                        type="default"
+                        className="w-full !h-11 !rounded-none !border-0 !bg-ink !px-6 !text-[11.5px] !font-medium uppercase !tracking-[0.2em] !text-paper hover:!bg-ink-hover disabled:!bg-ink/40 disabled:!text-paper"
+                        onClick={() => {
+                          sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
                         }}
-                      />
-                    ))}
-                  </div>
-                  <div>
-                    <Button
-                      type="default"
-                      className="w-full !text-text_w !bg-secondary lg:text-[18px] sm:px-4 uppercase tracking-[1px] border-2 "
-                      onClick={() => {
-                        sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                    >
-                      Customize
-                    </Button>
+                      >
+                        Customize
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-            <div className="flex flex-col items-end gap-10 sm:gap-2">
-              {isLoading && (
-                <>
-                  <div className="w-full flex justify-center items-center">
-                    <LuLoader className="h-10 w-10 animate-spin" />
-                  </div>
-                </>
               )}
-
-              {!isLoading && products?.length > 0 && (
-                <div className="w-full">
-                  <div className="w-full grid grid-cols-4 gap-4 mb-4 sm:mb-2 md:grid-cols-3 sm:grid-cols-2 sm:gap-2">
-                    {chunkedData?.map((chunk: any, index: number) => (
-                      <div key={index} className="col-span-1">
-                        <ProductProfile {...chunk} is_stackable={true} isStatic={true} key={'group2652' + index} className={`w-full`} />
-                        {/* <ChunkComponent key={index} chunk={chunk} index={index} bannerData={[]} /> */}
-                      </div>
-                    ))}
-                  </div>
-                  {isLoadingMore && (
-                    <div className="w-full flex justify-center items-center py-4">
-                      <LuLoader className="h-8 w-8 animate-spin" />
+              <div className="flex flex-col items-end gap-10 sm:gap-2">
+                {isLoading && (
+                  <>
+                    <div className="w-full flex justify-center items-center">
+                      <LuLoader className="h-10 w-10 animate-spin" />
                     </div>
-                  )}
-                  {/* {chunkedData?.map((chunk: any, index: number) => <ChunkComponent key={index} chunk={chunk} index={index} bannerData={[]} />)}
+                  </>
+                )}
+
+                {!isLoading && products?.length > 0 && (
+                  <div className="w-full">
+                    <div className="w-full grid grid-cols-4 gap-4 mb-4 sm:mb-2 md:grid-cols-3 sm:grid-cols-2 sm:gap-2">
+                      {chunkedData?.map((chunk: any, index: number) => (
+                        <div key={index} className="col-span-1">
+                          <ProductProfile {...chunk} is_stackable={true} isStatic={true} key={'group2652' + index} className={`w-full`} />
+                          {/* <ChunkComponent key={index} chunk={chunk} index={index} bannerData={[]} /> */}
+                        </div>
+                      ))}
+                    </div>
+                    {isLoadingMore && (
+                      <div className="w-full flex justify-center items-center py-4">
+                        <LuLoader className="h-8 w-8 animate-spin" />
+                      </div>
+                    )}
+                    {/* {chunkedData?.map((chunk: any, index: number) => <ChunkComponent key={index} chunk={chunk} index={index} bannerData={[]} />)}
                   {isLoadingMore && (
                     <div className="w-full flex justify-center items-center py-4">
                       <LuLoader className="h-8 w-8 animate-spin" />
                     </div>
                   )} */}
-                </div>
-              )}
-              {!isLoading && products?.length === 0 && (
-                <div className="w-full flex flex-col items-center pt-[10vh] gap-[60px] lg:ml-0 md:ml-0 sm:gap-[1px] min-h-[55vh]">
-                  <p className="text-[15px] text-center">
-                    We found no results that match your search criteria. Please expand your search or
-                    <span
-                      className="inline underline cursor-pointer pl-1 text-nowrap"
-                      onClick={() => {
-                        // router.push(`/${jewelryType}`);
-                        window?.history.replaceState(null, '', `/${pathname}`);
-                        dispatch(
-                          setFilterData({
-                            ...filtersData,
-                            metal: [],
-                            shape: [],
-                            diamond_color: [],
-                            subTypes: [],
-                            gender_category: 1,
-                            sort_order: '',
-                            min_price: filters?.price_range?.min_price,
-                            max_price: filters?.price_range?.max_price,
-                            carats: [],
-                          }),
-                        );
-                      }}
-                    >
-                      reset your filters
-                    </span>
-                    .
-                  </p>
-                </div>
-              )}
+                  </div>
+                )}
+                {!isLoading && products?.length === 0 && (
+                  <div className="w-full flex flex-col items-center pt-[10vh] gap-[60px] lg:ml-0 md:ml-0 sm:gap-[1px] min-h-[55vh]">
+                    <p className="text-[15px] text-center">
+                      We found no results that match your search criteria. Please expand your search or
+                      <span
+                        className="inline underline cursor-pointer pl-1 text-nowrap"
+                        onClick={() => {
+                          // router.push(`/${jewelryType}`);
+                          window?.history.replaceState(null, '', `/${pathname}`);
+                          dispatch(
+                            setFilterData({
+                              ...filtersData,
+                              metal: [],
+                              shape: [],
+                              diamond_color: [],
+                              subTypes: [],
+                              gender_category: 1,
+                              sort_order: '',
+                              min_price: filters?.price_range?.min_price,
+                              max_price: filters?.price_range?.max_price,
+                              carats: [],
+                            }),
+                          );
+                        }}
+                      >
+                        reset your filters
+                      </span>
+                      .
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </ConfigProvider>
   );
 }

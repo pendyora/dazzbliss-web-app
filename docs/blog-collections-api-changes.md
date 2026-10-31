@@ -1,11 +1,16 @@
 # Journal (blog) & collections: placeholder content and API changes
 
 **Scope:** `/blog` and `/blog/all-blogs` (now one Journal page, [JournalPage.tsx](../src/components/Journal/JournalPage.tsx)) and
-`/collections` ([collections/index.tsx](../src/app/collections/index.tsx)), built from
-[design-mockups/blog](../design-mockups/blog/index.html) and [design-mockups/collections](../design-mockups/collections/index.html).
-**Last updated:** 14 Oct 2026
+`/collections` ([collections/index.tsx](../src/app/collections/index.tsx)), built from the
+[blog](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/blog/index.html) and
+[collections](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/collections/index.html) mockups.
+**Mockups:** the design mockups live in the `pendyora-web-app` repo (branch `shruti/mockups`, folder `design-mockups/`), not in this repo.
+**Last updated:** 31 Oct 2026 (statuses checked against this repo's `design-merge` branch and `latest-backend-main`)
 
 Priority: 🔴 before launch · 🟠 soon · ⚪ later
+
+**Status** values: `Done (in latest code)` · `Partly done — <what's missing>` · `Still needed` · `No longer applies — <why>` · `Check`.
+Backend paths are in `latest-backend-main/`.
 
 ## Journal (blog)
 
@@ -13,22 +18,22 @@ Everything comes from the existing blog APIs: lead story = first item of `/blog/
 (names from master data); grid = `/blog/all` with `category`, `search`, `page`, `size` (12 per page, "Load more" fetches the next page);
 newsletter tile = `/user/subscribe` (same API as the offer pop-up).
 
-| # | What | Today | Needed | Priority |
-|---|---|---|---|---|
-| B1 | **Read time** and **author** on cards (in the mockup) | Not shown; the list API has no body length or author | Add `read_minutes` and `author` to `/blog/all` rows and featured views. | ⚪ |
-| B2 | **Images** | Cards use `thumbnail_image`; missing images show the generic placeholder | Upload a landscape thumbnail (4:3, ≥1200 px) for every post. | 🟠 |
-| B3 | **Journal intro text** | Hardcoded: "Guides to diamonds and metals, how our pieces are made…" | Fine as is; could come from the CMS. | ⚪ |
-| B4 | **Wide "Featured" card** | The 3rd post in the "All" view is shown wide (layout only) | Optional `is_featured` flag on a post to choose which one. | ⚪ |
-| B5 | **Old page removed** | The previous `/blog` landing (category carousel, featured slider, grid) and the `/blog/all-blogs` sidebar list are replaced by the Journal. `/blog/banner/4` is no longer requested. | — | — |
+| # | What | Today | Needed | Priority | Status |
+|---|---|---|---|---|---|
+| B1 | **Read time** and **author** on cards (in the mockup) | Not shown | Add `read_minutes` and `author` to `/blog/all` rows and featured views. | ⚪ | Partly done — `author` (and `auth_image`) already exist on `src/models/blog.model.ts` and are returned by `/blog/all`; the Journal doesn't show them yet (frontend). `read_minutes` is still needed: the list leaves out the body, so the backend must compute it. |
+| B2 | **Images** | Cards use `thumbnail_image`; missing images show the generic placeholder | Upload a landscape thumbnail (4:3, ≥1200 px) for every post. | 🟠 | Still needed (content). |
+| B3 | **Journal intro text** | Hardcoded: "Guides to diamonds and metals, how our pieces are made…" | Fine as is; could come from the CMS. | ⚪ | Done (in latest code) — fine as is. |
+| B4 | **Wide "Featured" card** | The 3rd post in the "All" view is shown wide (layout only, `JournalPage.tsx`) | Optional `is_featured` flag on a post to choose which one. | ⚪ | Partly done — `Blog.is_featured` already exists and is returned, but it also picks the lead story for `/blog/featured-views`. Frontend can use it; Check whether a separate flag is wanted. |
+| B5 | **Old page removed** | The previous `/blog` landing and the `/blog/all-blogs` sidebar list are replaced by the Journal. `/blog/banner/4` is no longer requested. | — | — | Done (in latest code) — dead files remain: `src/app/blog/index_Old.tsx` and `src/app/blog/newdesign/` (title still says "Ashclair - Blog List"). |
 
 ## Collections
 
-Data from the header API `collections`: `name`, `description`, `desktop_image`, `mobile_image` and `jewelryCollectionDetails` (used for the
-piece count). Links go to `/all?collections=<name-slug>` as before.
+Data from the header API `collections` (`src/controllers/Header/header.controller.ts`): `name`, `description`, `desktop_image`,
+`mobile_image` and `jewelryCollectionDetails` (used for the piece count). Links go to `/all?collections=<name-slug>` as before.
 
-| # | What | Today | Needed | Priority |
-|---|---|---|---|---|
-| L1 | **Collection images** | The only live collection ("Mothers Day Collection") has **no image**, so the tile shows its name in serif instead. | Upload a square packshot (`desktop_image`) on a plain light background for each collection; optional `mobile_image`. | 🔴 |
-| L2 | **Filters (All / New / Bridal / Everyday / Statement)** in the mockup | Not built: no field to filter by | Add `style` (e.g. bridal / everyday / statement) and `is_new` per collection. | 🟠 |
-| L3 | **"New" label** | Not shown | Same `is_new` field. | ⚪ |
-| L4 | **Wide navy tiles** | Every 7th collection (1st, 8th, 15th…) is shown wide. With one collection the page is a single wide tile. | Optional `is_featured` flag to choose which collections go wide. | ⚪ |
+| # | What | Today | Needed | Priority | Status |
+|---|---|---|---|---|---|
+| L1 | **Collection images** | The only live collection ("Mothers Day Collection") had **no image**, so the tile shows its name in serif instead. | Upload a square packshot (`desktop_image`) on a plain light background for each collection; optional `mobile_image`. | 🔴 | Still needed (content) — fields exist; Check the data. |
+| L2 | **Filters (All / New / Bridal / Everyday / Statement)** in the mockup | Not built: no field to filter by | Add `style` (e.g. bridal / everyday / statement) and `is_new` per collection. | 🟠 | Still needed — `src/models/collection.model.ts` has no `style` / `is_new`; the header API doesn't send them. |
+| L3 | **"New" label** | Not shown | Same `is_new` field. | ⚪ | Still needed — see L2. |
+| L4 | **Wide navy tiles** | Every 7th collection (1st, 8th, 15th…) is shown wide (`WIDE_EVERY = 7`). With one collection the page is a single wide tile. | Optional `is_featured` flag to choose which collections go wide. | ⚪ | Still needed — no `is_featured` on Collection. |

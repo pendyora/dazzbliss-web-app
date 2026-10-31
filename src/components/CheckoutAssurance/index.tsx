@@ -54,11 +54,11 @@ const cartDeliveryWindow = (cartProducts: any[]): string | null => {
   return `${start.format('MMMM DD')} - ${start.add(2, 'day').format('DD, YYYY')}`;
 };
 
-/** Every surface in the rail. One place to change the radius, ground or padding. */
-const CARD = 'rounded-xl border border-gray-200 bg-white px-4 py-4 sm:px-3 sm:py-3';
+/** Every surface in the rail: square, hairline, no shadow — like the bag's summary panel. */
+const CARD = 'border border-line bg-paper px-6 py-5 sm:px-5 sm:py-4';
 
-/** The pale ground shared by all three icon badges. */
-const BADGE_BG = 'bg-[#EEF0EC]';
+/** The soft tile behind each icon. */
+const BADGE_BG = 'bg-stone';
 
 /**
  * One tappable card: badge, title, supporting line, chevron.
@@ -81,21 +81,21 @@ const AssuranceRow = ({
   titleAccent?: string;
   body: string;
 }) => {
-  const shell = `${CARD} group flex w-full items-center gap-3.5 text-left transition-opacity hover:opacity-80 sm:gap-3`;
+  const shell = `${CARD} group flex w-full items-center gap-4 text-left font-libre transition-colors hover:border-ink sm:gap-3`;
   const inner = (
     <>
-      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full sm:h-10 sm:w-10 ${BADGE_BG}`}>
-        <Icon className="h-5 w-5 text-primary sm:h-[18px] sm:w-[18px]" strokeWidth={1.5} aria-hidden="true" />
+      <span className={`grid h-10 w-10 shrink-0 place-items-center sm:h-9 sm:w-9 ${BADGE_BG}`}>
+        <Icon className="h-[18px] w-[18px] text-gilt" strokeWidth={1.5} aria-hidden="true" />
       </span>
       <div className="flex min-w-0 flex-col gap-1">
-        <span className="font-notosans text-[13px] font-bold uppercase leading-tight tracking-[0.4px] text-black sm:text-[12px]">
+        <span className="text-[11.5px] font-medium uppercase leading-tight tracking-[0.14em] text-ink">
           {title}
-          {titleAccent ? <span className="text-secondary"> {titleAccent}</span> : null}
+          {titleAccent ? <span className="text-gilt"> {titleAccent}</span> : null}
         </span>
-        <span className="font-notosans text-[12px] leading-[1.5] text-gray-600 sm:text-[11px]">{body}</span>
+        <span className="text-[12.5px] leading-[1.5] text-ink-soft">{body}</span>
       </div>
       <LuChevronRight
-        className="ml-auto h-5 w-5 shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5"
+        className="ml-auto h-[18px] w-[18px] shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-ink"
         strokeWidth={1.5}
         aria-hidden="true"
       />
@@ -127,22 +127,18 @@ export const AssurancePanel = ({ cartProducts, className = '' }: PanelProps) => 
   const [helpOpen, setHelpOpen] = useState(false);
 
   return (
-    <div className={`flex flex-col gap-2.5 bg-gray-50 px-[30px] pb-5 md:px-[20px] sm:px-3 ${className}`}>
-      <div className={CARD}>
+    <div className={`flex flex-col gap-3 font-libre text-ink ${className}`}>
+      <div className="border border-line bg-paper">
         {deliveryWindow ? (
-          <div className="flex items-center gap-3.5 sm:gap-3">
-            <span className={`flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-full sm:h-11 sm:w-11 ${BADGE_BG}`}>
-              <LuCalendarCheck className="h-[21px] w-[21px] text-primary sm:h-[19px] sm:w-[19px]" strokeWidth={1.5} aria-hidden="true" />
+          <div className="flex items-center gap-4 px-6 py-5 sm:gap-3 sm:px-5 sm:py-4">
+            <span className={`grid h-11 w-11 shrink-0 place-items-center sm:h-10 sm:w-10 ${BADGE_BG}`}>
+              <LuCalendarCheck className="h-5 w-5 text-gilt sm:h-[18px] sm:w-[18px]" strokeWidth={1.5} aria-hidden="true" />
             </span>
-            <div className="flex min-w-0 flex-col gap-1">
-              <span className="font-notosans text-[10.5px] uppercase leading-none tracking-[1.2px] text-secondary sm:text-[10px]">
-                Estimated Delivery Date
-              </span>
+            <div className="flex min-w-0 flex-col gap-1.5">
+              <span className="text-[10.5px] uppercase leading-none tracking-[0.16em] text-ink-soft">Estimated Delivery Date</span>
               {/* Kept on one line: the window is the answer, and breaking "September 2 - 4," from
                   its year turned the card's most-read line into two ragged ones. */}
-              <span className="whitespace-nowrap font-notosans text-[16px] font-semibold leading-none text-black lg:text-[15px] sm:text-[15px]">
-                {deliveryWindow}
-              </span>
+              <span className="whitespace-nowrap font-cormorant text-[24px] font-medium leading-none text-ink sm:text-[21px]">{deliveryWindow}</span>
             </div>
           </div>
         ) : null}
@@ -152,14 +148,14 @@ export const AssurancePanel = ({ cartProducts, className = '' }: PanelProps) => 
 
             No *vertical* rules between the badges though: five cells across this column leave each
             label barely a word wide, and the text collided with them. */}
-        {deliveryWindow ? <div className="mt-4 h-px bg-gray-200" aria-hidden="true" /> : null}
-        <div className={deliveryWindow ? 'mt-4' : ''}>
-          <p className="text-center font-notosans text-[11px] uppercase tracking-[1.5px] text-secondary sm:text-[10px]">Why Ashclair?</p>
-          <div className="mt-3.5 grid grid-cols-5 gap-x-2 sm:mt-3 sm:gap-x-1.5">
+        <div className={`bg-stone/45 px-5 py-5 sm:px-3 sm:py-4 ${deliveryWindow ? 'border-t border-line' : ''}`}>
+          <p className="m-0 text-center text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Why Ashclair?</p>
+          <div className="mt-4 grid grid-cols-5 gap-x-2 sm:mt-3 sm:gap-x-1.5">
             {whyAshclairBadges.map((badge) => (
               <div key={badge.label} className="flex flex-col items-center gap-2 text-center sm:gap-1.5">
-                <Img src={badge.src} width={40} height={40} alt="" className="why-ashclair-icon h-7 w-7 object-contain sm:h-6 sm:w-6" />
-                <span className="font-notosans text-[10px] uppercase leading-[1.35] tracking-[0.2px] text-secondary lg:text-[9px] sm:text-[8.5px]">
+                {/* brightness-0 renders the remote SVGs in ink (the global `.why-ashclair-icon` filter tints them green). */}
+                <Img src={badge.src} width={40} height={40} alt="" className="h-6 w-6 object-contain opacity-80 brightness-0 sm:h-5 sm:w-5" />
+                <span className="text-[9.5px] uppercase leading-[1.35] tracking-[0.08em] text-ink-soft lg:text-[9px] sm:text-[8.5px]">
                   {badge.label}
                 </span>
               </div>

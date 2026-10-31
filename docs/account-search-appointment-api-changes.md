@@ -1,49 +1,61 @@
 # Account, wishlist, search & appointment: placeholder content and API changes
 
 **Scope:** `/profile` (Overview, Addresses, Details), `/profile/purchases` (Orders + `?order=` detail), `/wishlist`, `/search` and
-`/virtual-appointment`, built from [design-mockups/account](../design-mockups/account/index.html),
-[search](../design-mockups/search/index.html) and [appointment](../design-mockups/appointment/index.html).
-**Last updated:** 14 Oct 2026
+`/virtual-appointment`, built from the [account](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/account/index.html),
+[search](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/search/index.html) and
+[appointment](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/appointment/index.html) mockups.
+**Mockups:** the design mockups live in the `pendyora-web-app` repo (branch `shruti/mockups`, folder `design-mockups/`), not in this repo.
+**Last updated:** 31 Oct 2026 (statuses checked against this repo's `design-merge` branch and `latest-backend-main`)
 
 Priority: 🔴 before launch · 🟠 soon · ⚪ later
+
+**Status** values: `Done (in latest code)` · `Partly done — <what's missing>` · `Still needed` · `No longer applies — <why>` · `Check`.
+Frontend paths are in this repo; backend paths are in `latest-backend-main/`.
 
 ## Account & wishlist
 
 All data comes from the existing APIs: user/auth slice (details, addresses), `/order/list` and `/order/:id`, the wishlist API (or local storage
-for guests). Profile, password and address forms keep their existing API calls.
+for guests). Profile, password and address forms keep their existing API calls. Order detail is in
+[src/app/profile/OrderList.tsx](../src/app/profile/OrderList.tsx); the tracker and status pill are in
+[src/components/Account/orderBits.tsx](../src/components/Account/orderBits.tsx).
 
-| # | What | Today | Needed | Priority |
-|---|---|---|---|---|
-| A1 | **Order totals breakdown** (pieces, warranty, shipping, tax) on the order detail | Only "Paid" (`after_gst_amount`) is shown, plus each line's price | Return `subtotal`, `shipping_amount`, `tax_amount`, `discount_amount` and the payment method on `/order/:id`. | 🟠 |
-| A2 | **Delivery address and dates on an order** | Not shown: the order API doesn't send them | Add `delivery_address`, `estimated_delivery_date` and per-status dates to `/order/:id`. The tracker then shows real dates instead of "Done". | 🟠 |
-| A3 | **Invoice download** (mockup) | Not built | `invoice_url` on the order. | ⚪ |
-| A4 | **"Member since"** on the greeting band (mockup) | Shows the email instead | `created_at` on the user. | ⚪ |
-| A5 | **Wishlist "Price dropped" / "Back in stock" labels, Share wishlist** (mockup) | Not built | Price-at-save and stock flags per wishlist item; a share link endpoint. | ⚪ |
-| A6 | **Add to bag from the wishlist** (mockup) | Cards open the product page (size / options are needed first) | Same "default variant, no size needed" flag as listing-page quick add. | ⚪ |
-| A7 | **Password rule** | The change-password form now asks for 8+ characters (it previously allowed 6 while saying 8), matching sign-up. | Confirm the backend accepts the same rule. | ⚪ |
+| # | What | Today | Needed | Priority | Status |
+|---|---|---|---|---|---|
+| A1 | **Order totals breakdown** (pieces, warranty, shipping, tax) on the order detail | Detail shows discount code, "Discount applied", Paid (`after_gst_amount`) and Refunded (`total_refunded_amount`), plus each line's price | Return `subtotal`, `shipping_amount`, `tax_amount`, `discount_amount` and the payment method on `/order/:id`. | 🟠 | Partly done — no subtotal, shipping, tax or payment-method rows. `/order/:id` (`_getOrderDetailsById`, `src/controllers/orders/order.controller.ts`) already sends `total_price`, `payment_method`, `delivery_cost`, `gst_percentage`, `tax_rate`, but tax and shipping are stored in two ways; normalised totals fields are still wanted. |
+| A2 | **Delivery address and dates on an order** | Delivery box shows Expected (`orderDetails[].estimation_date`), Shipped on (`shipped_date`), Delivered on (`delivered_date`), Courier (`courier_name`) and Tracking ID (`track_id` → `tracking_url`) | Add `delivery_address`, `estimated_delivery_date` and per-status dates to `/order/:id`. The tracker then shows real dates instead of "Done". | 🟠 | Partly done — address not shown (backend already sends `deliveryAddressDetails`, but without the city/state/country names that `/order/list` includes); `OrderTracker` still shows "Done"/"Now" with a date on the first step only (no confirmed / manufacturing dates in the API). |
+| A3 | **Invoice download** (mockup) | Not built | `invoice_url` on the order. | ⚪ | Partly done — backend already returns `invoice_link` (full CloudFront URL, `src/models/order.model.ts` `afterFind`) on `/order/:id`. Frontend only: add the download link. No backend change. |
+| A4 | **"Member since"** on the greeting band (mockup) | Shows the email instead ([AccountShell.tsx](../src/components/Account/AccountShell.tsx)) | `created_at` on the user. | ⚪ | Still needed — login (`src/controllers/users/session.controller.ts`) and `GET /user` (`application.controller.ts`) select a fixed attribute list without `createdAt`. |
+| A5 | **Wishlist "Price dropped" / "Back in stock" labels, Share wishlist** (mockup) | Not built | Price-at-save and stock flags per wishlist item; a share link endpoint. | ⚪ | Still needed — Wishlist model has only `user_id`, `sku_master_id`, `jewelry_id`; routes are `POST`/`GET /wishlist` and delete. The empty state ([wishlist/index.tsx](../src/app/wishlist/index.tsx)) still mentions "share". |
+| A6 | **Add to bag from the wishlist** (mockup) | Cards open the product page (size / options are needed first) | Same "default variant, no size needed" flag as listing-page quick add. | ⚪ | Still needed — no flag in the backend, no quick add in the frontend. |
+| A7 | **Password rule** | The change-password form asks for 8+ characters, matching sign-up, reset and checkout sign-up. | Confirm the backend accepts the same rule. | ⚪ | Partly done — frontend uses 8 everywhere ([ChangePasswordForm.tsx](../src/app/profile/ChangePasswordForm.tsx)). Backend `_updatePassword` (`PUT /user/password`) still checks `< 6`; `POST /user/signup` has no length check (the Joi schemas with `.min(6)` are not wired to any route). |
 
 ## Search
 
-Uses the existing `getJewelrySearch` API. Category tabs and counts are worked out from the returned results; sort (best match / price) is
-done in the browser. When the API returns `isSuggested`, the page shows the "No pieces match" state with those suggestions underneath.
+Uses the existing `getJewelrySearch` API (`GET /jewelry/search/?search=`). Category tabs and counts are worked out from the returned results;
+sort (best match / price) is done in the browser. When the API returns `isSuggested`, the page shows the "No pieces match" state with
+those suggestions underneath. Page: [src/app/search/SearchGroup2814.tsx](../src/app/search/SearchGroup2814.tsx).
 
-| # | What | Today | Needed | Priority |
-|---|---|---|---|---|
-| S1 | **Popular / "Try also" searches** | Hardcoded list (`POPULAR_SEARCHES` in `components/Header/mega/headerContent.ts`, shared with the header) | `GET /search/popular`, or related searches per query. | 🟠 |
-| S2 | **"Did you mean …?"** (mockup) | Not built | Spelling suggestion in the search response. | ⚪ |
-| S3 | **Server-side sort and paging** | The page sorts what the API returns | `sort` and `page` parameters if results can exceed one page. | ⚪ |
-| S4 | **Journal results in search** (mockup) | Not built | Include matching blog posts. | ⚪ |
+| # | What | Today | Needed | Priority | Status |
+|---|---|---|---|---|---|
+| S1 | **Popular / "Try also" searches** | Hardcoded list (`POPULAR_SEARCHES` in [headerContent.ts](../src/components/Header/mega/headerContent.ts), shared with the header) | `GET /search/popular`, or related searches per query. | 🟠 | Still needed — no such route in the backend. |
+| S2 | **"Did you mean …?"** (mockup) | Not built | Spelling suggestion in the search response. | ⚪ | Still needed — `_searchJewelry` (`src/controllers/jewelry/getJewelries.controller.ts`) returns only `isSuggested` + fallback products. |
+| S3 | **Server-side sort and paging** | The page sorts what the API returns and shows more on scroll | `sort` and `page` parameters if results can exceed one page. | ⚪ | No longer applies — the search query has no LIMIT, so all matches come back in one response; the page sorts and pages on scroll. Revisit only if result sets get large. |
+| S4 | **Journal results in search** (mockup) | Not built | Include matching blog posts. | ⚪ | Still needed (frontend only) — a blog search route already exists (`_searchBlogs`, `src/routes/blog/blog.routes.ts`, `searchTerm` / `page` / `size`, matches title and subtitle). |
 
 ## Virtual appointment
 
-Same `POST /appointment` payload as before: `service` / `jewelry_type`, `date` (YYYY-MM-DD), `time` (e.g. "2:00 PM - 2:50 PM", New York
-time), `name`, `email`, `phone_numbers`, `message`, `locations: 'Virtual Appointment'`. Services and images are still `JEWELRY_TYPE` in
-`constants/master.constant.ts`.
+Page: [src/app/virtual-appointment/index.tsx](../src/app/virtual-appointment/index.tsx). Slots are in **Pacific time** (`America/Los_Angeles`):
+hourly from 9am, last slot 4pm, 50 minutes, 14 days ahead. The visitor can show times in their own time zone (PT, MT, CT, ET, UTC, IST).
+`POST /appointment` payload: `locations: 'Virtual Appointment'`, `service` / `jewelry_type`, `date` (YYYY-MM-DD) and `time` (Pacific, e.g.
+"2:00 PM - 2:50 PM"), plus `customer_date`, `customer_time`, `customer_time_zone`, `customer_time_zone_label`, `name`, `email`,
+`phone_numbers`, `message` and `cloudflareTurnstileToken`. The backend checks Turnstile and stores the customer's local time
+(`customer_*` columns, migration `20260812093000-add_customer_local_time_to_virtual_appointment.js`). `service` is not a column, so it is
+dropped. Services and images are still `JEWELRY_TYPE` in [src/constants/master.constant.ts](../src/constants/master.constant.ts).
 
-| # | What | Today | Needed | Priority |
-|---|---|---|---|---|
-| V1 | **Real availability** | Slots are generated in the browser: hourly 9am–5pm New York time, every day for 14 days, past times hidden. Nothing is ever shown as taken. | `GET /appointment/slots?date=` returning taken or free slots. | 🔴 |
-| V2 | **Video or phone** | Not in the API. A phone choice is added to the start of `message` as "[Prefers a phone call]". | Optional `call_type` field. | ⚪ |
-| V3 | **Opening hours copy** | "We're available every day" (from the old page's "Daily"). The client-care pages say Mon–Fri. | Confirm the real appointment days. | 🟠 |
-| V4 | **Add to calendar** (mockup) | Not built on the confirmation | An `.ics` link in the confirmation email or response. | ⚪ |
-| V5 | **Appointment length** | 50 minutes, matching the existing slot times (the mockup said 30). | Confirm. | ⚪ |
+| # | What | Today | Needed | Priority | Status |
+|---|---|---|---|---|---|
+| V1 | **Real availability** | Slots are generated in the browser (`slotsFor()`), every day for 14 days, past times hidden. Nothing is ever shown as taken. | `GET /appointment/slots?date=` returning taken or free slots. | 🔴 | Still needed — backend appointment routes are only admin list/export/delete, `POST`, `PUT`. Ideally `POST /appointment` also rejects a slot already booked. |
+| V2 | **Video or phone** | Not in the API. A phone choice is added to the start of `message` as "[Prefers a phone call]". | Optional `call_type` field. | ⚪ | Still needed — no `call_type` on `src/models/virtualAppointment.model.ts`. |
+| V3 | **Opening hours copy** | "We're available every day, 9:00 am – 5:00 pm PT", and slots include weekends. The client-care pages say Mon–Fri ([careInfo.ts](../src/components/ClientCare/careInfo.ts)). | Confirm the real appointment days. | 🟠 | Still needed — business decision; no day rules in the backend. |
+| V4 | **Add to calendar** (mockup) | Not built on the confirmation | An `.ics` link in the confirmation email or response. | ⚪ | Still needed — no `.ics` in either repo (email template `src/helpers/Mails/virtualAppointment.ts`). |
+| V5 | **Appointment length** | 50 minutes (`SLOT_MINUTES = 50`, `JEWELRY_TYPE[].duration`; the mockup said 30). | Confirm. | ⚪ | Done (in latest code) — business to confirm 50 minutes; backend stores `time` as text, no length rule. |

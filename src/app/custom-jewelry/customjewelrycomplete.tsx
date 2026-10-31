@@ -3,7 +3,7 @@
 
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Button, Checkbox, Image, Input, Radio, Select, Skeleton } from 'antd';
+import { Button, Checkbox, ConfigProvider, Image, Input, Radio, Select, Skeleton } from 'antd';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { BsBoxSeam } from 'react-icons/bs';
@@ -39,11 +39,14 @@ import {
   setSelectedSettingStore,
   setSelectedShapesData,
 } from '@/store/slices/customProducts/customProductSlice';
+import themeColors from '@/styles/theme-colors';
 import { formatCurrency } from '@/utils/common';
 import { trackAddToCart } from '@/utils/metaPixel';
 
-import { Text } from '../../components';
-import { Engraving } from '../[jewelryType]/premade/Components/Engraving';
+import PdpEngraving from '../[jewelryType]/premade/pdp/PdpEngraving';
+import { OptionGroup } from '../[jewelryType]/premade/pdp/PdpOptions';
+import { pdpTheme } from '../[jewelryType]/premade/pdp/pdpTheme';
+import { PRIMARY_BTN } from '../checkout/checkoutTheme';
 
 export default function CustomJewelryCompletePage({
   selectedSetting,
@@ -621,25 +624,31 @@ export default function CustomJewelryCompletePage({
     // };
   }, []);
 
+  // Shared presentation bits (design reference: design-mockups/product-page-v4).
+  const STONE_FALLBACK_STYLE: React.CSSProperties = {
+    borderRadius: '0px',
+    width: '100%',
+    height: '100%',
+    aspectRatio: '1 / 1',
+    backgroundColor: themeColors.stone.DEFAULT,
+  };
+  const SKELETON_STYLE: React.CSSProperties = { borderRadius: '0px', width: '100%', height: '100%', aspectRatio: '1 / 1' };
+  const SECTION_LABEL = 'm-0 text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt';
+  const SPEC_DT = 'text-ink-faint';
+  const SPEC_DD = 'm-0 tabular-nums text-ink';
+  const SPEC_DL = 'm-0 grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-1 text-[13px] leading-[1.6]';
+  const NOTE = 'm-0 flex items-center gap-2.5 text-[13px] leading-[1.6] text-ink-soft';
+
   return (
-    <div className="w-full bg-[#ffffff]">
-      <div className="flex w-full justify-center border-b border-solid border-[#3b3b3b] pb-[76px] lg:pb-8 md:pb-5 sm:pb-0">
-        <div className="container-xs relative flex items-start justify-center gap-8 py-5 sm:py-2 lg:gap-5 2xl:px-[50px] xl:px-[50px] lg:px-[30px]  md:px-5 sm:px-3 sm:flex-col">
-          <div className="sm:hidden grid h-full 2xl:w-2/3 lg:w-2/3 sm:w-full flex-1 grid-cols-2 gap-[5px] 2xl:gap-[5px] lg:gap-[5px] 2xl:h-fit xl:h-auto lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-2 xl:grid-cols-2">
-            <Suspense fallback={<div>Loading feed...</div>}>
+    <ConfigProvider theme={pdpTheme}>
+      <section className="mx-auto w-full max-w-[1440px] bg-paper px-[clamp(16px,3.2vw,56px)] pb-[clamp(48px,6vw,80px)] pt-6 font-libre text-ink md:pt-4">
+        <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] items-start gap-[clamp(28px,4.5vw,80px)] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:grid-cols-1 md:gap-7">
+          {/* Gallery: two-up stone tiles on desktop, a swiper on phones. */}
+          <div className="grid w-full grid-cols-2 gap-2 sm:hidden">
+            <Suspense fallback={<div className="aspect-square bg-stone" />}>
               {selectedSettingType ? (
                 selectedSettingType.model_view && (
-                  <div className="relative h-[512px] 2xl:h-auto w-full xl:h-auto lg:h-auto">
-                    {/* <iframe
-                    src={'https://aws.kavyajewel.com/Majesca/Majesca%20360/OCT%202024/14-10-2024%2002/14-10-2024%2002.html'}
-                    width="512" // Adjust width as needed
-                    height="512" // Adjust height as needed
-                    title={`Model View`}
-                    className="h-[512px] 2xl:h-auto w-full object-cover xl:h-auto lg:h-auto cursor-move"
-                    style={{
-                      aspectRatio: '1/1',
-                    }}
-                  /> */}
+                  <div className="relative w-full overflow-hidden bg-stone">
                     <iframe
                       title="scene"
                       frameBorder="0"
@@ -651,235 +660,87 @@ export default function CustomJewelryCompletePage({
                       }}
                       src={selectedSettingType?.model_view}
                     />
-                    <div className="w-[8%] absolute bottom-2 right-3 z-[19] flex items-center select-none">
+                    <div className="pointer-events-none absolute bottom-3 right-3 z-[19] flex w-[8%] select-none items-center">
                       <Image src="/images/viewIcon.svg" alt="360-view" preview={false} className="!w-[100%] select-none" />
                     </div>
                   </div>
                 )
               ) : (
-                <>
-                  {/* <Skeleton.Node
-                  active={true}
-                  style={{
-                    borderRadius: '0px',
-                    width: '100%',
-                    height: '100%',
-                    aspectRatio: '1 / 1',
-                  }}
-                /> */}
-                </>
+                <></>
               )}
               {selectedSettingType && selectedSettingType?.carat_video?.length > 0 && (
-                <ProtectedVideo
-                  src={selectedSettingType?.carat_video?.[0]}
-                  autoPlay={true}
-                  muted={true}
-                  loop={true}
-                  className="w-full h-full object-cover"
-                />
+                <div className="aspect-square overflow-hidden bg-stone">
+                  <ProtectedVideo
+                    src={selectedSettingType?.carat_video?.[0]}
+                    autoPlay={true}
+                    muted={true}
+                    loop={true}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
               )}
               {selectedSettingType ? (
                 selectedSettingType?.carat_images?.length > 0 ? (
                   selectedSettingType?.carat_images?.map((d: any, index: number) => {
-                    // jewelryMetadata?.carat_images?.map((d: any, index: number) => {
-                    //   return <ImageZoom key={index} src={d} alt="Product image" zoom="200" className="!aspect-square sm:hidden" />;
-                    // })
                     return (
-                      // <Image
-                      //   key={'group3179' + index}
-                      //   src={d}
-                      //   preview={false}
-                      //   alt="Mask Group"
-                      //   fallback={'/images/ashclair_pdp_logo_image.svg'}
-                      //   className="h-[500px] 2xl:h-auto w-full object-contain xl:h-auto lg:h-auto bg-[#f8f8f8] aspect-square"
-                      // />
-                      <ImageZoom key={index} src={d} alt="Product image" zoom="200" className="!aspect-square sm:hidden" />
+                      <div key={index} className="overflow-hidden bg-stone">
+                        <ImageZoom src={d} alt="Product image" zoom="200" className="!aspect-square sm:hidden" />
+                      </div>
                     );
                   })
                 ) : (
                   <>
-                    <Image
-                      src="/images/ashclair_pdp_logo_image.svg"
-                      alt="PDP1"
-                      preview={false}
-                      style={{
-                        borderRadius: '0px',
-                        width: '100%',
-                        height: '100%',
-                        aspectRatio: '1 / 1',
-                        backgroundColor: '#F8F8F8',
-                      }}
-                    />
-                    <Image
-                      src="/images/ashclair_pdp_logo_image.svg"
-                      alt="PDP1"
-                      preview={false}
-                      style={{
-                        borderRadius: '0px',
-                        width: '100%',
-                        height: '100%',
-                        aspectRatio: '1 / 1',
-                        backgroundColor: '#F8F8F8',
-                      }}
-                    />
-                    <Image
-                      src="/images/ashclair_pdp_logo_image.svg"
-                      alt="PDP1"
-                      preview={false}
-                      style={{
-                        borderRadius: '0px',
-                        width: '100%',
-                        height: '100%',
-                        aspectRatio: '1 / 1',
-                        backgroundColor: '#F8F8F8',
-                      }}
-                    />
-                    <Image
-                      src="/images/ashclair_pdp_logo_image.svg"
-                      alt="PDP1"
-                      preview={false}
-                      style={{
-                        borderRadius: '0px',
-                        width: '100%',
-                        height: '100%',
-                        aspectRatio: '1 / 1',
-                        backgroundColor: '#F8F8F8',
-                      }}
-                    />
+                    <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
+                    <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
+                    <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
+                    <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
                   </>
                 )
               ) : (
                 <>
-                  <Skeleton.Node
-                    active={true}
-                    style={{
-                      borderRadius: '0px',
-                      width: '100%',
-                      height: '100%',
-                      aspectRatio: '1 / 1',
-                    }}
-                  />
-                  <Skeleton.Node
-                    active={true}
-                    style={{
-                      borderRadius: '0px',
-                      width: '100%',
-                      height: '100%',
-                      aspectRatio: '1 / 1',
-                    }}
-                  />
-                  <Skeleton.Node
-                    active={true}
-                    style={{
-                      borderRadius: '0px',
-                      width: '100%',
-                      height: '100%',
-                      aspectRatio: '1 / 1',
-                    }}
-                  />
-                  <Skeleton.Node
-                    active={true}
-                    style={{
-                      borderRadius: '0px',
-                      width: '100%',
-                      height: '100%',
-                      aspectRatio: '1 / 1',
-                    }}
-                  />
+                  <Skeleton.Node active={true} style={SKELETON_STYLE} />
+                  <Skeleton.Node active={true} style={SKELETON_STYLE} />
+                  <Skeleton.Node active={true} style={SKELETON_STYLE} />
+                  <Skeleton.Node active={true} style={SKELETON_STYLE} />
                 </>
               )}
-              {/* {selectedDiamondStore?.imageFile && (
-                <div className="h-[512px] flex justify-center items-center bg-[#f8f8f8] 2xl:h-auto w-full aspect-square xl:h-auto lg:h-auto md:h-auto">
-                  <ImageZoom src={selectedDiamondStore?.imageFile} alt="Product image" zoom="200" className="!aspect-square sm:hidden" />
-                </div>
-              )} */}
               {selectedSettingType && selectedSettingType?.carat_video?.length > 0 && selectedSettingType?.carat_video?.[1] && (
-                <ProtectedVideo
-                  src={selectedSettingType?.carat_video?.[1]}
-                  autoPlay={true}
-                  muted={true}
-                  loop={true}
-                  className="w-full h-full object-cover"
-                />
-              )}
-              {/* {selectedDiamondStore?.videoFile ? (
-                <div className="relative aspect-square">
-                  <iframe
-                    src={`${selectedDiamondStore?.videoFile?.split('/500/500')[0]}`}
-                    title={`Model View`}
-                    className="h-full w-full lg:hidden bg-[#f8f8f8]"
+                <div className="aspect-square overflow-hidden bg-stone">
+                  <ProtectedVideo
+                    src={selectedSettingType?.carat_video?.[1]}
+                    autoPlay={true}
+                    muted={true}
+                    loop={true}
+                    className="h-full w-full object-cover"
                   />
-                  <iframe
-                    src={`${selectedDiamondStore?.videoFile?.split('/500/500')[0]}`}
-                    title={`Model View`}
-                    className="h-full w-full hidden lg:block md:hidden"
-                  />
-                  <iframe
-                    src={`${selectedDiamondStore?.videoFile?.split('/500/500')[0]}`}
-                    title={`Model View`}
-                    className="h-full w-full hidden md:block sm:hidden"
-                  />
-                  <iframe
-                    src={`${selectedDiamondStore?.videoFile?.split('/500/500')[0]}`}
-                    title={`Model View`}
-                    className="h-full w-full hidden sm:block"
-                  />
-                  <div className="w-[8%] absolute bottom-2 right-3 z-[19] flex items-center select-none">
-                    <Image src="/images/viewIcon.svg" alt="360-view" preview={false} className="!w-[100%] select-none" />
-                  </div>
                 </div>
-              ) : (
-                <Skeleton.Node
-                  active={true}
-                  style={{
-                    borderRadius: '0px',
-                    width: '100%',
-                    height: '100%',
-                    aspectRatio: '1 / 1',
-                  }}
-                />
-              )} */}
+              )}
               {swiperData && swiperData?.length > 1 && swiperData?.length % 2 > 0 && (
-                <Image
-                  src="/images/ashclair_pdp_logo_image.svg"
-                  alt="PDP1"
-                  preview={false}
-                  style={{
-                    borderRadius: '0px',
-                    width: '100%',
-                    height: '100%',
-                    aspectRatio: '1 / 1',
-                    backgroundColor: '#F8F8F8',
-                  }}
-                />
+                <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
               )}
             </Suspense>
           </div>
           <div className="hidden sm:block sm:w-full">
             {swiperData && swiperData?.length > 0 ? (
-              <div className="col-span-2 min-h-fit hidden sm:block">
+              <div className="col-span-2 hidden min-h-fit sm:block">
                 <Swiper
                   loop={true}
                   spaceBetween={10}
                   slidesPerView={1}
                   navigation={true}
-                  // navigation={{
-                  //   prevEl: null,
-                  //   nextEl: null,
-                  // }}
                   thumbs={{ swiper: thumbsSwiper }}
                   onSlideChange={(swiper) => {
                     setActiveIndex(swiper.realIndex);
                   }}
                   modules={[FreeMode, Navigation, Thumbs]}
-                  className="mySwiper2 min-h-fit mb-3"
+                  className="mySwiper2 mb-2 min-h-fit"
                 >
                   {swiperData?.map((d: any, index: number) => {
                     const lastIndex = swiperData?.length - 1;
                     return (
-                      <SwiperSlide key={'group3179' + index} className="!flex !justify-center !items-center !w-full">
+                      <SwiperSlide key={'group3179' + index} className="!flex !w-full !items-center !justify-center bg-stone">
                         {(index == 0 && isV360) || index == lastIndex ? (
-                          <div className="aspect-square relative w-full xl:h-auto lg:h-auto sm:!h-full">
+                          <div className="relative aspect-square w-full sm:!h-full">
                             {index == 0 ? (
                               <iframe
                                 title="scene"
@@ -896,7 +757,7 @@ export default function CustomJewelryCompletePage({
                               <iframe
                                 src={` ${selectedDiamondStore?.videoFile?.split('/500/500')[0]}${`/${windowWidth - 24}/${windowWidth - 24}`}`}
                                 title={`Model View`}
-                                className="h-full w-full hidden sm:block aspect-square"
+                                className="hidden aspect-square h-full w-full sm:block"
                                 style={{
                                   aspectRatio: '1 / 1',
                                 }}
@@ -905,7 +766,7 @@ export default function CustomJewelryCompletePage({
                               />
                             )}
 
-                            <div className="w-[8%] absolute bottom-2 right-3 z-[19] flex items-center select-none">
+                            <div className="pointer-events-none absolute bottom-3 right-3 z-[19] flex w-[8%] select-none items-center">
                               <Image src="/images/viewIcon.svg" alt="360-view" preview={false} className="!w-[100%] select-none" />
                             </div>
                           </div>
@@ -919,7 +780,7 @@ export default function CustomJewelryCompletePage({
                             preview={false}
                             alt="Mask Group"
                             fallback={'/images/ashclair_pdp_logo_image.svg'}
-                            className="h-[500px] 2xl:h-auto w-full mx-auto object-contain xl:h-auto lg:h-auto bg-[#f8f8f8] aspect-square"
+                            className="mx-auto aspect-square w-full bg-stone object-contain mix-blend-multiply"
                           />
                         )}
                       </SwiperSlide>
@@ -929,7 +790,7 @@ export default function CustomJewelryCompletePage({
                 <Swiper
                   onSwiper={(value) => setThumbsSwiper(value)}
                   loop={false}
-                  spaceBetween={10}
+                  spaceBetween={8}
                   slidesPerView={4}
                   freeMode={true}
                   navigation={{
@@ -938,22 +799,24 @@ export default function CustomJewelryCompletePage({
                   }}
                   watchSlidesProgress={true}
                   modules={[FreeMode, Navigation, Thumbs]}
-                  className="mySwiper min-h-[20%] px-2 "
+                  className="mySwiper min-h-[20%]"
                 >
                   {swiperData?.map((d: any, index: number) => {
                     const lastIndex = swiperData?.length - 1;
                     return (
                       <SwiperSlide
                         key={'group3179' + index}
-                        className={`cursor-pointer transition-all duration-300 border-2  !aspect-square ${activeIndex === index ? ' border-primary p-1' : 'border-transparent p-1.5'}`}
+                        className={`!aspect-square cursor-pointer border bg-stone transition-colors duration-300 ${
+                          activeIndex === index ? 'border-ink' : 'border-transparent'
+                        }`}
                       >
                         {(index == 0 && isV360) || index == lastIndex ? (
-                          <div className={`w-full bottom-2 left-2 z-[19] flex items-center select-none ${thumbsSwiper}`}>
+                          <div className={`bottom-2 left-2 z-[19] flex w-full select-none items-center ${thumbsSwiper}`}>
                             <Image
                               src="/images/viewIcon.svg"
                               alt="360-view"
                               preview={false}
-                              className="!w-[100%] px-5 !aspect-square bg-[#f8f8f8] select-none"
+                              className="!aspect-square !w-[100%] select-none bg-stone px-5"
                             />
                           </div>
                         ) : isVideo && index == 1 ? (
@@ -976,7 +839,7 @@ export default function CustomJewelryCompletePage({
                             preview={false}
                             alt="Mask Group"
                             fallback={'/images/ashclair_pdp_logo_image.svg'}
-                            className="h-[500px] 2xl:h-auto w-full object-contain xl:h-auto lg:h-auto bg-[#f8f8f8] aspect-square"
+                            className="aspect-square w-full bg-stone object-contain mix-blend-multiply"
                           />
                         )}
                       </SwiperSlide>
@@ -985,140 +848,99 @@ export default function CustomJewelryCompletePage({
                 </Swiper>
               </div>
             ) : (
-              <Image
-                src="/images/ashclair_pdp_logo_image.svg"
-                alt="PDP1"
-                preview={false}
-                style={{
-                  borderRadius: '0px',
-                  width: '100%',
-                  height: '100%',
-                  aspectRatio: '1 / 1',
-                  backgroundColor: '#F8F8F8',
-                }}
-              />
+              <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
             )}
           </div>
 
-          <div
-            ref={cRef}
-            className={`flex w-[33%] lg:w-1/3 md:w-[40%] sticky top-[${topOffset}px] sm:top-0 flex-col gap-[30px] 2xl:gap-[20px] sm:gap-2 sm:w-full`}
-            style={{ top: `${topOffset}` }}
-          >
-            <div className="flex flex-col gap-5 sm:gap-2">
-              <div className="flex flex-col items-start gap-4 sm:gap-2">
-                <div className="flex self-stretch">
-                  {selectedSettingStore ? (
-                    <Text size="text5xl" as="p" className="md:!text-[20px] sm:!text-[18px]">
-                      {selectedSettingStore?.product_details?.fullTitle}
-                    </Text>
-                  ) : (
-                    <div className="flex flex-col gap-5 w-full">
-                      <Skeleton.Input active={true} size="small" block className="w-full" />
-                      <Skeleton.Input active={true} size="small" />
-                      {/* <Skeleton.Button active={true} block /> */}
-                    </div>
-                  )}
+          {/* Buy box */}
+          <div ref={cRef} className="sticky flex w-full flex-col gap-7 md:static sm:top-0 sm:gap-6" style={{ top: `${topOffset}` }}>
+            <header className="grid gap-3 border-b border-line pb-6">
+              <p className={SECTION_LABEL}>Your design</p>
+              {selectedSettingStore ? (
+                <h1 className="m-0 text-balance font-cormorant text-[clamp(32px,3vw,42px)] font-medium leading-[1.05] tracking-[-0.005em] text-ink">
+                  {selectedSettingStore?.product_details?.fullTitle}
+                </h1>
+              ) : (
+                <div className="flex w-full flex-col gap-3">
+                  <Skeleton.Input active={true} size="small" block className="w-full" />
+                  <Skeleton.Input active={true} size="small" />
                 </div>
+              )}
 
-                {selectedProduct?.product_details?.jewelry_id && jewelryMetadata ? (
-                  <>
-                    {jewelryMetadata?.diamond_certificate &&
-                    jewelryMetadata?.diamond_certificate !== 0 &&
-                    jewelryMetadata?.diamond_certificate !== undefined ? (
-                      <div className="flex items-center gap-2">
-                        <Text size="textmd" className="!font-medium text-gray-500">
-                          {`${
-                            productSKU?.metalType !== 'SILVER_925'
-                              ? (productFilter?.find((el: any) => el.id === jewelryMetadata?.metal_type_id)?.name || 'N/A') + ' '
-                              : ''
-                          }${productFilter?.find((el: any) => el.id === jewelryMetadata?.metal_color_id)?.name?.replace(' ', ' ') || 'N/A'}, ${
-                            productFilter?.find((el: any) => el.id === jewelryMetadata?.shape_id)?.name || 'N/A'
-                          } | ${
-                            jewelryMetadata?.diamond_certificate === 1
-                              ? 'GIA'
-                              : jewelryMetadata?.diamond_certificate === 2
-                                ? 'IGI'
-                                : jewelryMetadata?.diamond_certificate === 3
-                                  ? 'DGLA'
-                                  : 'N/A'
-                          }`}
-                        </Text>
-                      </div>
-                    ) : null}
-                  </>
-                ) : (
-                  <Skeleton.Input active={true} size="small" block={true} />
-                )}
+              {selectedProduct?.product_details?.jewelry_id && jewelryMetadata ? (
+                <>
+                  {jewelryMetadata?.diamond_certificate &&
+                  jewelryMetadata?.diamond_certificate !== 0 &&
+                  jewelryMetadata?.diamond_certificate !== undefined ? (
+                    <p className="m-0 text-[13.5px] leading-[1.6] text-ink-soft">
+                      {`${
+                        productSKU?.metalType !== 'SILVER_925'
+                          ? (productFilter?.find((el: any) => el.id === jewelryMetadata?.metal_type_id)?.name || 'N/A') + ' '
+                          : ''
+                      }${productFilter?.find((el: any) => el.id === jewelryMetadata?.metal_color_id)?.name?.replace(' ', ' ') || 'N/A'}, ${
+                        productFilter?.find((el: any) => el.id === jewelryMetadata?.shape_id)?.name || 'N/A'
+                      } | ${
+                        jewelryMetadata?.diamond_certificate === 1
+                          ? 'GIA'
+                          : jewelryMetadata?.diamond_certificate === 2
+                            ? 'IGI'
+                            : jewelryMetadata?.diamond_certificate === 3
+                              ? 'DGLA'
+                              : 'N/A'
+                      }`}
+                    </p>
+                  ) : null}
+                </>
+              ) : (
+                <Skeleton.Input active={true} size="small" block={true} />
+              )}
 
-                {selectedSettingType?.selling_price + selectedDiamondStore?.price > 0 && (
-                  <p className="text-[22px] font-semibold md:text-[20px] sm:!text-[14px] !font-castoro">
-                    {formatCurrency(
-                      (selectedSettingType?.discounted_price
-                        ? selectedSettingType?.discounted_price + selectedSettingRingPrice
-                        : selectedSettingType?.selling_price + selectedSettingRingPrice) +
-                        selectedDiamondStore?.price +
-                        (selectedWarranty?.yearPrice?.price ?? 0) +
-                        (selectedAppraisal?.price ?? 0) +
-                        (selectedEngraving ? engraving?.data?.engraving_price : 0),
-                    )}
-                  </p>
-                )}
-              </div>
-              <div className="flex flex-col gap-5 sm:gap-2 sm:mt-3">
-                <div className="border-b border-gray-200 pb-5 sm:pb-2 ">
-                  {selectedSettingStore && selectedSettingStore?.product_details?.title ? (
-                    <Text size="textlg" as="p" className="uppercase">
-                      SETTING Details:
-                    </Text>
-                  ) : (
-                    <Skeleton.Input active={true} size="small" />
+              {selectedSettingType?.selling_price + selectedDiamondStore?.price > 0 && (
+                <p className="m-0 text-[22px] tabular-nums text-ink md:text-[20px]">
+                  {formatCurrency(
+                    (selectedSettingType?.discounted_price
+                      ? selectedSettingType?.discounted_price + selectedSettingRingPrice
+                      : selectedSettingType?.selling_price + selectedSettingRingPrice) +
+                      selectedDiamondStore?.price +
+                      (selectedWarranty?.yearPrice?.price ?? 0) +
+                      (selectedAppraisal?.price ?? 0) +
+                      (selectedEngraving ? engraving?.data?.engraving_price : 0),
                   )}
-                  <div className="flex gap-4 mt-2 sm:grid sm:grid-cols-3 sm:gap-3">
-                    <div className="max-w-[100px] w-[100px] h-[100px] sm:w-auto sm:col-span-1  bg-[#f8f8f8] aspect-square  ">
-                      {selectedSettingStore && selectedSettingStore?.product_details?.title ? (
-                        <Image
-                          src={
-                            selectedSettingType?.carat_images?.[1] ? selectedSettingType?.carat_images?.[1] : '/images/ashclair_pdp_logo_image.svg'
-                          }
-                          preview={false}
-                          fallback="/images/ashclair_pdp_logo_image.svg"
-                          className="object-cover !h-full !mix-blend-multiply"
-                          alt="Mask Group"
-                        />
-                      ) : (
-                        <>
-                          <Skeleton.Node
-                            active
-                            style={{
-                              borderRadius: '0px',
-                              width: '100%',
-                              height: '100%',
-                              aspectRatio: '1 / 1',
-                            }}
-                          />
-                        </>
-                      )}
-                    </div>
-                    <div className="flex-col sm:col-span-2 gap-2 flex">
-                      <p className="text-[18px] capitalize sm:!text-[13px]"> {selectedSettingStore?.product_details?.title}</p>
-                      {selectedSettingType?.selling_price && (
-                        <div className="flex gap-2 flex-col items-start">
-                          <p
-                            className={`text-[16px] capitalize !font-castoro ${selectedSettingType?.discounted_price ? 'line-through text-gray-400 !text-[14px] sm:!text-[12px]' : 'sm:!text-[13px]'}`}
-                          >
-                            {' '}
-                            {formatCurrency(
-                              selectedSettingType?.selling_price +
-                                selectedSettingRingPrice +
-                                (selectedWarranty?.yearPrice?.price ?? 0) +
-                                (selectedAppraisal?.price ?? 0) +
-                                (selectedEngraving ? engraving?.data?.engraving_price : 0),
-                            )}
-                          </p>
+                </p>
+              )}
+            </header>
+
+            {/* Setting + diamond summary */}
+            <div className="grid">
+              <div className="grid gap-3 border-b border-line pb-6">
+                {selectedSettingStore && selectedSettingStore?.product_details?.title ? (
+                  <p className={SECTION_LABEL}>The setting</p>
+                ) : (
+                  <Skeleton.Input active={true} size="small" />
+                )}
+                <div className="grid grid-cols-[96px_minmax(0,1fr)] items-start gap-4 sm:grid-cols-[80px_minmax(0,1fr)]">
+                  <div className="aspect-square w-full overflow-hidden bg-stone">
+                    {selectedSettingStore && selectedSettingStore?.product_details?.title ? (
+                      <Image
+                        src={selectedSettingType?.carat_images?.[1] ? selectedSettingType?.carat_images?.[1] : '/images/ashclair_pdp_logo_image.svg'}
+                        preview={false}
+                        fallback="/images/ashclair_pdp_logo_image.svg"
+                        className="!h-full object-contain !mix-blend-multiply"
+                        alt="Mask Group"
+                      />
+                    ) : (
+                      <Skeleton.Node active style={SKELETON_STYLE} />
+                    )}
+                  </div>
+                  <div className="grid min-w-0 gap-1.5">
+                    <p className="m-0 text-[15px] font-medium capitalize leading-[1.35] text-ink sm:text-[14px]">
+                      {selectedSettingStore?.product_details?.title}
+                    </p>
+                    {selectedSettingType?.selling_price && (
+                      <>
+                        <div className="flex flex-wrap items-baseline gap-2 text-[14px] tabular-nums text-ink">
                           {selectedSettingType?.discounted_price && (
-                            <p className="text-[16px] capitalize sm:!text-[13px] !font-castoro">
-                              {' '}
+                            <span>
                               {formatCurrency(
                                 (selectedSettingType?.discounted_price ? selectedSettingType?.discounted_price : selectedSettingType?.selling_price) +
                                   selectedSettingRingPrice +
@@ -1126,208 +948,171 @@ export default function CustomJewelryCompletePage({
                                   (selectedAppraisal?.price ?? 0) +
                                   (selectedEngraving ? engraving?.data?.engraving_price : 0),
                               )}
-                            </p>
+                            </span>
                           )}
-                          <div className="flex flex-col items-start justify-center">
-                            <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
-                              {selectedProduct?.product_details?.subType?.jewelry_type?.name}
-                            </Text>
-                            <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
-                              {master.find((item: any) => item.id === selectedSettingType?.metal_color_id)?.name}
-                            </Text>
-
-                            <Text as="p" size="textlg" className="text-[12px] capitalize tracking-[0.20px] text-slate-400">
-                              {/* {selectedSettingType?.diamondGroup?.group} */}
-
-                              {'Metal | '}
-                              {master.find((item: any) => item.id === selectedSettingType?.metal_type_id)?.name}
-                            </Text>
-                            {selectedEngraving && selectedEngraving.text != '' && (
-                              <>
-                                {/* <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
-                                  Engraving Text: <span style={{ fontFamily: selectedEngraving.fontFamily }}>{selectedEngraving.text}</span>
-                                </Text>
-                                <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
-                                  Engraving Font Family: {selectedEngraving.fontFamily}
-                                </Text> */}
-                                <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
-                                  Engraving Price:
-                                  <span className="!font-bold">{formatCurrency(selectedEngraving ? engraving?.data?.engraving_price : 0)}</span>
-                                </Text>
-                              </>
+                          <span className={selectedSettingType?.discounted_price ? 'text-[13px] text-ink-faint line-through' : ''}>
+                            {formatCurrency(
+                              selectedSettingType?.selling_price +
+                                selectedSettingRingPrice +
+                                (selectedWarranty?.yearPrice?.price ?? 0) +
+                                (selectedAppraisal?.price ?? 0) +
+                                (selectedEngraving ? engraving?.data?.engraving_price : 0),
                             )}
-                            {selectedWarranty && (
-                              <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
-                                Warranty: {selectedWarranty?.yearPrice?.year} Year (+
-                                <span className="!font-bold">{formatCurrency(selectedWarranty?.yearPrice?.price)}</span>)
-                              </Text>
-                            )}
-                            {selectedAppraisal && (
-                              <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
-                                Appraisal Price: <span className="!font-bold">{formatCurrency(selectedAppraisal?.price)}</span>
-                              </Text>
-                            )}
-                          </div>
+                          </span>
                         </div>
+                        <dl className={SPEC_DL}>
+                          <dt className={SPEC_DT}>Type</dt>
+                          <dd className={SPEC_DD}>{selectedProduct?.product_details?.subType?.jewelry_type?.name}</dd>
+                          <dt className={SPEC_DT}>Colour</dt>
+                          <dd className={SPEC_DD}>{master.find((item: any) => item.id === selectedSettingType?.metal_color_id)?.name}</dd>
+                          <dt className={SPEC_DT}>Metal</dt>
+                          <dd className={SPEC_DD}>{master.find((item: any) => item.id === selectedSettingType?.metal_type_id)?.name}</dd>
+                          {selectedEngraving && selectedEngraving.text != '' && (
+                            <>
+                              <dt className={SPEC_DT}>Engraving</dt>
+                              <dd className={SPEC_DD}>{formatCurrency(selectedEngraving ? engraving?.data?.engraving_price : 0)}</dd>
+                            </>
+                          )}
+                          {selectedWarranty && (
+                            <>
+                              <dt className={SPEC_DT}>Warranty</dt>
+                              <dd className={SPEC_DD}>
+                                {selectedWarranty?.yearPrice?.year} Year (+{formatCurrency(selectedWarranty?.yearPrice?.price)})
+                              </dd>
+                            </>
+                          )}
+                          {selectedAppraisal && (
+                            <>
+                              <dt className={SPEC_DT}>Appraisal</dt>
+                              <dd className={SPEC_DD}>{formatCurrency(selectedAppraisal?.price)}</dd>
+                            </>
+                          )}
+                        </dl>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {selectedSettingStore && selectedSettingStore?.product_details?.title && (
+                <div className="grid gap-3 border-b border-line py-6">
+                  {selectedDiamondStore ? <p className={SECTION_LABEL}>The diamond</p> : <Skeleton.Input active={true} size="small" />}
+                  <div className="grid grid-cols-[96px_minmax(0,1fr)] items-start gap-4 sm:grid-cols-[80px_minmax(0,1fr)]">
+                    <div className="aspect-square w-full overflow-hidden bg-stone">
+                      {selectedDiamondStore?.imageFile || selectedDiamondStore?.fullTitle ? (
+                        <Image
+                          src={selectedDiamondStore?.imageFile ? selectedDiamondStore?.imageFile : '/images/ashclair_pdp_logo_image.svg'}
+                          preview={false}
+                          fallback="/images/ashclair_pdp_logo_image.svg"
+                          className="aspect-square object-cover"
+                          alt="Mask Group"
+                        />
+                      ) : (
+                        <Skeleton.Node active={true} className="aspect-square object-contain" />
+                      )}
+                    </div>
+                    <div className="grid min-w-0 gap-1.5">
+                      <p className="m-0 text-[15px] font-medium capitalize leading-[1.35] text-ink sm:text-[14px]">
+                        {selectedDiamondStore?.fullTitle}
+                      </p>
+                      {selectedSettingType?.selling_price && (
+                        <p className="m-0 text-[14px] tabular-nums text-ink">{formatCurrency(selectedDiamondStore?.price)}</p>
+                      )}
+                      {selectedDiamondStore && (
+                        <dl className={SPEC_DL}>
+                          <dt className={SPEC_DT}>Clarity</dt>
+                          <dd className={SPEC_DD}>{selectedDiamondStore?.clr}</dd>
+                          <dt className={SPEC_DT}>Color</dt>
+                          <dd className={SPEC_DD}>{selectedDiamondStore?.col}</dd>
+                          <dt className={SPEC_DT}>Shape</dt>
+                          <dd className={SPEC_DD}>{selectedDiamondStore?.shape_name}</dd>
+                          <dt className={SPEC_DT}>Origin</dt>
+                          <dd className={SPEC_DD}>{selectedDiamondStore?.diamond_type == 2 ? 'Lab Grown Diamond' : 'Natural Diamond'}</dd>
+                        </dl>
                       )}
                     </div>
                   </div>
                 </div>
-                {selectedSettingStore && selectedSettingStore?.product_details?.title && (
-                  <div>
-                    {selectedDiamondStore ? (
-                      <Text size="textlg" as="p" className="uppercase">
-                        DIAMOND Details:
-                      </Text>
-                    ) : (
-                      <Skeleton.Input active={true} size="small" />
-                    )}
-                    <div className="flex gap-4 mt-2 sm:grid sm:grid-cols-3 sm:gap-3">
-                      <div className="max-w-[100px] w-[100px] h-[100px] sm:w-auto sm:col-span-1 bg-[#f8f8f8]  !aspect-square    sm:border">
-                        {selectedDiamondStore?.imageFile || selectedDiamondStore?.fullTitle ? (
-                          <Image
-                            src={selectedDiamondStore?.imageFile ? selectedDiamondStore?.imageFile : '/images/ashclair_pdp_logo_image.svg'}
-                            preview={false}
-                            fallback="/images/ashclair_pdp_logo_image.svg"
-                            className="object-cover  aspect-square"
-                            alt="Mask Group"
-                          />
-                        ) : (
-                          <>
-                            <Skeleton.Node
-                              active={true}
-                              className="aspect-square object-contain"
-                              // style={{
-                              //   borderRadius: '0px',
-                              //   width: '100%',
-                              //   // height: '100%',
-                              //   aspectRatio: '1 / 1',
-                              // }}
-                            />
-                          </>
-                        )}
-                      </div>
-                      <div className="flex-col gap-2 flex sm:col-span-2">
-                        <p className="text-[18px] capitalize sm:!text-[13px]"> {selectedDiamondStore?.fullTitle}</p>
-                        {selectedSettingType?.selling_price && (
-                          <p className="text-[16px] capitalize sm:!text-[13px] !font-castoro"> {formatCurrency(selectedDiamondStore?.price)}</p>
-                        )}
-                        {selectedDiamondStore && (
-                          <div>
-                            <p className="text-[16px] tracking-[0.20px] text-slate-400 sm:!text-[12px]">Clarity: {selectedDiamondStore?.clr}</p>
-                            <p className="text-[16px] tracking-[0.20px] text-slate-400 sm:!text-[12px]">Color: {selectedDiamondStore?.col}</p>
-                            <p className="text-[16px] tracking-[0.20px] text-slate-400 sm:!text-[12px]">Shape: {selectedDiamondStore?.shape_name}</p>
-                            <p className="text-[16px] tracking-[0.20px] text-slate-400 sm:!text-[12px]">
-                              {selectedDiamondStore?.diamond_type == 2 ? 'Lab Grown Diamond' : 'Natural Diamond'}
-                            </p>
-                          </div>
-                        )}
+              )}
+              {(() => {
+                // Side diamonds grouped by shape (one row per shape) with each shape's
+                // combined Total Carat Weight, computed and sent by the backend.
+                const sideDiamondDetails = selectedSettingStore?.product_details?.sideDiamondDetails ?? selectedSettingType?.sideDiamondDetails;
+                const shapeGroups = Array.isArray(sideDiamondDetails) ? sideDiamondDetails : [];
+                return (
+                  selectedSettingStore &&
+                  selectedSettingStore?.product_details?.title &&
+                  shapeGroups.length > 0 && (
+                    <div className="grid gap-3 border-b border-line py-6">
+                      <p className={SECTION_LABEL}>Side diamonds</p>
+                      <div className="overflow-x-auto">
+                        <table className="w-full border-collapse text-left text-[13px] tabular-nums">
+                          <thead>
+                            <tr className="text-ink-faint">
+                              <th className="border-b border-line py-2 pr-4 font-normal">Shape</th>
+                              <th className="border-b border-line py-2 pr-4 font-normal">Color</th>
+                              <th className="border-b border-line py-2 font-normal">Total carat weight</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {shapeGroups.map((group: any, index: number) => (
+                              <tr key={index} className="text-ink">
+                                <td className="border-b border-line py-2 pr-4">{group.shapeName}</td>
+                                <td className="border-b border-line py-2 pr-4">{group.colorName}</td>
+                                <td className="border-b border-line py-2">{group.caratWeight}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
-                  </div>
-                )}
-                {(() => {
-                  // Side diamonds grouped by shape (one row per shape) with each shape's
-                  // combined Total Carat Weight, computed and sent by the backend.
-                  const sideDiamondDetails = selectedSettingStore?.product_details?.sideDiamondDetails ?? selectedSettingType?.sideDiamondDetails;
-                  const shapeGroups = Array.isArray(sideDiamondDetails) ? sideDiamondDetails : [];
-                  return (
-                    selectedSettingStore &&
-                    selectedSettingStore?.product_details?.title &&
-                    shapeGroups.length > 0 && (
-                      <div>
-                        <Text size="textlg" as="p" className="uppercase">
-                          SIDE DIAMOND Details:
-                        </Text>
-                        <div className="mt-2 overflow-x-auto sm:mb-4">
-                          <table className="w-full border-collapse border border-gray-200 text-left">
-                            <thead>
-                              <tr className="bg-[#f8f8f8] text-slate-500">
-                                <th className="border border-gray-200 px-3 py-2 text-[14px] font-medium sm:px-2 sm:py-1 sm:text-[12px]">Shape</th>
-                                <th className="border border-gray-200 px-3 py-2 text-[14px] font-medium sm:px-2 sm:py-1 sm:text-[12px]">Color</th>
-                                <th className="border border-gray-200 px-3 py-2 text-[14px] font-medium sm:px-2 sm:py-1 sm:text-[12px]">
-                                  Total Carat Weight
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {shapeGroups.map((group: any, index: number) => (
-                                <tr key={index} className="text-slate-400">
-                                  <td className="border border-gray-200 px-3 py-2 text-[14px] sm:px-2 sm:py-1 sm:text-[12px]">{group.shapeName}</td>
-                                  <td className="border border-gray-200 px-3 py-2 text-[14px] sm:px-2 sm:py-1 sm:text-[12px]">{group.colorName}</td>
-                                  <td className="border border-gray-200 px-3 py-2 text-[14px] sm:px-2 sm:py-1 sm:text-[12px]">{group.caratWeight}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    )
-                  );
-                })()}
-              </div>
+                  )
+                );
+              })()}
             </div>
-            <div className="flex flex-col gap-[20px] sm:gap-3">
+
+            {/* Options and actions */}
+            <div className="flex flex-col gap-6">
               {selectedSettingStore?.product_details?.jewelry_id ? (
                 isRingSizeType ? (
-                  <div className="flex flex-col items-start gap-[14px] md:gap-[10px] self-stretch relative">
-                    <div className="flex items-center justify-between gap-5 self-stretch">
-                      <Text size="textxl" className="!font-light !font-sans">
-                        RING SIZE
-                      </Text>
-                    </div>
-
-                    <div className="w-full">
-                      <div className="flex gap-[10px] self-stretch">
-                        <Select
-                          className={`!w-[150px] ${errorMessage ? '!outline !outline-red-500' : ''}`}
-                          placeholder="Select a Ring Size"
-                          defaultValue={ringSizeMaster?.[0]?.value}
-                          value={selectedRingSize ? selectedRingSize : null}
-                          onChange={(value: number | string) => {
-                            setSelectedSize(value);
-                            // setSelectedRingSizeId(value);
-                            dispatch(setSelectedRingSize(value));
-                            dispatch(setSelectedRingSizeId(ringSizeMasterData?.find((el: any) => el?.name == value)?.id));
-                            if (value !== 0) {
-                              setCustomRingSize(''); // Clear custom size if not "Other Size"
-                              setErrorMessage('');
-                            }
+                  <OptionGroup label="Ring size" value={selectedRingSize ? String(selectedRingSize) : undefined}>
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 sm:grid-cols-1">
+                      <Select
+                        className="w-full"
+                        status={errorMessage ? 'error' : undefined}
+                        placeholder="Select a ring size"
+                        defaultValue={ringSizeMaster?.[0]?.value}
+                        value={selectedRingSize ? selectedRingSize : null}
+                        onChange={(value: number | string) => {
+                          setSelectedSize(value);
+                          dispatch(setSelectedRingSize(value));
+                          dispatch(setSelectedRingSizeId(ringSizeMasterData?.find((el: any) => el?.name == value)?.id));
+                          if (value !== 0) {
+                            setCustomRingSize(''); // Clear custom size if not "Other Size"
+                            setErrorMessage('');
+                          }
+                        }}
+                        options={ringSizeMaster}
+                      />
+                      {selectedSize === 0 && (
+                        <Input
+                          maxLength={5}
+                          value={customRingSize}
+                          status={errorMessage ? 'error' : undefined}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            dispatch(setSelectedRingSize(e.target.value));
+                            setErrorMessage('');
                           }}
-                          // filterOption={(input, option) => ((option?.label as string) ?? '').toLowerCase().includes(input.toLowerCase())}
-                          options={ringSizeMaster}
+                          placeholder="Size Eg. 4.25"
+                          className="!w-[160px] sm:!w-full"
                         />
-                        {selectedSize === 0 && (
-                          <div className="relative">
-                            <Input
-                              maxLength={5}
-                              value={customRingSize}
-                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                dispatch(setSelectedRingSize(e.target.value));
-                                // setCustomRingSize(e.target.value);
-                                setErrorMessage('');
-                              }}
-                              placeholder="Size Eg. 4.25"
-                              className={`!w-[150px] ${errorMessage ? '!border !border-red-500' : ''}`}
-                            />
-                            {/* Show error message if validation fails */}
-                            {errorMessage && (
-                              <Text className="!text-[10px] text-nowrap absolute" style={{ color: 'red', marginTop: '8px' }}>
-                                {errorMessage}
-                              </Text>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      {errorMessage && (
-                        <div className="relative">
-                          <Text className="!text-[10px] text-nowrap absolute" style={{ color: 'red', marginTop: '8px' }}>
-                            {errorMessage}
-                          </Text>
-                        </div>
                       )}
                     </div>
-                  </div>
+                    {errorMessage && (
+                      <p role="alert" className="m-0 text-[12px] text-danger">
+                        {errorMessage}
+                      </p>
+                    )}
+                  </OptionGroup>
                 ) : (
                   <></>
                 )
@@ -1338,73 +1123,69 @@ export default function CustomJewelryCompletePage({
                 </>
               )}
               {selectedSettingStore?.product_details?.is_engraving ? (
-                <Engraving setEngravingText={setEngravingText} engravingText={engravingText} />
+                <OptionGroup label="Engraving">
+                  <PdpEngraving setEngravingText={setEngravingText} engravingText={engravingText} />
+                </OptionGroup>
               ) : null}
-              {/* Expandable Box */}
               {selectedSettingStore?.product_details?.jewelry_id ? (
-                <>
-                  <div className="border p-4">
-                    <div
-                      className="cursor-pointers font-medium !text-[#707070] flex items-center justify-between"
-                      onClick={() => setIsExpanded(!isExpanded)}
-                    >
-                      <Text size="textxl" className="!font-light !font-sans">
-                        APPRAISAL & WARRANTY
-                      </Text>
-                      {isExpanded ? (
-                        <FiMinus className="h-[18px] w-[18px] cursor-pointer" />
-                      ) : (
-                        <FiPlus className="h-[18px] w-[18px] cursor-pointer" />
-                      )}
-                    </div>
-                    <div
-                      className={`transition-all duration-500 ease-in-out overflow-hidden ${isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
-                    >
-                      <div className="mt-4 flex flex-col gap-2 !text-[#707070] w-full">
-                        <Checkbox checked={isChecked} onChange={handleCheckboxChange} className="mb-2">
-                          <Text className="!font-light !font-sans text-lg">{warrantyData?.warrantyName}</Text>
-                        </Checkbox>
+                <div className="border-y border-line">
+                  <button
+                    type="button"
+                    aria-expanded={isExpanded}
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="flex h-14 w-full items-center justify-between text-left text-[14px] font-medium text-ink"
+                  >
+                    Appraisal &amp; warranty
+                    {isExpanded ? (
+                      <FiMinus className="h-4 w-4 text-ink-soft" aria-hidden />
+                    ) : (
+                      <FiPlus className="h-4 w-4 text-ink-soft" aria-hidden />
+                    )}
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
+                  >
+                    <div className="grid gap-3 pb-5">
+                      <Checkbox checked={isChecked} onChange={handleCheckboxChange}>
+                        <span className="text-[13px] text-ink-soft">{warrantyData?.warrantyName}</span>
+                      </Checkbox>
 
-                        {isChecked && (
-                          <Radio.Group onChange={handleRadioChange} value={selectedWarranty?.yearPrice?.year ?? selectedYear}>
-                            <div className="grid grid-cols-2 gap-2 ml-1">
-                              {warrantyData?.yearPriceList?.map((item: any) => (
-                                <Radio
-                                  key={item?.year}
-                                  value={item?.year}
-                                  className="col-span-1"
-                                  checked={item?.year === (selectedWarranty?.yearPrice?.year ?? selectedYear)}
-                                >
+                      {isChecked && (
+                        <Radio.Group onChange={handleRadioChange} value={selectedWarranty?.yearPrice?.year ?? selectedYear}>
+                          <div className="ml-6 grid grid-cols-2 gap-2 sm:grid-cols-1">
+                            {warrantyData?.yearPriceList?.map((item: any) => (
+                              <Radio
+                                key={item?.year}
+                                value={item?.year}
+                                className="col-span-1"
+                                checked={item?.year === (selectedWarranty?.yearPrice?.year ?? selectedYear)}
+                              >
+                                <span className="text-[13px] tabular-nums text-ink-soft">
                                   {item?.year} Year (+ ${item?.price})
-                                </Radio>
-                              ))}
-                            </div>
-                          </Radio.Group>
-                        )}
+                                </span>
+                              </Radio>
+                            ))}
+                          </div>
+                        </Radio.Group>
+                      )}
 
-                        <Checkbox onChange={handleAppraisalChange} checked={selectedAppraisal ? true : false}>
-                          <Text className="!font-light !font-sans text-lg">{`${appraisalData?.appraisalName} (+ $${appraisalData?.price})`}</Text>
-                        </Checkbox>
-                      </div>
+                      <Checkbox onChange={handleAppraisalChange} checked={selectedAppraisal ? true : false}>
+                        <span className="text-[13px] text-ink-soft">{`${appraisalData?.appraisalName} (+ $${appraisalData?.price})`}</span>
+                      </Checkbox>
                     </div>
                   </div>
-                </>
+                </div>
               ) : (
-                <>
-                  <Skeleton.Input active={true} size="small" />
-                </>
+                <Skeleton.Input active={true} size="small" />
               )}
 
               {selectedSettingStore?.product_details?.estimated_delivery_days || selectedSettingSkuData?.handling_dates.length >= 0 ? (
                 isRingSizeType ? (
-                  <>
-                    <Text size="textmd" className="!text-[#707070] flex gap-2 items-center">
-                      {selectedSettingSkuData?.handling_dates && selectedSettingSkuData?.handling_dates?.length !== 0 && (
-                        <span className="flex items-center gap-2">
-                          <span>
-                            {' '}
-                            <BsBoxSeam className="h-5 w-5" />{' '}
-                          </span>{' '}
+                  <div className="grid gap-2">
+                    {selectedSettingSkuData?.handling_dates && selectedSettingSkuData?.handling_dates?.length !== 0 && (
+                      <p className={NOTE}>
+                        <BsBoxSeam className="h-4 w-4 flex-none text-ink" aria-hidden />
+                        <span>
                           Usually ships within{' '}
                           {selectedSettingSkuData?.handling_dates?.find((el: any) => el.ring_size_id == selectedRingSizeId)?.shipping_date ??
                             selectedSettingSkuData?.handling_dates?.[0]?.shipping_date}{' '}
@@ -1413,67 +1194,67 @@ export default function CustomJewelryCompletePage({
                             selectedSettingSkuData?.handling_dates?.[0]?.shipping_date) + 1}{' '}
                           days
                         </span>
-                      )}
-                    </Text>
-                    <Text size="textmd" className="!text-[#707070] flex gap-2 items-center">
+                      </p>
+                    )}
+                    <p className={NOTE}>
+                      <PiTruck className="h-4 w-4 flex-none text-ink" aria-hidden />
                       <span>
-                        {' '}
-                        <PiTruck className="h-5 w-5" />
-                      </span>{' '}
-                      Estimated Delivery Date:{' '}
-                      {selectedSettingSkuData?.handling_dates?.findIndex((el: any) => el.ring_size_id == selectedRingSizeId) >= 0
-                        ? selectedSettingSkuData?.handling_dates?.find((el: any) => el.ring_size_id == selectedRingSizeId)?.estimation_date
-                        : (selectedSettingSkuData?.handling_dates?.[0]?.estimation_date ??
-                          dayjs().add(selectedSettingStore?.product_details?.estimated_delivery_days, 'day').format('MMMM DD, YYYY'))}
-                    </Text>
-                  </>
+                        Estimated Delivery Date:{' '}
+                        <span className="text-ink">
+                          {selectedSettingSkuData?.handling_dates?.findIndex((el: any) => el.ring_size_id == selectedRingSizeId) >= 0
+                            ? selectedSettingSkuData?.handling_dates?.find((el: any) => el.ring_size_id == selectedRingSizeId)?.estimation_date
+                            : (selectedSettingSkuData?.handling_dates?.[0]?.estimation_date ??
+                              dayjs().add(selectedSettingStore?.product_details?.estimated_delivery_days, 'day').format('MMMM DD, YYYY'))}
+                        </span>
+                      </span>
+                    </p>
+                  </div>
                 ) : (
-                  <>
-                    <Text size="textmd" className="!text-[#707070] flex gap-2 items-center">
-                      {selectedSettingSkuData?.handling_dates && selectedSettingSkuData?.handling_dates?.length !== 0 && (
-                        <span className="flex items-center gap-2">
-                          <span>
-                            {' '}
-                            <BsBoxSeam className="h-5 w-5" />{' '}
-                          </span>{' '}
+                  <div className="grid gap-2">
+                    {selectedSettingSkuData?.handling_dates && selectedSettingSkuData?.handling_dates?.length !== 0 && (
+                      <p className={NOTE}>
+                        <BsBoxSeam className="h-4 w-4 flex-none text-ink" aria-hidden />
+                        <span>
                           Usually ships within {selectedSettingSkuData?.handling_dates?.[0]?.shipping_date} to{' '}
                           {selectedSettingSkuData?.handling_dates?.[0]?.shipping_date + 1} days
                         </span>
-                      )}
-                    </Text>
-                    <Text size="textmd" className="!text-[#707070] flex gap-2 items-center">
+                      </p>
+                    )}
+                    <p className={NOTE}>
+                      <PiTruck className="h-4 w-4 flex-none text-ink" aria-hidden />
                       <span>
-                        {' '}
-                        <PiTruck className="h-5 w-5" />
-                      </span>{' '}
-                      Estimated Delivery Date:{' '}
-                      {selectedSettingSkuData?.handling_dates?.length > 0
-                        ? selectedSettingSkuData?.handling_dates?.[0]?.estimation_date
-                        : dayjs().add(selectedSettingStore?.product_details?.estimated_delivery_days, 'day').format('MMMM DD, YYYY')}
-                    </Text>
-                  </>
+                        Estimated Delivery Date:{' '}
+                        <span className="text-ink">
+                          {selectedSettingSkuData?.handling_dates?.length > 0
+                            ? selectedSettingSkuData?.handling_dates?.[0]?.estimation_date
+                            : dayjs().add(selectedSettingStore?.product_details?.estimated_delivery_days, 'day').format('MMMM DD, YYYY')}
+                        </span>
+                      </span>
+                    </p>
+                  </div>
                 )
               ) : (
-                <>
-                  <Skeleton.Input active={true} block={true} size="small" />
-                </>
+                <Skeleton.Input active={true} block={true} size="small" />
               )}
               {affirmPriceInCents >= 5000 && (typeof window === 'undefined' || (localStorage.getItem('currency') || 'USD') === 'USD') && (
-                <p key={affirmPriceInCents} className="affirm-as-low-as mt-2" data-page-type="product" data-amount={affirmPriceInCents} />
+                <p
+                  key={affirmPriceInCents}
+                  className="affirm-as-low-as m-0 text-[13px] text-ink-soft"
+                  data-page-type="product"
+                  data-amount={affirmPriceInCents}
+                />
               )}
               {selectedSettingStore && selectedSettingStore?.product_details?.title ? (
-                <>
-                  <div>
-                    <Button
-                      name="Checkout Button"
-                      className=" w-full !text-text_w !bg-secondary lg:text-[18px] sm:px-4 uppercase tracking-[1px] mt-1 border-2 sm:mb-4"
-                      loading={loading}
-                      onClick={handleAddtocart}
-                    >
-                      Continue
-                    </Button>
-                  </div>
-                </>
+                <Button
+                  name="Checkout Button"
+                  type="primary"
+                  block
+                  className={`${PRIMARY_BTN} !h-14 w-full sm:mb-4`}
+                  loading={loading}
+                  onClick={handleAddtocart}
+                >
+                  Continue
+                </Button>
               ) : (
                 <>
                   <Skeleton.Input active={true} size="small" block />
@@ -1483,7 +1264,7 @@ export default function CustomJewelryCompletePage({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </ConfigProvider>
   );
 }

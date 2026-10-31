@@ -12,7 +12,7 @@ function StarRow() {
   return (
     <div className="flex items-center gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} viewBox="0 0 24 24" width={13} height={13} fill="#f4b740">
+        <svg key={i} viewBox="0 0 24 24" width={13} height={13} fill="#111111">
           <path d={STAR_PATH_D} />
         </svg>
       ))}

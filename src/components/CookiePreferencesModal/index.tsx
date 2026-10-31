@@ -134,7 +134,7 @@ export default function CookiePreferencesModal(): JSX.Element | null {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[2147483600] flex items-center justify-center bg-black/50 p-4 sm:p-3"
+      className="fixed inset-0 z-[2147483600] flex items-center justify-center bg-ink/45 p-4 sm:p-3"
       // Clicking the backdrop (but not the card) dismisses without saving.
       onMouseDown={(event) => event.target === event.currentTarget && closePreferences()}
     >
@@ -146,27 +146,27 @@ export default function CookiePreferencesModal(): JSX.Element | null {
         aria-describedby="cookie-preferences-description"
         tabIndex={-1}
         onKeyDown={onKeyDown}
-        className="max-h-[85vh] w-full max-w-[680px] overflow-y-auto rounded-lg bg-white p-9 text-[#111827] shadow-2xl outline-none md:p-6 sm:p-5
-          dark:bg-[#1b1f24] dark:text-[#f3f4f6]"
+        className="max-h-[85vh] w-full max-w-[600px] overflow-y-auto rounded-none border border-line bg-paper p-10 text-ink outline-none md:p-7 sm:p-5"
       >
-        <h2 id="cookie-preferences-title" className="m-0 text-[34px] font-bold leading-tight md:text-[28px] sm:text-[24px]">
+        <p className="m-0 mb-3 text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Your privacy</p>
+        <h2
+          id="cookie-preferences-title"
+          className="m-0 font-cormorant text-[clamp(30px,3.2vw,40px)] font-normal leading-none tracking-[-0.01em] text-ink"
+        >
           Cookie Preferences
         </h2>
-        <p
-          id="cookie-preferences-description"
-          className="mb-7 mt-3 text-[19px] leading-[1.45] text-[#374151] md:text-[16px] sm:text-[15px] dark:text-[#c9ced6]"
-        >
+        <p id="cookie-preferences-description" className="mb-7 mt-3 text-[14px] leading-[1.65] text-ink-soft">
           Choose which cookies you&rsquo;d like to allow. You can update these at any time.
         </p>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col border-t border-line">
           {CATEGORY_ROWS.map((row) => {
             const locked = row.key === null;
             const checked = locked ? true : draft[row.key as OptionalCategory];
             const inputId = `cookie-category-${row.key ?? 'necessary'}`;
 
             return (
-              <div key={inputId} className="flex items-start gap-3">
+              <div key={inputId} className="flex items-center gap-4 border-b border-line py-4">
                 <input
                   id={inputId}
                   type="checkbox"
@@ -174,41 +174,38 @@ export default function CookiePreferencesModal(): JSX.Element | null {
                   disabled={locked}
                   aria-describedby={`${inputId}-controls`}
                   onChange={(event) => !locked && toggle(row.key as OptionalCategory, event.target.checked)}
-                  className="mt-[5px] h-[18px] w-[18px] shrink-0 cursor-pointer rounded-[3px] border-gray-300 text-[#2563eb]
-                    focus:ring-2 focus:ring-[#2563eb] focus:ring-offset-1 disabled:cursor-not-allowed disabled:text-gray-400
-                    dark:border-gray-600 dark:bg-transparent"
+                  className="h-[18px] w-[18px] shrink-0 cursor-pointer rounded-none border-line-strong text-ink
+                    focus:ring-1 focus:ring-ink focus:ring-offset-2 disabled:cursor-not-allowed disabled:text-ink-faint"
                 />
-                <label
-                  htmlFor={inputId}
-                  className={`text-[21px] font-medium leading-snug md:text-[18px] sm:text-[16px] ${locked ? '' : 'cursor-pointer'}`}
-                >
+                <label htmlFor={inputId} className={`flex-1 text-[14px] font-medium leading-snug text-ink ${locked ? '' : 'cursor-pointer'}`}>
                   {row.title}
                   {/* Visually hidden — see the note on CategoryRow.controls. */}
                   <span id={`${inputId}-controls`} className="sr-only">
                     {row.controls}
                   </span>
                 </label>
+                {locked && <span className="text-[10.5px] uppercase tracking-[0.16em] text-ink-faint">Always on</span>}
               </div>
             );
           })}
         </div>
 
-        <div className="mt-9 flex justify-end gap-3 sm:flex-col-reverse sm:gap-2">
+        <div className="mt-8 flex justify-end gap-3 sm:flex-col-reverse sm:gap-2">
           <button
             type="button"
             onClick={closePreferences}
-            className="inline-flex h-[46px] items-center justify-center rounded-md bg-[#9ca3af] px-6 text-[16px] font-medium text-white
-              transition-colors duration-150 hover:bg-[#8b929e] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6b7280]
-              focus-visible:ring-offset-2 sm:w-full sm:text-[15px]"
+            className="inline-flex h-12 items-center justify-center rounded-none border border-ink bg-transparent px-8 text-[11.5px] font-medium uppercase
+              tracking-[0.2em] text-ink transition-colors duration-150 hover:bg-ink hover:text-paper focus:outline-none focus-visible:ring-1
+              focus-visible:ring-ink focus-visible:ring-offset-2 sm:w-full"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={() => savePreferences(draft)}
-            className="inline-flex h-[46px] items-center justify-center rounded-md bg-[#5cb85c] px-6 text-[16px] font-medium text-white
-              transition-colors duration-150 hover:bg-[#4da64d] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3f8f3f]
-              focus-visible:ring-offset-2 sm:w-full sm:text-[15px]"
+            className="inline-flex h-12 items-center justify-center rounded-none border border-ink bg-ink px-8 text-[11.5px] font-medium uppercase
+              tracking-[0.2em] text-paper transition-colors duration-150 hover:bg-ink-hover focus:outline-none focus-visible:ring-1
+              focus-visible:ring-ink focus-visible:ring-offset-2 sm:w-full"
           >
             Save Preferences
           </button>

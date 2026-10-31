@@ -1,12 +1,13 @@
 'use client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-import { Table, Button, Image, Pagination } from 'antd';
+import { Table, Button, ConfigProvider, Image, Pagination } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { IoChevronDownOutline, IoChevronUpOutline } from 'react-icons/io5';
 import { LuLoader } from 'react-icons/lu';
 
-import { Text } from '@/components';
+import { plpTheme } from '@/app/[jewelryType]/FilterDrawer';
+import { PRIMARY_BTN, SECONDARY_BTN } from '@/app/checkout/checkoutTheme';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
   fetchDiamondByIdThunk,
@@ -14,8 +15,39 @@ import {
   setDiamondPageSize,
   setSelectedShapesData,
 } from '@/store/slices/customProducts/customProductSlice';
+import themeColors from '@/styles/theme-colors';
 import { carryForwardFilterCrumb, DIAMOND_FILTER_CRUMB_PARAMS } from '@/utils/breadcrumbFilterParams';
 import { formatCurrency } from '@/utils/common';
+
+// Presentation only: hairline results table in the listing-page language (design-mockups/plp-v3).
+const diamondTableTheme = {
+  ...plpTheme,
+  components: {
+    ...plpTheme.components,
+    Table: {
+      headerBg: themeColors.paper,
+      headerColor: themeColors.ink.soft,
+      headerSortActiveBg: themeColors.paper,
+      headerSortHoverBg: themeColors.stone.DEFAULT,
+      headerSplitColor: 'transparent',
+      borderColor: themeColors.line.DEFAULT,
+      rowHoverBg: themeColors.stone.DEFAULT,
+      rowExpandedBg: themeColors.paper,
+      bodySortBg: 'transparent',
+      cellPaddingBlock: 14,
+      fontSize: 14,
+    },
+    Pagination: {
+      itemActiveBg: themeColors.ink.DEFAULT,
+    },
+  },
+};
+// The global stylesheet paints table headers beige with white text; override them for this table.
+const TABLE_SKIN =
+  '[&_.ant-table-thead>tr>th.ant-table-cell]:!bg-paper [&_.ant-table-thead>tr>th.ant-table-cell]:!text-[10.5px] [&_.ant-table-thead>tr>th.ant-table-cell]:!font-medium [&_.ant-table-thead>tr>th.ant-table-cell]:!uppercase [&_.ant-table-thead>tr>th.ant-table-cell]:!tracking-[0.16em] [&_.ant-table-thead>tr>th.ant-table-cell]:!text-ink-soft [&_.ant-table-thead>tr>th.ant-table-cell]:!border-b-ink [&_.ant-table-tbody>tr>td]:!text-ink [&_.ant-pagination-item-active]:!border-ink [&_.ant-pagination-item-active>a]:!text-paper';
+const SPEC_LABEL = 'text-[10.5px] uppercase tracking-[0.16em] text-ink-soft';
+const SPEC_VALUE = 'text-[14px] text-ink';
+const GUTTER = 'mx-auto w-full max-w-[1440px] px-[clamp(16px,3.2vw,56px)]';
 
 export interface CustomDiamondType {
   name: string;
@@ -115,7 +147,7 @@ const CustomJewelryDiamondListTable = ({
         return a.shape.localeCompare(b.shape);
       },
       render: (shape: string) => (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }} className="text-ink">
           <Image
             src={masterData?.find((el: any) => el.name === shape && el.parent_code == 'SHAPE')?.image?.[0]}
             preview={false}
@@ -202,7 +234,7 @@ const CustomJewelryDiamondListTable = ({
         }
         return parseFloat(a.price) - parseFloat(b.price);
       },
-      render: (price: string) => <span className="!font-castoro">{price ? formatCurrency(price) : 'N/A'}</span>,
+      render: (price: string) => <span className="tabular-nums">{price ? formatCurrency(price) : 'N/A'}</span>,
     },
   ];
   const [data, setData] = useState<any>();
@@ -243,15 +275,13 @@ const CustomJewelryDiamondListTable = ({
   return (
     <>
       {diamondList?.rows && !isLoading && (
-        <>
-          <div
-            className={`container-xs lg:gap-8 2xl:gap-16 2xl:px-[50px] xl:px-[50px] xl:gap-10 lg:px-[30px]  md:px-5 overflow-auto sm:hidden ${isGridView == true ? 'hidden' : 'block'}`}
-          >
+        <ConfigProvider theme={diamondTableTheme}>
+          <div className={`${GUTTER} ${TABLE_SKIN} overflow-auto font-libre sm:hidden ${isGridView == true ? 'hidden' : 'block'}`}>
             <Table
               columns={columns}
               dataSource={data}
               // loading={loading}
-              loading={{ indicator: <LuLoader className="h-10 w-10 animate-spin" />, spinning: loading }}
+              loading={{ indicator: <LuLoader className="h-8 w-8 animate-spin text-ink-soft" />, spinning: loading }}
               expandRowByClick
               rowClassName={(record) => `row-key-${record.key} custom-row cursor-pointer`}
               showSorterTooltip={{ target: 'sorter-icon' }}
@@ -267,59 +297,41 @@ const CustomJewelryDiamondListTable = ({
                   }
                 },
                 expandedRowRender: (record: any, i: number) => (
-                  <div key={i} style={{ display: 'flex' }}>
-                    <div className="aspect-square flex mr-4 w-[20%]">
-                      <Image src={record.image} alt="Diamond" preview={false} fallback="/images/no_images.svg" className="object-contain !h-full" />
+                  <div key={i} style={{ display: 'flex' }} className="gap-8 py-4 lg:gap-6">
+                    <div className="flex aspect-square w-[22%] flex-none items-center justify-center bg-stone p-4 [&_.ant-image]:!h-full [&_.ant-image]:!w-full">
+                      <Image
+                        src={record.image}
+                        alt="Diamond"
+                        preview={false}
+                        fallback="/images/no_images.svg"
+                        className="!h-full object-contain mix-blend-multiply"
+                      />
                     </div>
-                    <div>
-                      <Text as="p" size="text2xl" className="!font-light font-sans mb-6">
+                    <div className="min-w-0 self-center">
+                      <p className="m-0 mb-6 font-cormorant text-[clamp(24px,2.2vw,32px)] font-medium leading-[1.1] text-ink">
                         {record?.name ?? 'Name of the Diamond'}
-                      </Text>
-                      <div className="w-[300px]">
-                        <div className="grid grid-cols-2 gap-y-1">
-                          <Text as="p" size="textmd" className="!font-light font-sans uppercase">
-                            Shape:
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans">
-                            {record.shape}
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans uppercase">
-                            Carats:
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans">
-                            {record.carat}
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans uppercase">
-                            Color:
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans">
-                            {record.color}
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans uppercase">
-                            Cut:
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans">
-                            {record.cut}
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans uppercase">
-                            Clarity:
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans">
-                            {record.clarity}
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light font-sans uppercase">
-                            Price:
-                          </Text>
-                          <Text as="p" size="textmd" className="!font-light !font-castoro">
-                            {formatCurrency(record.price)}
-                          </Text>
+                      </p>
+                      <div className="w-[340px] max-w-full">
+                        <div className="grid grid-cols-2 border-t border-line">
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_LABEL}`}>Shape:</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_VALUE}`}>{record.shape}</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_LABEL}`}>Carats:</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_VALUE}`}>{record.carat}</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_LABEL}`}>Color:</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_VALUE}`}>{record.color}</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_LABEL}`}>Cut:</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_VALUE}`}>{record.cut}</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_LABEL}`}>Clarity:</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_VALUE}`}>{record.clarity}</p>
+                          <p className={`m-0 border-b border-line py-2 ${SPEC_LABEL}`}>Price:</p>
+                          <p className={`m-0 border-b border-line py-2 tabular-nums ${SPEC_VALUE}`}>{formatCurrency(record.price)}</p>
                         </div>
 
-                        <div className="flex gap-5">
+                        <div className="flex gap-3">
                           <div className="mt-6">
                             <Button
                               type="default"
-                              className="!bg-primary !text-text_w w-[100%] flex sm:mt-2 min-h-[45px] flex-row items-center justify-center self-end text-center uppercase lg:text-[17px] sm:self-auto sm:px-4"
+                              className={`${SECONDARY_BTN} flex w-[100%] items-center justify-center !px-6`}
                               onClick={() => {
                                 setSelectedDiamond(record);
                                 router.push(
@@ -337,7 +349,7 @@ const CustomJewelryDiamondListTable = ({
                           <div className="mt-6">
                             <Button
                               type="default"
-                              className="!bg-primary !text-text_w w-[100%] flex sm:mt-2 min-h-[45px] flex-row items-center justify-center self-end text-center uppercase lg:text-[17px] sm:self-auto sm:px-4"
+                              className={`${PRIMARY_BTN} flex w-[100%] items-center justify-center !px-6`}
                               onClick={() => {
                                 const shapeId = masterData?.find((el: any) => el.name === record.shape && el.parent_code == 'SHAPE')?.id;
                                 setSelectedDiamond(record);
@@ -363,9 +375,9 @@ const CustomJewelryDiamondListTable = ({
                 ),
                 expandIcon: ({ expanded, onExpand, record }) =>
                   expanded ? (
-                    <IoChevronUpOutline onClick={(e: any) => onExpand(record, e)} className="w-5 h-5 cursor-pointer" />
+                    <IoChevronUpOutline onClick={(e: any) => onExpand(record, e)} className="h-4 w-4 cursor-pointer text-ink" />
                   ) : (
-                    <IoChevronDownOutline onClick={(e: any) => onExpand(record, e)} className="w-5 h-5 cursor-pointer" />
+                    <IoChevronDownOutline onClick={(e: any) => onExpand(record, e)} className="h-4 w-4 cursor-pointer text-ink-soft" />
                   ),
                 rowExpandable: () => true,
               }}
@@ -391,20 +403,18 @@ const CustomJewelryDiamondListTable = ({
             />
           </div>
           {loading ? (
-            <div className="sm:flex hidden flex-col items-center gap-[60px] min-h-[50vh] justify-center">
-              <div className="w-full flex justify-center items-center">
-                <LuLoader className="h-10 w-10 animate-spin" />
+            <div className="hidden min-h-[50vh] flex-col items-center justify-center gap-[60px] sm:flex">
+              <div className="flex w-full items-center justify-center">
+                <LuLoader className="h-8 w-8 animate-spin text-ink-soft" />
               </div>
             </div>
           ) : (
-            <div
-              className={`container-xs lg:gap-8 2xl:gap-16 2xl:px-[160px] xl:px-28 xl:gap-10 lg:px-20  md:px-5 px-4 py-6 sm:px-3 sm:pb-3 sm:pt-0 sm:block ${isGridView == true ? 'block' : 'hidden'}`}
-            >
-              <div className="grid grid-cols-4 sm:grid-cols-2 gap-4 sm:gap-2">
+            <div className={`${GUTTER} py-6 font-libre sm:block sm:pb-3 sm:pt-0 ${TABLE_SKIN} ${isGridView == true ? 'block' : 'hidden'}`}>
+              <div className="grid grid-cols-4 gap-x-4 gap-y-10 sm:grid-cols-2 sm:gap-x-2.5 sm:gap-y-7">
                 {data?.slice((diamondPageNumber - 1) * diamondPageSize, diamondPageNumber * diamondPageSize).map((item: any) => (
                   <div
                     key={item.key}
-                    className="overflow-hidden"
+                    className="group flex min-w-0 cursor-pointer flex-col overflow-hidden"
                     onClick={() => {
                       setSelectedDiamond(item);
                       router.push(
@@ -416,25 +426,25 @@ const CustomJewelryDiamondListTable = ({
                       dispatch(fetchDiamondByIdThunk(item.key));
                     }}
                   >
-                    <div className="relative">
+                    <div className="relative aspect-[4/5] overflow-hidden bg-stone [&_.ant-image]:!block [&_.ant-image]:!h-full [&_.ant-image]:!w-full">
                       <Image
                         src={item.image}
                         alt={item.name}
                         fallback="/images/no_images.svg"
                         preview={false}
-                        className="w-full aspect-square object-cover bg-[#f8f8f8]"
+                        className="!h-full w-full object-contain mix-blend-multiply transition duration-700 ease-luxe group-hover:scale-[1.025]"
                       />
                     </div>
 
-                    <div className="pt-2">
-                      <div className="text-[13px] font-medium">{item?.name}</div>
-                      <div className="text-[13px] text-secondary">{generateOneLineDetails(item)}</div>
-                      <div className="text-[14px] !font-castoro">{formatCurrency(item.price)}</div>
+                    <div className="grid gap-[3px] pt-3">
+                      <div className="line-clamp-2 text-[14px] font-medium leading-[1.35] text-ink">{item?.name}</div>
+                      <div className="text-[12px] leading-[1.45] text-ink-soft">{generateOneLineDetails(item)}</div>
+                      <div className="mt-0.5 text-[14px] tabular-nums text-ink">{formatCurrency(item.price)}</div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="flex justify-center mt-6">
+              <div className="mt-8 flex justify-center">
                 <Pagination
                   current={diamondPageNumber}
                   pageSize={diamondPageSize}
@@ -447,8 +457,8 @@ const CustomJewelryDiamondListTable = ({
               </div>
             </div>
           )}
-          <div className="h-[1px] bg-[#707070]" />
-        </>
+          <div className="h-px bg-line" />
+        </ConfigProvider>
       )}
     </>
   );

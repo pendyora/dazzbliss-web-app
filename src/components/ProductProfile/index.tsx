@@ -959,20 +959,20 @@ export default function ProductProfile({
   }
 
   return (
-    <div {...props} className={`${props.className} flex bg-white flex-col items-start gap-3 pb-5 sm:pb-1 lg:gap-3 sm:gap-2 overflow-hidden relative`}>
+    <div {...props} className={`${props.className} flex bg-paper flex-col items-start gap-3 pb-5 sm:pb-1 lg:gap-3 sm:gap-2 overflow-hidden relative`}>
       <div
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={handleOpen}
-        className={`relative h-auto w-full ${isStackedProduct && path === '/design-your-ring-stack' ? 'border-2 border-black' : 'border-2 border-transparent'} !aspect-square bg-[#f8f8f8] cursor-pointer`}
+        className={`relative h-auto w-full ${isStackedProduct && path === '/design-your-ring-stack' ? 'border border-ink' : 'border border-transparent'} !aspect-square bg-stone cursor-pointer`}
       >
-        <div className="relative h-auto w-full aspect-square select-none bg-[#f8f8f8]">
+        <div className="relative h-auto w-full aspect-square select-none bg-stone">
           <div
             className={`absolute flex aspect-square top-0 left-0 h-full w-full justify-center transition-opacity duration-500 ease-in-out ${
               displayImage !== NO_IMAGE && hovered ? 'opacity-0 md:opacity-100' : 'opacity-100'
             }`}
             style={{
-              backgroundColor: '#f8f8f8',
+              backgroundColor: '#F3F3F2',
             }}
           >
             <Image
@@ -993,7 +993,7 @@ export default function ProductProfile({
                 : 'opacity-0 transform -translate-y-3 md:hidden'
             }`}
             style={{
-              backgroundColor: '#f8f8f8',
+              backgroundColor: '#F3F3F2',
             }}
           >
             <Image
@@ -1024,7 +1024,7 @@ export default function ProductProfile({
           ) : null}
           {(hoveredOption ? hoverVarient?.discount_value : selectedVariant?.discount_value) && (
             <div
-              className={`absolute ${isFastShipping ? 'bottom-[30px] md:bottom-[22px] sm:bottom-[18px]' : 'bottom-5 sm:bottom-2'} left-0 p-1 bg-primary text-text_w sm:text-[10px]`}
+              className={`absolute ${isFastShipping ? 'bottom-[30px] md:bottom-[22px] sm:bottom-[18px]' : 'bottom-5 sm:bottom-2'} left-0 bg-ink px-2 py-1 text-[10.5px] font-medium uppercase tracking-[0.14em] text-paper sm:text-[9.5px]`}
             >
               {(hoveredOption ? hoverVarient?.discount_value : selectedVariant?.discount_type) &&
               (hoveredOption ? hoverVarient?.discount_type : selectedVariant?.discount_type) == (2 as any)
@@ -1035,7 +1035,7 @@ export default function ProductProfile({
         </div>
         {is_stackable && isStackedProduct && (
           <div className="w-full h-full absolute top-0 left-0 bg-transparent flex items-center justify-center">
-            <div className="bg-primary text-white px-2 py-1 w-fit ">Selected</div>
+            <div className="w-fit bg-ink px-3 py-1.5 text-[10.5px] font-medium uppercase tracking-[0.18em] text-paper">Selected</div>
           </div>
         )}
       </div>
@@ -1053,7 +1053,7 @@ export default function ProductProfile({
           <Text
             size="textlg"
             as="p"
-            className={`!font-castoro ${hoveredOption ? (hoverVarient?.discount_value ? 'line-through text-gray-400 !text-[13px] sm:!text-[11px]' : '') : selectedVariant?.discount_value ? 'line-through text-gray-400 !text-[13px] sm:!text-[11px]' : ''}`}
+            className={`!font-libre tabular-nums text-ink ${hoveredOption ? (hoverVarient?.discount_value ? 'line-through !text-ink-faint !text-[13px] sm:!text-[11px]' : '') : selectedVariant?.discount_value ? 'line-through !text-ink-faint !text-[13px] sm:!text-[11px]' : ''}`}
           >
             {formatCurrency(
               Number(
@@ -1067,12 +1067,12 @@ export default function ProductProfile({
           </Text>
           {hoveredOption
             ? hoverVarient?.discount_value && (
-                <Text size="textlg" as="p" className="!font-castoro tracking-[0.44px] sm:text-[13px]">
+                <Text size="textlg" as="p" className="!font-libre tabular-nums text-ink sm:text-[13px]">
                   {formatCurrency(hoveredOption ? hoverVarient?.discounted_price : selectedVariant?.discounted_price)}
                 </Text>
               )
             : selectedVariant?.discount_value && (
-                <Text size="textlg" as="p" className="!font-castoro tracking-[0.44px] sm:text-[13px]">
+                <Text size="textlg" as="p" className="!font-libre tabular-nums text-ink sm:text-[13px]">
                   {formatCurrency(hoveredOption ? hoverVarient?.discounted_price : selectedVariant?.discounted_price)}
                 </Text>
               )}
@@ -1087,7 +1087,7 @@ export default function ProductProfile({
               Object.keys(el).length !== 0 &&
               !isBraceletLengthAxis && (
                 <div className="w-full" key={variantion_index}>
-                  <div className="flex w-full items-center gap-2 font-light capitalize sm:gap-1 [@media(min-width:551px)_and_(max-width:1179px)]:gap-1">
+                  <div className="flex w-full items-center gap-2 font-light capitalize text-ink-soft sm:gap-1 [@media(min-width:551px)_and_(max-width:1179px)]:gap-1">
                     <span className="w-[80px] shrink-0 text-left text-[13px] leading-tight sm:w-[54px] sm:text-[10px] [@media(min-width:551px)_and_(max-width:1179px)]:w-[54px] [@media(min-width:551px)_and_(max-width:1179px)]:text-[10px]">
                       {el?.name?.replaceAll('_', ' ')}
                     </span>
@@ -1226,7 +1226,7 @@ export default function ProductProfile({
                                 className="!flex !box-border !items-center !justify-center !overflow-visible"
                               >
                                 <div
-                                  className={`relative box-border flex cursor-pointer items-center justify-center ${el?.name == 'metal_type' ? 'w-[90%] !min-w-[36px] sm:!min-w-[28px] [@media(min-width:551px)_and_(max-width:1179px)]:!min-w-[28px]' : el?.name == 'center_diamond' ? 'aspect-square w-[40px] sm:w-[32px] [@media(min-width:551px)_and_(max-width:1179px)]:w-[32px]' : 'aspect-square w-[36px] sm:w-[28px] [@media(min-width:551px)_and_(max-width:1179px)]:w-[28px]'} ${isMatch ? 'shadow-[inset_0_0_0_1px_#18381d]' : 'shadow-[inset_0_0_0_1px_transparent]'} hover:shadow-[inset_0_0_0_1px_#18381d] ${el?.name == 'metal_type' ? 'overflow-hidden' : ''}`}
+                                  className={`relative box-border flex cursor-pointer items-center justify-center ${el?.name == 'metal_type' ? 'w-[90%] !min-w-[36px] sm:!min-w-[28px] [@media(min-width:551px)_and_(max-width:1179px)]:!min-w-[28px]' : el?.name == 'center_diamond' ? 'aspect-square w-[40px] sm:w-[32px] [@media(min-width:551px)_and_(max-width:1179px)]:w-[32px]' : 'aspect-square w-[36px] sm:w-[28px] [@media(min-width:551px)_and_(max-width:1179px)]:w-[28px]'} ${isMatch ? 'shadow-[inset_0_0_0_1px_#111111]' : 'shadow-[inset_0_0_0_1px_transparent]'} hover:shadow-[inset_0_0_0_1px_#111111] ${el?.name == 'metal_type' ? 'overflow-hidden' : ''}`}
                                   onMouseEnter={() => {
                                     if (windowWidth >= 868) {
                                       setHoveredOption(true);
@@ -1320,8 +1320,11 @@ export default function ProductProfile({
       )}
 
       {Array.isArray(specialProductTitles) && specialProductTitles.length > 0 && (
-        <div className="absolute top-4 left-4 flex justify-center items-center gap-1 bg-white/50 rounded-[0.45rem]">
-          <span key={specialProductTitles[0].id} className="px-1.5 py-1 bg-primary/10 text-primary sm:text-[10px] rounded-[0.45rem]">
+        <div className="pointer-events-none absolute left-3 top-3 z-[2] flex items-center gap-1">
+          <span
+            key={specialProductTitles[0].id}
+            className="text-[10.5px] font-semibold uppercase leading-[1.3] tracking-[0.14em] text-ink sm:text-[9.5px]"
+          >
             {specialProductTitles[0].title ?? ''}
           </span>
         </div>
@@ -1331,7 +1334,7 @@ export default function ProductProfile({
         <button
           type="button"
           aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-          className="flex min-h-[44px] min-w-[44px] cursor-pointer touch-manipulation items-start justify-end rounded-sm border-0 bg-transparent p-0 text-primary [-webkit-tap-highlight-color:transparent]"
+          className="flex min-h-[44px] min-w-[44px] cursor-pointer touch-manipulation items-start justify-end border-0 bg-transparent p-0 text-ink [-webkit-tap-highlight-color:transparent]"
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
@@ -1339,7 +1342,7 @@ export default function ProductProfile({
           }}
         >
           {isInWishlist ? (
-            <FaHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
+            <FaHeart className="pointer-events-none h-5 w-5 shrink-0 text-teal" aria-hidden />
           ) : (
             <FaRegHeart className="pointer-events-none h-5 w-5 shrink-0" aria-hidden />
           )}

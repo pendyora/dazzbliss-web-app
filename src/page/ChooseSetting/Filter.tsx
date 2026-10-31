@@ -4,7 +4,7 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Button, Image, InputNumber, Slider, Tooltip } from 'antd';
+import { ConfigProvider, Image, InputNumber, Slider, Tooltip } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { LuLoader } from 'react-icons/lu';
 import { RxCross2 } from 'react-icons/rx';
@@ -14,6 +14,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
+import { plpTheme } from '@/app/[jewelryType]/FilterDrawer';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
   fetchDiamondFiltersThunk,
@@ -24,7 +25,17 @@ import {
 } from '@/store/slices/customProducts/customProductSlice';
 import { carryForwardFilterCrumb, PLP_FILTER_CRUMB_PARAMS } from '@/utils/breadcrumbFilterParams';
 
-import { Text, Img } from '../../components';
+import { Img } from '../../components';
+
+// Presentation only (design reference: the PLP filter rail in src/app/[jewelryType]/FilterDrawer.tsx).
+const LABEL = 'text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-soft';
+const DRAWER_LABEL = 'font-cormorant text-[22px] font-medium normal-case tracking-normal text-ink';
+// The global antd.css paints slider tracks in the legacy colour; keep them ink here.
+const SLIDERS =
+  '[&_.ant-slider-dot]:!border-line-strong [&_.ant-slider-mark-text]:!text-[11px] [&_.ant-slider-mark-text]:!text-ink-soft [&_.ant-slider-mark-text-active]:!text-ink [&_.ant-slider-track]:!bg-ink';
+const NUMBER_BOX = '!w-[112px] [&_.ant-input-number-input]:!tabular-nums';
+const RESET_LINK = 'text-[11px] uppercase tracking-[0.12em] text-ink-soft underline underline-offset-4 transition-colors hover:text-ink';
+
 export function debounce(func: any, wait: number) {
   let timeout: NodeJS.Timeout;
   return function (...args: any[]) {
@@ -400,545 +411,547 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
   return (
     <>
       {isLoading ? (
-        <div className="flex flex-col items-center gap-[60px] min-h-[50vh] justify-center">
+        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-[60px]">
           {/* <Spin /> */}
-          <div className="w-full flex justify-center items-center">
-            <LuLoader className="h-10 w-10 animate-spin" />
+          <div className="flex w-full items-center justify-center">
+            <LuLoader className="h-8 w-8 animate-spin text-ink-soft" />
           </div>
         </div>
       ) : (
-        <div className="flex flex-col justify-center">
-          <div className="container-xs flex flex-col gap-4  2xl:px-[50px] xl:px-[50px] lg:px-[30px]  md:px-5 sm:px-3">
-            <div className="flex w-full justify-center gap-8 lg:gap-5 2xl:gap-8 xl:gap-5 md:grid md:grid-cols-2 md:gap-x-8">
-              <div className="flex w-1/3 md:w-full md:col-span-2 md:grid-cols-2 md:grid md:gap-8 flex-col gap-5 lg:gap-5 sm:w-full">
-                <div className="flex flex-col items-start gap-2 sm:hidden">
-                  <p className="text-[15px]">PRICE RANGE</p>
-                  <div className="flex flex-col-reverse self-stretch">
-                    <div className="flex flex-wrap justify-between gap-5">
-                      <div className="flex items-center gap-1">
-                        <p>{diamondFilters?.currency_symbol}</p>
-                        <InputNumber
-                          size="small"
-                          min={diamondFilters?.minAmount}
-                          max={selectedDiamondFilters?.maxAmount}
-                          style={{ color: 'black' }}
-                          // prefix="$"
-                          value={selectedDiamondFilters?.minAmount}
-                          onChange={(value: any) => {
-                            // setSelectedFilters((prevFilters: any) => ({
-                            //   ...prevFilters,
-                            //   minAmount: value,
-                            //   // maxAmount: value[1],
-                            // }));
-                            dispatch(
-                              setSelectedDiamondFilters({
-                                minAmount: value,
-                              }),
-                            );
-                            handleFilterChange('price', [value ?? diamondFilters?.minAmount ?? 0, selectedDiamondFilters?.maxAmount]);
-                          }}
-                        />
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <p>{diamondFilters?.currency_symbol}</p>
-
-                        <InputNumber
-                          size="small"
-                          min={selectedDiamondFilters?.minAmount}
-                          max={diamondFilters?.maxAmount}
-                          style={{ color: 'black' }}
-                          // prefix="$"
-                          value={selectedDiamondFilters?.maxAmount}
-                          onChange={(value: any) => {
-                            // setSelectedFilters((prevFilters: any) => ({
-                            //   ...prevFilters,
-                            //   // minAmount: value,
-                            //   maxAmount: value,
-                            // }));
-                            dispatch(
-                              setSelectedDiamondFilters({
-                                maxAmount: value,
-                              }),
-                            );
-                            handleFilterChange('price', [selectedDiamondFilters?.minAmount, value ?? diamondFilters?.maxAmount ?? 0]);
-                          }}
-                        />
-                      </div>
-                    </div>
-                    {Object.keys(selectedDiamondFilters).length !== 0 && (
-                      <Slider
-                        range
-                        defaultValue={[diamondFilters?.minAmount, diamondFilters?.maxAmount]}
-                        value={[selectedDiamondFilters.minAmount, selectedDiamondFilters.maxAmount]}
-                        onChange={(value: any) => {
-                          // setSelectedFilters((prevFilters: any) => ({
-                          //   ...prevFilters,
-                          //   minAmount: value[0],
-                          //   maxAmount: value[1],
-                          // }));
-                          dispatch(
-                            setSelectedDiamondFilters({
-                              minAmount: value[0],
-                              maxAmount: value[1],
-                            }),
-                          );
-                        }}
-                        min={diamondFilters?.minAmount || 0}
-                        max={diamondFilters?.maxAmount || 0}
-                        onChangeComplete={(value: any) => handleFilterChange('price', value)}
-                      />
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col items-start gap-2 lg:gap-2 md:gap-2 sm:gap-4 sm:col-span-2">
-                  <div className="flex justify-between w-full items-center">
-                    <p className="text-[15px]">SHAPE</p>
-                    <div
-                      className="bg-secondary hidden sm:flex sm:min-w-[96px] text-text_w px-[11px] py-[4.5px]  items-center justify-between gap-1"
-                      onClick={handleMenuToggle}
-                    >
-                      <p className="text-text_w capitalize tracking-[1px] text-[14px] flex gap-2">Filter</p>
-                      <div>
-                        <Img width={14} height={14} className="h-5 w-5 p-0" src="filter_icon.svg" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex sm:hidden sm:grid-cols-7 sm:gap-3 gap-[8px] xl:gap-[8px] lg:gap-[8px] md:gap-2 self-stretch flex-wrap overflow-auto">
-                    {data
-                      ?.filter((shapeData: any) => {
-                        if (!customShapes) {
-                          return diamondFilters?.shapes?.includes(shapeData.code);
-                        }
-                        return customShapes?.includes(shapeData.id);
-                      })
-                      ?.sort((a: any, b: any) => {
-                        const order = diamondFilters?.shapes ?? [];
-                        const ai = order.indexOf(a.code);
-                        const bi = order.indexOf(b.code);
-                        if (ai === -1 && bi === -1) {
-                          return 0;
-                        }
-                        if (ai === -1) {
-                          return 1;
-                        }
-                        if (bi === -1) {
-                          return -1;
-                        }
-                        return ai - bi;
-                      })
-                      ?.map((shape: any) => shape.code)
-                      ?.map((shape: any, index: number) => (
-                        <div
-                          key={index}
-                          className={`flex flex-col items-center justify-center cursor-pointer border-b border-black pb-1.5 ${
-                            selectedDiamondFilters?.shapes?.includes(shape) ? 'opacity-100 border-b' : 'opacity-60 border-transparent'
-                          }`}
-                          onClick={(event) => {
-                            event.persist();
-                            if (selectedDiamondFilters.shapes?.[0] !== shape) {
-                              handleFilterChange('shapes', shape);
-                            }
-                          }}
-                        >
-                          <Tooltip title={data.find((el) => el.code == shape)?.name}>
-                            <div className="w-[35px] items-center aspect-square flex justify-center">
-                              <Image
-                                preview={false}
-                                height={30}
-                                fallback="/images/no_images.svg"
-                                src={data.find((el) => el.code == shape)?.image?.[0]}
-                                alt={data.find((el) => el.code == shape)?.name}
-                                // className=""
-                              />
-                            </div>
-                          </Tooltip>
-                        </div>
-                      ))}
-                  </div>
-                  {/* // In Filter.tsx, replace the existing shapes mapping code with this: */}
-                  <div className="relative hidden sm:block w-full">
-                    <div className="w-[85%] mx-auto">
-                      <Swiper
-                        modules={[Virtual, Navigation, Pagination]}
-                        onSwiper={(swiper) => {
-                          setSwiperRef(swiper);
-                        }}
-                        onSlideChange={(swiper) => {
-                          setIsBeginning(swiper.isBeginning);
-                          setIsEnd(swiper.isEnd);
-                        }}
-                        slidesPerView={5}
-                        spaceBetween={2}
-                        pagination={{
-                          type: 'fraction',
-                        }}
-                        navigation={{
-                          prevEl: prevRef.current,
-                          nextEl: nextRef.current,
-                        }}
-                        virtual
-                        className="subtype-swiper !px-0"
-                      >
-                        {diamondFilters?.shapes?.map((shape: any, index: number) => (
-                          <SwiperSlide key={`${shape}-${index}`} virtualIndex={index}>
-                            <div
-                              className={`flex flex-col items-center justify-center cursor-pointer pb-1 mx-2 border-b ${
-                                selectedDiamondFilters?.shapes?.includes(shape) ? 'opacity-100 border-primary' : 'opacity-70 border-transparent'
-                              }`}
-                              onClick={(event) => {
-                                event.persist();
-                                handleFilterChange('shapes', shape);
-                              }}
-                            >
-                              <Tooltip title={data.find((el) => el.code == shape)?.name}>
-                                <div className="w-[35px] items-center aspect-square flex justify-center">
-                                  <Image
-                                    preview={false}
-                                    className="object-contain"
-                                    height={30}
-                                    fallback="/images/no_images.svg"
-                                    src={data.find((el) => el.code == shape)?.image?.[0]}
-                                    alt={data.find((el) => el.code == shape)?.name}
-                                  />
-                                </div>
-                              </Tooltip>
-                            </div>
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    </div>
-                    <div className="absolute top-5 w-full flex justify-between items-center ">
-                      <button
-                        ref={prevRef}
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 py-1.5 px-0 ${isBeginning ? 'opacity-30' : ''}`}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="w-6 h-6"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                        </svg>
-                      </button>
-                      <button ref={nextRef} className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 py-1.5 px-0 ${isEnd ? 'opacity-30' : ''}`}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="w-6 h-6"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* drawer */}
-              <div
-                className={`hidden sm:block fixed top-0 left-0 inset-0 bg-gray-800 bg-opacity-75 z-[1052] transition-all duration-500 ease-in-out ${
-                  isFilterOpen ? '-translate-y-0' : 'translate-y-full'
-                }`}
-                style={{ width: '100%', height: '100vh' }}
-              >
-                <div className="relative modal-content bg-white h-full py-5 overflow-hidden">
-                  <div className="flex justify-between items-center w-full px-5">
-                    <Text size="text5xl" as="p" className="uppercase !text-[18px]">
-                      Filter By
-                    </Text>
-                    <div>
-                      <RxCross2 className="h-5 w-5" onClick={handleMenuToggle} />
-                    </div>
-                  </div>
-                  <div className="w-full overflow-auto px-5 mt-[20px] max-w-[100vw]" style={{ width: '100%' }}>
-                    <div className="h-full flex flex-col gap-3">
-                      <div className="flex flex-col items-start gap-2">
-                        <Text size="textxl" as="p" className="!text-[14px]">
-                          PRICE RANGE
-                        </Text>
-                        <div className="flex px-2 flex-col gap-0 self-stretch">
-                          <div className="flex flex-wrap justify-between gap-5">
-                            <div className="flex items-center gap-1">
-                              <p>{diamondFilters?.currency_symbol}</p>
-                              <InputNumber
-                                size="small"
-                                min={diamondFilters?.minAmount}
-                                max={selectedDiamondFilters?.maxAmount}
-                                style={{ color: 'black' }}
-                                // prefix="$"
-                                inputMode="numeric"
-                                value={selectedDiamondFilters?.minAmount}
-                                onChange={(value: any) => {
-                                  // setSelectedFilters((prevFilters: any) => ({
-                                  //   ...prevFilters,
-                                  //   minAmount: value,
-                                  //   // maxAmount: value[1],
-                                  // }));
-                                  dispatch(
-                                    setSelectedDiamondFilters({
-                                      minAmount: value,
-                                    }),
-                                  );
-                                  handleFilterChange('price', [value ?? diamondFilters?.minAmount ?? 0, selectedDiamondFilters?.maxAmount]);
-                                }}
-                              />
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <p>{diamondFilters?.currency_symbol}</p>
-
-                              <InputNumber
-                                size="small"
-                                min={selectedDiamondFilters?.minAmount}
-                                max={diamondFilters?.maxAmount}
-                                style={{ color: 'black' }}
-                                // prefix="$"
-                                inputMode="numeric"
-                                value={selectedDiamondFilters?.maxAmount}
-                                onChange={(value: any) => {
-                                  // setSelectedFilters((prevFilters: any) => ({
-                                  //   ...prevFilters,
-                                  //   // minAmount: value,
-                                  //   maxAmount: value,
-                                  // }));
-                                  dispatch(
-                                    setSelectedDiamondFilters({
-                                      maxAmount: value,
-                                    }),
-                                  );
-
-                                  handleFilterChange('price', [selectedDiamondFilters?.minAmount, value ?? diamondFilters?.maxAmount ?? 0]);
-                                }}
-                              />
-                            </div>
-                          </div>
-                          {Object.keys(selectedDiamondFilters).length !== 0 && (
-                            <Slider
-                              range
-                              defaultValue={[diamondFilters?.minAmount, diamondFilters?.maxAmount]}
-                              value={[selectedDiamondFilters.minAmount, selectedDiamondFilters.maxAmount]}
-                              onChange={(value: any) => {
-                                // setSelectedFilters((prevFilters: any) => ({
-                                //   ...prevFilters,
-                                //   minAmount: value[0],
-                                //   maxAmount: value[1],
-                                // }));
-                                dispatch(
-                                  setSelectedDiamondFilters({
-                                    minAmount: value[0],
-                                    maxAmount: value[1],
-                                  }),
-                                );
-                              }}
-                              min={diamondFilters?.minAmount || 0}
-                              max={diamondFilters?.maxAmount || 0}
-                              onChangeComplete={(value: any) => handleFilterChange('price', value)}
-                            />
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex   flex-col items-start gap-2">
-                        <Text size="textxl" as="p" className="tracking-[1.0px] !text-[14px]">
-                          CARATS
-                        </Text>
-                        <div className="flex px-2 flex-col gap-0 self-stretch">
-                          <div className="flex flex-wrap justify-between gap-5">
-                            <div className="flex items-center gap-1">
-                              <InputNumber
-                                size="small"
-                                min={diamondFilters?.minCarat}
-                                max={selectedDiamondFilters?.maxCarat}
-                                style={{ color: 'black' }}
-                                step={0.05}
-                                precision={2} // prefix="$"
-                                inputMode="decimal"
-                                onKeyDown={blockNonNumericKeys}
-                                value={selectedDiamondFilters?.minCarat}
-                                onChange={(value: any) => {
-                                  // setSelectedFilters((prevFilters: any) => ({
-                                  //   ...prevFilters,
-                                  //   minCarat: value,
-                                  //   // maxCarat: value[1],
-                                  // }));
-                                  dispatch(
-                                    setSelectedDiamondFilters({
-                                      minCarat: value,
-                                    }),
-                                  );
-
-                                  handleFilterChange('carat', [value ?? diamondFilters?.minCarat ?? 0, selectedDiamondFilters?.maxCarat]);
-                                }}
-                              />
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <InputNumber
-                                size="small"
-                                min={selectedDiamondFilters?.minCarat}
-                                max={diamondFilters?.maxCarat}
-                                style={{ color: 'black' }}
-                                // prefix="$"
-                                step={0.05}
-                                precision={2}
-                                inputMode="decimal"
-                                onKeyDown={blockNonNumericKeys}
-                                value={selectedDiamondFilters?.maxCarat}
-                                onChange={(value: any) => {
-                                  // setSelectedFilters((prevFilters: any) => ({
-                                  //   ...prevFilters,
-                                  //   // minCarat: value,
-                                  //   maxCarat: value,
-                                  // }));
-                                  dispatch(
-                                    setSelectedDiamondFilters({
-                                      maxCarat: value,
-                                    }),
-                                  );
-
-                                  handleFilterChange('carat', [selectedDiamondFilters?.minCarat, value ?? diamondFilters?.maxCarat ?? 0]);
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <Slider
-                            // included={false}
-                            range
-                            defaultValue={[diamondFilters?.minCarat, diamondFilters?.maxCarat]}
-                            value={[selectedDiamondFilters.minCarat, selectedDiamondFilters.maxCarat]}
+        <ConfigProvider theme={plpTheme}>
+          <div className={`flex flex-col justify-center border-y border-line bg-paper font-libre text-ink ${SLIDERS}`}>
+            <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-[clamp(16px,3.2vw,56px)] py-7 sm:py-4">
+              <div className="flex w-full justify-center gap-12 lg:gap-8 md:grid md:grid-cols-2 md:gap-x-8">
+                <div className="flex w-1/3 flex-col gap-7 md:col-span-2 md:grid md:w-full md:grid-cols-2 md:gap-8 sm:w-full">
+                  <div className="flex flex-col items-start gap-2 sm:hidden">
+                    <p className={LABEL}>PRICE RANGE</p>
+                    <div className="flex flex-col-reverse gap-1 self-stretch">
+                      <div className="flex flex-wrap justify-between gap-5">
+                        <div className="flex items-center gap-1">
+                          <p className="text-[13px] text-ink-soft">{diamondFilters?.currency_symbol}</p>
+                          <InputNumber
+                            size="small"
+                            className={NUMBER_BOX}
+                            min={diamondFilters?.minAmount}
+                            max={selectedDiamondFilters?.maxAmount}
+                            style={{ color: 'black' }}
+                            // prefix="$"
+                            value={selectedDiamondFilters?.minAmount}
                             onChange={(value: any) => {
                               // setSelectedFilters((prevFilters: any) => ({
                               //   ...prevFilters,
-                              //   minCarat: value[0],
-                              //   maxCarat: value[1],
+                              //   minAmount: value,
+                              //   // maxAmount: value[1],
                               // }));
                               dispatch(
                                 setSelectedDiamondFilters({
-                                  minCarat: value[0],
-                                  maxCarat: value[1],
+                                  minAmount: value,
                                 }),
                               );
+                              handleFilterChange('price', [value ?? diamondFilters?.minAmount ?? 0, selectedDiamondFilters?.maxAmount]);
                             }}
-                            step={0.01}
-                            min={diamondFilters?.minCarat || 0}
-                            max={diamondFilters?.maxCarat || 0}
-                            onChangeComplete={(value: any) => handleFilterChange('carat', value)}
+                          />
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <p className="text-[13px] text-ink-soft">{diamondFilters?.currency_symbol}</p>
+
+                          <InputNumber
+                            size="small"
+                            className={NUMBER_BOX}
+                            min={selectedDiamondFilters?.minAmount}
+                            max={diamondFilters?.maxAmount}
+                            style={{ color: 'black' }}
+                            // prefix="$"
+                            value={selectedDiamondFilters?.maxAmount}
+                            onChange={(value: any) => {
+                              // setSelectedFilters((prevFilters: any) => ({
+                              //   ...prevFilters,
+                              //   // minAmount: value,
+                              //   maxAmount: value,
+                              // }));
+                              dispatch(
+                                setSelectedDiamondFilters({
+                                  maxAmount: value,
+                                }),
+                              );
+                              handleFilterChange('price', [selectedDiamondFilters?.minAmount, value ?? diamondFilters?.maxAmount ?? 0]);
+                            }}
                           />
                         </div>
                       </div>
-                      <div className="flex   flex-col items-start gap-2">
-                        <Text size="textxl" as="p" className="tracking-[1.0px] !text-[14px]">
-                          COLOR
-                        </Text>
-                        <div className="flex px-2 flex-col gap-0 self-stretch">
-                          {Object?.keys(diamondFilters)?.length !== 0 && (
+                      {Object.keys(selectedDiamondFilters).length !== 0 && (
+                        <Slider
+                          range
+                          defaultValue={[diamondFilters?.minAmount, diamondFilters?.maxAmount]}
+                          value={[selectedDiamondFilters.minAmount, selectedDiamondFilters.maxAmount]}
+                          onChange={(value: any) => {
+                            // setSelectedFilters((prevFilters: any) => ({
+                            //   ...prevFilters,
+                            //   minAmount: value[0],
+                            //   maxAmount: value[1],
+                            // }));
+                            dispatch(
+                              setSelectedDiamondFilters({
+                                minAmount: value[0],
+                                maxAmount: value[1],
+                              }),
+                            );
+                          }}
+                          min={diamondFilters?.minAmount || 0}
+                          max={diamondFilters?.maxAmount || 0}
+                          onChangeComplete={(value: any) => handleFilterChange('price', value)}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-start gap-2 lg:gap-2 md:gap-2 sm:gap-4 sm:col-span-2">
+                    <div className="flex w-full items-center justify-between">
+                      <p className={LABEL}>SHAPE</p>
+                      <div
+                        className="hidden cursor-pointer items-center justify-between gap-2 bg-ink px-3.5 py-2 text-paper sm:flex sm:min-w-[96px]"
+                        onClick={handleMenuToggle}
+                      >
+                        <p className="flex gap-2 text-[10.5px] uppercase tracking-[0.18em] text-paper">Filter</p>
+                        <div>
+                          <Img width={14} height={14} className="h-5 w-5 p-0" src="filter_icon.svg" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 self-stretch overflow-auto sm:hidden">
+                      {data
+                        ?.filter((shapeData: any) => {
+                          if (!customShapes) {
+                            return diamondFilters?.shapes?.includes(shapeData.code);
+                          }
+                          return customShapes?.includes(shapeData.id);
+                        })
+                        ?.sort((a: any, b: any) => {
+                          const order = diamondFilters?.shapes ?? [];
+                          const ai = order.indexOf(a.code);
+                          const bi = order.indexOf(b.code);
+                          if (ai === -1 && bi === -1) {
+                            return 0;
+                          }
+                          if (ai === -1) {
+                            return 1;
+                          }
+                          if (bi === -1) {
+                            return -1;
+                          }
+                          return ai - bi;
+                        })
+                        ?.map((shape: any) => shape.code)
+                        ?.map((shape: any, index: number) => (
+                          <div
+                            key={index}
+                            className={`grid h-12 w-12 cursor-pointer place-items-center border p-1 transition-colors duration-300 ${
+                              selectedDiamondFilters?.shapes?.includes(shape)
+                                ? 'border-ink opacity-100'
+                                : 'border-line opacity-70 hover:border-ink-soft hover:opacity-100'
+                            }`}
+                            onClick={(event) => {
+                              event.persist();
+                              if (selectedDiamondFilters.shapes?.[0] !== shape) {
+                                handleFilterChange('shapes', shape);
+                              }
+                            }}
+                          >
+                            <Tooltip title={data.find((el) => el.code == shape)?.name}>
+                              <div className="w-[35px] items-center aspect-square flex justify-center">
+                                <Image
+                                  preview={false}
+                                  height={30}
+                                  fallback="/images/no_images.svg"
+                                  src={data.find((el) => el.code == shape)?.image?.[0]}
+                                  alt={data.find((el) => el.code == shape)?.name}
+                                  // className=""
+                                />
+                              </div>
+                            </Tooltip>
+                          </div>
+                        ))}
+                    </div>
+                    {/* // In Filter.tsx, replace the existing shapes mapping code with this: */}
+                    <div className="relative hidden sm:block w-full">
+                      <div className="w-[85%] mx-auto">
+                        <Swiper
+                          modules={[Virtual, Navigation, Pagination]}
+                          onSwiper={(swiper) => {
+                            setSwiperRef(swiper);
+                          }}
+                          onSlideChange={(swiper) => {
+                            setIsBeginning(swiper.isBeginning);
+                            setIsEnd(swiper.isEnd);
+                          }}
+                          slidesPerView={5}
+                          spaceBetween={2}
+                          pagination={{
+                            type: 'fraction',
+                          }}
+                          navigation={{
+                            prevEl: prevRef.current,
+                            nextEl: nextRef.current,
+                          }}
+                          virtual
+                          className="subtype-swiper !px-0"
+                        >
+                          {diamondFilters?.shapes?.map((shape: any, index: number) => (
+                            <SwiperSlide key={`${shape}-${index}`} virtualIndex={index}>
+                              <div
+                                className={`mx-1 grid cursor-pointer place-items-center border p-1 transition-colors ${
+                                  selectedDiamondFilters?.shapes?.includes(shape) ? 'border-ink opacity-100' : 'border-line opacity-70'
+                                }`}
+                                onClick={(event) => {
+                                  event.persist();
+                                  handleFilterChange('shapes', shape);
+                                }}
+                              >
+                                <Tooltip title={data.find((el) => el.code == shape)?.name}>
+                                  <div className="w-[35px] items-center aspect-square flex justify-center">
+                                    <Image
+                                      preview={false}
+                                      className="object-contain"
+                                      height={30}
+                                      fallback="/images/no_images.svg"
+                                      src={data.find((el) => el.code == shape)?.image?.[0]}
+                                      alt={data.find((el) => el.code == shape)?.name}
+                                    />
+                                  </div>
+                                </Tooltip>
+                              </div>
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+                      </div>
+                      <div className="absolute top-5 w-full flex justify-between items-center ">
+                        <button
+                          ref={prevRef}
+                          className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 px-0 py-1.5 text-ink ${isBeginning ? 'opacity-30' : ''}`}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="h-5 w-5"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                          </svg>
+                        </button>
+                        <button
+                          ref={nextRef}
+                          className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 px-0 py-1.5 text-ink ${isEnd ? 'opacity-30' : ''}`}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="h-5 w-5"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* drawer */}
+                <div
+                  className={`fixed inset-0 left-0 top-0 z-[1052] hidden bg-ink/60 transition-all duration-500 ease-in-out sm:block ${
+                    isFilterOpen ? '-translate-y-0' : 'translate-y-full'
+                  }`}
+                  style={{ width: '100%', height: '100vh' }}
+                >
+                  <div className="modal-content relative flex h-full flex-col overflow-hidden bg-paper">
+                    <div className="flex w-full items-center justify-between border-b border-line px-[18px] py-[22px]">
+                      <p className="text-[12px] font-medium uppercase tracking-[0.18em] text-ink">Filter By</p>
+                      <div>
+                        <RxCross2 className="h-5 w-5 cursor-pointer text-ink" onClick={handleMenuToggle} />
+                      </div>
+                    </div>
+                    <div className="w-full max-w-[100vw] flex-1 overflow-auto px-[18px]" style={{ width: '100%' }}>
+                      <div className="flex h-full flex-col">
+                        <div className="flex flex-col items-start gap-3 border-b border-line py-[22px]">
+                          <p className={DRAWER_LABEL}>Price range</p>
+                          <div className="flex flex-col gap-2 self-stretch px-2">
+                            <div className="flex flex-wrap justify-between gap-5">
+                              <div className="flex items-center gap-1">
+                                <p className="text-[13px] text-ink-soft">{diamondFilters?.currency_symbol}</p>
+                                <InputNumber
+                                  size="small"
+                                  className={NUMBER_BOX}
+                                  min={diamondFilters?.minAmount}
+                                  max={selectedDiamondFilters?.maxAmount}
+                                  style={{ color: 'black' }}
+                                  // prefix="$"
+                                  inputMode="numeric"
+                                  value={selectedDiamondFilters?.minAmount}
+                                  onChange={(value: any) => {
+                                    // setSelectedFilters((prevFilters: any) => ({
+                                    //   ...prevFilters,
+                                    //   minAmount: value,
+                                    //   // maxAmount: value[1],
+                                    // }));
+                                    dispatch(
+                                      setSelectedDiamondFilters({
+                                        minAmount: value,
+                                      }),
+                                    );
+                                    handleFilterChange('price', [value ?? diamondFilters?.minAmount ?? 0, selectedDiamondFilters?.maxAmount]);
+                                  }}
+                                />
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <p className="text-[13px] text-ink-soft">{diamondFilters?.currency_symbol}</p>
+
+                                <InputNumber
+                                  size="small"
+                                  className={NUMBER_BOX}
+                                  min={selectedDiamondFilters?.minAmount}
+                                  max={diamondFilters?.maxAmount}
+                                  style={{ color: 'black' }}
+                                  // prefix="$"
+                                  inputMode="numeric"
+                                  value={selectedDiamondFilters?.maxAmount}
+                                  onChange={(value: any) => {
+                                    // setSelectedFilters((prevFilters: any) => ({
+                                    //   ...prevFilters,
+                                    //   // minAmount: value,
+                                    //   maxAmount: value,
+                                    // }));
+                                    dispatch(
+                                      setSelectedDiamondFilters({
+                                        maxAmount: value,
+                                      }),
+                                    );
+
+                                    handleFilterChange('price', [selectedDiamondFilters?.minAmount, value ?? diamondFilters?.maxAmount ?? 0]);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            {Object.keys(selectedDiamondFilters).length !== 0 && (
+                              <Slider
+                                range
+                                defaultValue={[diamondFilters?.minAmount, diamondFilters?.maxAmount]}
+                                value={[selectedDiamondFilters.minAmount, selectedDiamondFilters.maxAmount]}
+                                onChange={(value: any) => {
+                                  // setSelectedFilters((prevFilters: any) => ({
+                                  //   ...prevFilters,
+                                  //   minAmount: value[0],
+                                  //   maxAmount: value[1],
+                                  // }));
+                                  dispatch(
+                                    setSelectedDiamondFilters({
+                                      minAmount: value[0],
+                                      maxAmount: value[1],
+                                    }),
+                                  );
+                                }}
+                                min={diamondFilters?.minAmount || 0}
+                                max={diamondFilters?.maxAmount || 0}
+                                onChangeComplete={(value: any) => handleFilterChange('price', value)}
+                              />
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-start gap-3 border-b border-line py-[22px]">
+                          <p className={DRAWER_LABEL}>Carats</p>
+                          <div className="flex flex-col gap-2 self-stretch px-2">
+                            <div className="flex flex-wrap justify-between gap-5">
+                              <div className="flex items-center gap-1">
+                                <InputNumber
+                                  size="small"
+                                  className={NUMBER_BOX}
+                                  min={diamondFilters?.minCarat}
+                                  max={selectedDiamondFilters?.maxCarat}
+                                  style={{ color: 'black' }}
+                                  step={0.05}
+                                  precision={2} // prefix="$"
+                                  inputMode="decimal"
+                                  onKeyDown={blockNonNumericKeys}
+                                  value={selectedDiamondFilters?.minCarat}
+                                  onChange={(value: any) => {
+                                    // setSelectedFilters((prevFilters: any) => ({
+                                    //   ...prevFilters,
+                                    //   minCarat: value,
+                                    //   // maxCarat: value[1],
+                                    // }));
+                                    dispatch(
+                                      setSelectedDiamondFilters({
+                                        minCarat: value,
+                                      }),
+                                    );
+
+                                    handleFilterChange('carat', [value ?? diamondFilters?.minCarat ?? 0, selectedDiamondFilters?.maxCarat]);
+                                  }}
+                                />
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <InputNumber
+                                  size="small"
+                                  className={NUMBER_BOX}
+                                  min={selectedDiamondFilters?.minCarat}
+                                  max={diamondFilters?.maxCarat}
+                                  style={{ color: 'black' }}
+                                  // prefix="$"
+                                  step={0.05}
+                                  precision={2}
+                                  inputMode="decimal"
+                                  onKeyDown={blockNonNumericKeys}
+                                  value={selectedDiamondFilters?.maxCarat}
+                                  onChange={(value: any) => {
+                                    // setSelectedFilters((prevFilters: any) => ({
+                                    //   ...prevFilters,
+                                    //   // minCarat: value,
+                                    //   maxCarat: value,
+                                    // }));
+                                    dispatch(
+                                      setSelectedDiamondFilters({
+                                        maxCarat: value,
+                                      }),
+                                    );
+
+                                    handleFilterChange('carat', [selectedDiamondFilters?.minCarat, value ?? diamondFilters?.maxCarat ?? 0]);
+                                  }}
+                                />
+                              </div>
+                            </div>
                             <Slider
+                              // included={false}
                               range
-                              defaultValue={[colorLevels?.[0]?.value, colorLevels?.[colorLevels?.length - 1]?.value]}
-                              min={0}
-                              max={colorLevels?.[colorLevels?.length - 1]?.value || 0}
-                              value={[
-                                diamondFilters?.['colors']?.indexOf(selectedDiamondFilters?.colors?.[0]),
-                                diamondFilters?.['colors']?.indexOf(selectedDiamondFilters?.colors?.[selectedDiamondFilters?.colors?.length - 1]),
-                              ]}
-                              tooltip={{ open: false }}
+                              defaultValue={[diamondFilters?.minCarat, diamondFilters?.maxCarat]}
+                              value={[selectedDiamondFilters.minCarat, selectedDiamondFilters.maxCarat]}
                               onChange={(value: any) => {
                                 // setSelectedFilters((prevFilters: any) => ({
                                 //   ...prevFilters,
-                                //   colors: diamondFilters?.['colors']?.slice(value[0], value[1] + 1),
+                                //   minCarat: value[0],
+                                //   maxCarat: value[1],
                                 // }));
                                 dispatch(
                                   setSelectedDiamondFilters({
-                                    colors: diamondFilters?.['colors']?.slice(value[0], value[1] + 1),
+                                    minCarat: value[0],
+                                    maxCarat: value[1],
                                   }),
                                 );
                               }}
-                              onChangeComplete={(value: any) => handleFilterChange('colors', value)}
-                              step={null}
-                              marks={colorLevels?.reduce((acc: any, level: any) => {
-                                acc[level.value] = level.label;
-                                return acc;
-                              }, {})}
+                              step={0.01}
+                              min={diamondFilters?.minCarat || 0}
+                              max={diamondFilters?.maxCarat || 0}
+                              onChangeComplete={(value: any) => handleFilterChange('carat', value)}
                             />
-                          )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex   flex-col items-start gap-2">
-                        <Text size="textxl" as="p" className="tracking-[1.0px] !text-[14px]">
-                          CUT
-                        </Text>
-                        <div className="flex px-2 flex-col gap-0 self-stretch">
-                          {Object.keys(diamondFilters)?.length !== 0 && (
-                            <Slider
-                              range
-                              defaultValue={[0, cutLevels?.length - 1 || 0]}
-                              min={0}
-                              max={cutLevels?.length - 1 || 0}
-                              tooltip={{ open: false }}
-                              marks={cutLevels?.reduce((acc: any, level: any) => {
-                                acc[level.value] = level.label;
-                                return acc;
-                              }, {})}
-                              value={[
-                                diamondFilters?.['cut']?.indexOf(selectedDiamondFilters?.cut?.[0]),
-                                diamondFilters?.['cut']?.indexOf(selectedDiamondFilters?.cut?.[selectedDiamondFilters?.cut?.length - 1]),
-                              ]}
-                              onChange={(value: any) => {
-                                // setSelectedFilters((prevFilters: any) => ({
-                                //   ...prevFilters,
-                                //   cut: diamondFilters?.['cut']?.slice(value[0], value[1] + 1),
-                                // }));
-                                dispatch(
-                                  setSelectedDiamondFilters({
-                                    cut: diamondFilters?.['cut']?.slice(value[0], value[1] + 1),
-                                  }),
-                                );
-                              }}
-                              onChangeComplete={(value: any) => handleFilterChange('cut', value)}
-                            />
-                          )}
+                        <div className="flex flex-col items-start gap-3 border-b border-line py-[22px]">
+                          <p className={DRAWER_LABEL}>Color</p>
+                          <div className="flex flex-col gap-2 self-stretch px-2">
+                            {Object?.keys(diamondFilters)?.length !== 0 && (
+                              <Slider
+                                range
+                                defaultValue={[colorLevels?.[0]?.value, colorLevels?.[colorLevels?.length - 1]?.value]}
+                                min={0}
+                                max={colorLevels?.[colorLevels?.length - 1]?.value || 0}
+                                value={[
+                                  diamondFilters?.['colors']?.indexOf(selectedDiamondFilters?.colors?.[0]),
+                                  diamondFilters?.['colors']?.indexOf(selectedDiamondFilters?.colors?.[selectedDiamondFilters?.colors?.length - 1]),
+                                ]}
+                                tooltip={{ open: false }}
+                                onChange={(value: any) => {
+                                  // setSelectedFilters((prevFilters: any) => ({
+                                  //   ...prevFilters,
+                                  //   colors: diamondFilters?.['colors']?.slice(value[0], value[1] + 1),
+                                  // }));
+                                  dispatch(
+                                    setSelectedDiamondFilters({
+                                      colors: diamondFilters?.['colors']?.slice(value[0], value[1] + 1),
+                                    }),
+                                  );
+                                }}
+                                onChangeComplete={(value: any) => handleFilterChange('colors', value)}
+                                step={null}
+                                marks={colorLevels?.reduce((acc: any, level: any) => {
+                                  acc[level.value] = level.label;
+                                  return acc;
+                                }, {})}
+                              />
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex flex-col items-start gap-2">
-                        <Text size="textxl" as="p" className="tracking-[1.0px] !text-[14px]">
-                          CLARITY
-                        </Text>
-                        <div className="flex flex-col px-2 gap-0 self-stretch">
-                          {Object.keys(diamondFilters)?.length !== 0 && (
-                            <Slider
-                              range
-                              defaultValue={[0, clarityLevels?.length - 1 || 0]}
-                              min={0}
-                              max={clarityLevels?.length - 1 || 0}
-                              tooltip={{ open: false }}
-                              marks={clarityLevels?.reduce((acc: any, level: any) => {
-                                acc[level.value] = level.label;
-                                return acc;
-                              }, {})}
-                              value={[
-                                diamondFilters?.['clarity']?.indexOf(selectedDiamondFilters?.clarity?.[0]),
-                                diamondFilters?.['clarity']?.indexOf(selectedDiamondFilters?.clarity?.[selectedDiamondFilters?.clarity?.length - 1]),
-                              ]}
-                              onChange={(value: any) => {
-                                // setSelectedFilters((prevFilters: any) => ({
-                                //   ...prevFilters,
-                                //   clarity: diamondFilters?.['clarity']?.slice(value[0], value[1] + 1),
-                                // }));
-                                dispatch(
-                                  setSelectedDiamondFilters({
-                                    clarity: diamondFilters?.['clarity']?.slice(value[0], value[1] + 1),
-                                  }),
-                                );
-                              }}
-                              onChangeComplete={(value: any) => handleFilterChange('clarity', value)}
-                            />
-                          )}
+                        <div className="flex flex-col items-start gap-3 border-b border-line py-[22px]">
+                          <p className={DRAWER_LABEL}>Cut</p>
+                          <div className="flex flex-col gap-2 self-stretch px-2">
+                            {Object.keys(diamondFilters)?.length !== 0 && (
+                              <Slider
+                                range
+                                defaultValue={[0, cutLevels?.length - 1 || 0]}
+                                min={0}
+                                max={cutLevels?.length - 1 || 0}
+                                tooltip={{ open: false }}
+                                marks={cutLevels?.reduce((acc: any, level: any) => {
+                                  acc[level.value] = level.label;
+                                  return acc;
+                                }, {})}
+                                value={[
+                                  diamondFilters?.['cut']?.indexOf(selectedDiamondFilters?.cut?.[0]),
+                                  diamondFilters?.['cut']?.indexOf(selectedDiamondFilters?.cut?.[selectedDiamondFilters?.cut?.length - 1]),
+                                ]}
+                                onChange={(value: any) => {
+                                  // setSelectedFilters((prevFilters: any) => ({
+                                  //   ...prevFilters,
+                                  //   cut: diamondFilters?.['cut']?.slice(value[0], value[1] + 1),
+                                  // }));
+                                  dispatch(
+                                    setSelectedDiamondFilters({
+                                      cut: diamondFilters?.['cut']?.slice(value[0], value[1] + 1),
+                                    }),
+                                  );
+                                }}
+                                onChangeComplete={(value: any) => handleFilterChange('cut', value)}
+                              />
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex justify-center items-center gap-3">
-                        {/* <div className="flex flex-col items-center gap-[118px] self-stretch lg:gap-[118px] md:gap-[88px] sm:gap-[59px]">
+                        <div className="flex flex-col items-start gap-3 border-b border-line py-[22px]">
+                          <p className={DRAWER_LABEL}>Clarity</p>
+                          <div className="flex flex-col gap-2 self-stretch px-2">
+                            {Object.keys(diamondFilters)?.length !== 0 && (
+                              <Slider
+                                range
+                                defaultValue={[0, clarityLevels?.length - 1 || 0]}
+                                min={0}
+                                max={clarityLevels?.length - 1 || 0}
+                                tooltip={{ open: false }}
+                                marks={clarityLevels?.reduce((acc: any, level: any) => {
+                                  acc[level.value] = level.label;
+                                  return acc;
+                                }, {})}
+                                value={[
+                                  diamondFilters?.['clarity']?.indexOf(selectedDiamondFilters?.clarity?.[0]),
+                                  diamondFilters?.['clarity']?.indexOf(
+                                    selectedDiamondFilters?.clarity?.[selectedDiamondFilters?.clarity?.length - 1],
+                                  ),
+                                ]}
+                                onChange={(value: any) => {
+                                  // setSelectedFilters((prevFilters: any) => ({
+                                  //   ...prevFilters,
+                                  //   clarity: diamondFilters?.['clarity']?.slice(value[0], value[1] + 1),
+                                  // }));
+                                  dispatch(
+                                    setSelectedDiamondFilters({
+                                      clarity: diamondFilters?.['clarity']?.slice(value[0], value[1] + 1),
+                                    }),
+                                  );
+                                }}
+                                onChangeComplete={(value: any) => handleFilterChange('clarity', value)}
+                              />
+                            )}
+                          </div>
+                        </div>
+                        <div className="sticky bottom-0 mt-auto flex items-center gap-3 border-t border-line bg-paper py-[18px]">
+                          {/* <div className="flex flex-col items-center gap-[118px] self-stretch lg:gap-[118px] md:gap-[88px] sm:gap-[59px]">
                       <div className="flex justify-center gap-3 self-stretch">
                         <Button
                           size="xs"
@@ -956,45 +969,30 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                         </Button>
                       </div>
                     </div> */}
-                        {/* <Text size="textlg" as="p" className="tracking-[1.0px] underline ">
+                          {/* <Text size="textlg" as="p" className="tracking-[1.0px] underline ">
                           RESET ALL
                         </Text> */}
-                        <Button
-                          size="small"
-                          onClick={() => {
-                            handleMenuToggle();
-                            replaceUrl(`/custom-jewelry?type=${type}&state=${state}${sId ? `&id=${sId}` : ''}`);
-                            // setSelectedFilters({
-                            //   ...selectedDiamondFilters,
-                            //   clarity: diamondFilters?.clarity,
-                            //   colors: diamondFilters?.colors,
-                            //   cut: diamondFilters?.cut,
-                            //   minCarat: diamondFilters?.minCarat,
-                            //   maxCarat: diamondFilters?.maxCarat,
-                            //   minAmount: diamondFilters?.minAmount,
-                            //   maxAmount: diamondFilters?.maxAmount,
-                            //   shapes: selectedShapesData ? [data?.find((item: any) => item.id === selectedShapesData)?.code] : [],
-                            // });
-                            dispatch(setDiamondPageNumber(1));
-                            dispatch(setDiamondPageSize(50));
-                            dispatch(
-                              setSelectedDiamondFilters({
-                                clarity: diamondFilters?.clarity,
-                                colors: diamondFilters?.colors,
-                                cut: diamondFilters?.cut,
-                                minCarat: diamondFilters?.minCarat,
-                                maxCarat: diamondFilters?.maxCarat,
-                                minAmount: diamondFilters?.minAmount,
-                                maxAmount: diamondFilters?.maxAmount,
-                                shapes: selectedShapesData
-                                  ? [data?.find((item: any) => item.id === selectedShapesData)?.code]
-                                  : [diamondFilters?.shapes?.[0]],
-                              }),
-                            );
-                            dispatch(
-                              fetchDiamonds({
-                                data: {
-                                  ...selectedDiamondFilters,
+                          <button
+                            type="button"
+                            className={RESET_LINK}
+                            onClick={() => {
+                              handleMenuToggle();
+                              replaceUrl(`/custom-jewelry?type=${type}&state=${state}${sId ? `&id=${sId}` : ''}`);
+                              // setSelectedFilters({
+                              //   ...selectedDiamondFilters,
+                              //   clarity: diamondFilters?.clarity,
+                              //   colors: diamondFilters?.colors,
+                              //   cut: diamondFilters?.cut,
+                              //   minCarat: diamondFilters?.minCarat,
+                              //   maxCarat: diamondFilters?.maxCarat,
+                              //   minAmount: diamondFilters?.minAmount,
+                              //   maxAmount: diamondFilters?.maxAmount,
+                              //   shapes: selectedShapesData ? [data?.find((item: any) => item.id === selectedShapesData)?.code] : [],
+                              // });
+                              dispatch(setDiamondPageNumber(1));
+                              dispatch(setDiamondPageSize(50));
+                              dispatch(
+                                setSelectedDiamondFilters({
                                   clarity: diamondFilters?.clarity,
                                   colors: diamondFilters?.colors,
                                   cut: diamondFilters?.cut,
@@ -1002,138 +1000,158 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                   maxCarat: diamondFilters?.maxCarat,
                                   minAmount: diamondFilters?.minAmount,
                                   maxAmount: diamondFilters?.maxAmount,
-                                  // shapes: [],
                                   shapes: selectedShapesData
                                     ? [data?.find((item: any) => item.id === selectedShapesData)?.code]
                                     : [diamondFilters?.shapes?.[0]],
-                                },
-                                pageData: { page: 1, size: 50 },
-                              }),
-                            );
-                          }}
-                        >
-                          RESET ALL
-                        </Button>
-                        <Button size="small" type="primary" onClick={handleMenuToggle}>
-                          APPLY FILTER
-                        </Button>
+                                }),
+                              );
+                              dispatch(
+                                fetchDiamonds({
+                                  data: {
+                                    ...selectedDiamondFilters,
+                                    clarity: diamondFilters?.clarity,
+                                    colors: diamondFilters?.colors,
+                                    cut: diamondFilters?.cut,
+                                    minCarat: diamondFilters?.minCarat,
+                                    maxCarat: diamondFilters?.maxCarat,
+                                    minAmount: diamondFilters?.minAmount,
+                                    maxAmount: diamondFilters?.maxAmount,
+                                    // shapes: [],
+                                    shapes: selectedShapesData
+                                      ? [data?.find((item: any) => item.id === selectedShapesData)?.code]
+                                      : [diamondFilters?.shapes?.[0]],
+                                  },
+                                  pageData: { page: 1, size: 50 },
+                                }),
+                              );
+                            }}
+                          >
+                            RESET ALL
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleMenuToggle}
+                            className="flex-1 bg-ink px-6 py-[15px] text-[11px] font-medium uppercase tracking-[0.2em] text-paper transition-colors hover:bg-ink-hover"
+                          >
+                            APPLY FILTER
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex w-1/3 md:w-full md:col-span-2 md:grid-cols-2 md:grid md:gap-8 flex-col gap-6 lg:gap-5  px-0 lg:px-0 sm:px-4 sm:hidden">
-                <div className="flex flex-col items-start gap-2 md:gap-2">
-                  <p className="text-[15px]">COLOR</p>
-                  <div className="flex flex-col self-stretch">
-                    {Object.keys(diamondFilters)?.length !== 0 && (
-                      <Slider
-                        range
-                        defaultValue={[colorLevels?.[0]?.value, colorLevels?.[colorLevels?.length - 1]?.value]}
-                        min={0}
-                        tooltip={{ open: false }}
-                        max={colorLevels?.[colorLevels?.length - 1]?.value || 0}
-                        value={[
-                          diamondFilters?.['colors']?.indexOf(selectedDiamondFilters?.colors?.[0]),
-                          diamondFilters?.['colors']?.indexOf(selectedDiamondFilters?.colors?.[selectedDiamondFilters?.colors?.length - 1]),
-                        ]}
-                        onChange={(value: any) => {
-                          {
-                            // setSelectedFilters((prevFilters: any) => ({
-                            //   ...prevFilters,
-                            //   colors: diamondFilters?.['colors']?.slice(value[0], value[1] + 1),
-                            // }));
-                            dispatch(
-                              setSelectedDiamondFilters({
-                                colors: diamondFilters?.['colors']?.slice(value[0], value[1] + 1),
-                              }),
-                            );
-                          }
-                        }}
-                        onChangeComplete={(value: any) => handleFilterChange('colors', value)}
-                        step={null}
-                        marks={colorLevels?.reduce((acc: any, level: any) => {
-                          acc[level.value] = level.label;
-                          return acc;
-                        }, {})}
-                      />
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col items-start gap-2 md:gap-2">
-                  <p className="text-[15px]">CUT</p>
-                  <div className="flex flex-col gap-1.5 self-stretch">
-                    {Object.keys(diamondFilters)?.length !== 0 && (
-                      <Slider
-                        range
-                        defaultValue={[0, cutLevels?.length - 1 || 0]}
-                        min={0}
-                        max={cutLevels?.length - 1 || 0}
-                        tooltip={{ open: false }}
-                        marks={cutLevels?.reduce((acc: any, level: any) => {
-                          acc[level.value] = level.label;
-                          return acc;
-                        }, {})}
-                        value={[
-                          diamondFilters?.['cut']?.indexOf(selectedDiamondFilters?.cut?.[0]),
-                          diamondFilters?.['cut']?.indexOf(selectedDiamondFilters?.cut?.[selectedDiamondFilters?.cut?.length - 1]),
-                        ]}
-                        onChange={(value: any) => {
-                          // setSelectedFilters((prevFilters: any) => ({
-                          //   ...prevFilters,
-                          //   cut: diamondFilters?.['cut']?.slice(value[0], value[1] + 1),
-                          // }));
-                          dispatch(
-                            setSelectedDiamondFilters({
-                              cut: diamondFilters?.['cut']?.slice(value[0], value[1] + 1),
-                            }),
-                          );
-                        }}
-                        onChangeComplete={(value: any) => handleFilterChange('cut', value)}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex w-1/3 md:w-full md:col-span-2 md:grid-cols-2 md:grid md:gap-8 flex-col gap-6 lg:gap-5 sm:hidden  sm:gap-[59px]">
-                <div className="flex flex-col md:col-span-1 items-center gap-[118px] self-stretch lg:gap-[118px] md:gap-[88px] sm:gap-[59px]">
-                  <div className="flex w-[100%] flex-col items-start gap-2 lg:w-full md:w-full">
-                    <p className="text-[15px]">CLARITY</p>
+                <div className="flex w-1/3 flex-col gap-7 px-0 md:col-span-2 md:grid md:w-full md:grid-cols-2 md:gap-8 sm:hidden">
+                  <div className="flex flex-col items-start gap-2">
+                    <p className={LABEL}>COLOR</p>
                     <div className="flex flex-col self-stretch">
                       {Object.keys(diamondFilters)?.length !== 0 && (
                         <Slider
                           range
-                          defaultValue={[0, clarityLevels?.length - 1 || 0]}
+                          defaultValue={[colorLevels?.[0]?.value, colorLevels?.[colorLevels?.length - 1]?.value]}
                           min={0}
-                          max={clarityLevels?.length - 1 || 0}
                           tooltip={{ open: false }}
-                          marks={clarityLevels?.reduce((acc: any, level: any) => {
+                          max={colorLevels?.[colorLevels?.length - 1]?.value || 0}
+                          value={[
+                            diamondFilters?.['colors']?.indexOf(selectedDiamondFilters?.colors?.[0]),
+                            diamondFilters?.['colors']?.indexOf(selectedDiamondFilters?.colors?.[selectedDiamondFilters?.colors?.length - 1]),
+                          ]}
+                          onChange={(value: any) => {
+                            {
+                              // setSelectedFilters((prevFilters: any) => ({
+                              //   ...prevFilters,
+                              //   colors: diamondFilters?.['colors']?.slice(value[0], value[1] + 1),
+                              // }));
+                              dispatch(
+                                setSelectedDiamondFilters({
+                                  colors: diamondFilters?.['colors']?.slice(value[0], value[1] + 1),
+                                }),
+                              );
+                            }
+                          }}
+                          onChangeComplete={(value: any) => handleFilterChange('colors', value)}
+                          step={null}
+                          marks={colorLevels?.reduce((acc: any, level: any) => {
                             acc[level.value] = level.label;
                             return acc;
                           }, {})}
-                          value={[
-                            diamondFilters?.['clarity']?.indexOf(selectedDiamondFilters?.clarity?.[0]),
-                            diamondFilters?.['clarity']?.indexOf(selectedDiamondFilters?.clarity?.[selectedDiamondFilters?.clarity?.length - 1]),
-                          ]}
-                          onChange={(value: any) => {
-                            // setSelectedFilters((prevFilters: any) => ({
-                            //   ...prevFilters,
-                            //   clarity: diamondFilters?.['clarity']?.slice(value[0], value[1] + 1),
-                            // }));
-                            dispatch(
-                              setSelectedDiamondFilters({
-                                clarity: diamondFilters?.['clarity']?.slice(value[0], value[1] + 1),
-                              }),
-                            );
-                          }}
-                          onChangeComplete={(value: any) => handleFilterChange('clarity', value)}
                         />
                       )}
                     </div>
                   </div>
-                  {/* comment if in future use */}
-                  {/* <div className="flex justify-center gap-3 self-stretch">
+                  <div className="flex flex-col items-start gap-2">
+                    <p className={LABEL}>CUT</p>
+                    <div className="flex flex-col gap-1.5 self-stretch">
+                      {Object.keys(diamondFilters)?.length !== 0 && (
+                        <Slider
+                          range
+                          defaultValue={[0, cutLevels?.length - 1 || 0]}
+                          min={0}
+                          max={cutLevels?.length - 1 || 0}
+                          tooltip={{ open: false }}
+                          marks={cutLevels?.reduce((acc: any, level: any) => {
+                            acc[level.value] = level.label;
+                            return acc;
+                          }, {})}
+                          value={[
+                            diamondFilters?.['cut']?.indexOf(selectedDiamondFilters?.cut?.[0]),
+                            diamondFilters?.['cut']?.indexOf(selectedDiamondFilters?.cut?.[selectedDiamondFilters?.cut?.length - 1]),
+                          ]}
+                          onChange={(value: any) => {
+                            // setSelectedFilters((prevFilters: any) => ({
+                            //   ...prevFilters,
+                            //   cut: diamondFilters?.['cut']?.slice(value[0], value[1] + 1),
+                            // }));
+                            dispatch(
+                              setSelectedDiamondFilters({
+                                cut: diamondFilters?.['cut']?.slice(value[0], value[1] + 1),
+                              }),
+                            );
+                          }}
+                          onChangeComplete={(value: any) => handleFilterChange('cut', value)}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex w-1/3 flex-col gap-7 md:col-span-2 md:grid md:w-full md:grid-cols-2 md:gap-8 sm:hidden">
+                  <div className="flex flex-col items-center self-stretch md:col-span-1">
+                    <div className="flex w-[100%] flex-col items-start gap-2 lg:w-full md:w-full">
+                      <p className={LABEL}>CLARITY</p>
+                      <div className="flex flex-col self-stretch">
+                        {Object.keys(diamondFilters)?.length !== 0 && (
+                          <Slider
+                            range
+                            defaultValue={[0, clarityLevels?.length - 1 || 0]}
+                            min={0}
+                            max={clarityLevels?.length - 1 || 0}
+                            tooltip={{ open: false }}
+                            marks={clarityLevels?.reduce((acc: any, level: any) => {
+                              acc[level.value] = level.label;
+                              return acc;
+                            }, {})}
+                            value={[
+                              diamondFilters?.['clarity']?.indexOf(selectedDiamondFilters?.clarity?.[0]),
+                              diamondFilters?.['clarity']?.indexOf(selectedDiamondFilters?.clarity?.[selectedDiamondFilters?.clarity?.length - 1]),
+                            ]}
+                            onChange={(value: any) => {
+                              // setSelectedFilters((prevFilters: any) => ({
+                              //   ...prevFilters,
+                              //   clarity: diamondFilters?.['clarity']?.slice(value[0], value[1] + 1),
+                              // }));
+                              dispatch(
+                                setSelectedDiamondFilters({
+                                  clarity: diamondFilters?.['clarity']?.slice(value[0], value[1] + 1),
+                                }),
+                              );
+                            }}
+                            onChangeComplete={(value: any) => handleFilterChange('clarity', value)}
+                          />
+                        )}
+                      </div>
+                    </div>
+                    {/* comment if in future use */}
+                    {/* <div className="flex justify-center gap-3 self-stretch">
                 <Button
                   size="xs"
                   shape="round"
@@ -1149,127 +1167,116 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                   LAB GROWN
                 </Button>
               </div> */}
-                </div>
-                <div className="flex w-full md:col-span-1 flex-col items-start gap-2 ">
-                  <p className="text-[15px]">CARATS</p>
-                  <div className="flex flex-col-reverse self-stretch">
-                    <div className="flex flex-wrap justify-between gap-5">
-                      <div className="flex items-center gap-1">
-                        <InputNumber
-                          size="small"
-                          min={diamondFilters?.minCarat}
-                          max={selectedDiamondFilters?.maxCarat}
-                          style={{ color: 'black' }}
-                          step={0.05}
-                          precision={2}
-                          inputMode="decimal"
-                          onKeyDown={blockNonNumericKeys}
-                          // prefix="$"
-                          value={selectedDiamondFilters?.minCarat}
-                          onChange={(value: any) => {
-                            // setSelectedFilters((prevFilters: any) => ({
-                            //   ...prevFilters,
-                            //   minCarat: value,
-                            //   // maxCarat: value[1],
-                            // }));
-                            dispatch(
-                              setSelectedDiamondFilters({
-                                minCarat: value,
-                              }),
-                            );
-                            handleFilterChange('carat', [value ?? diamondFilters?.minCarat ?? 0, selectedDiamondFilters?.maxCarat]);
-                          }}
-                        />
+                  </div>
+                  <div className="flex w-full flex-col items-start gap-2 md:col-span-1">
+                    <p className={LABEL}>CARATS</p>
+                    <div className="flex flex-col-reverse gap-1 self-stretch">
+                      <div className="flex flex-wrap justify-between gap-5">
+                        <div className="flex items-center gap-1">
+                          <InputNumber
+                            size="small"
+                            className={NUMBER_BOX}
+                            min={diamondFilters?.minCarat}
+                            max={selectedDiamondFilters?.maxCarat}
+                            style={{ color: 'black' }}
+                            step={0.05}
+                            precision={2}
+                            inputMode="decimal"
+                            onKeyDown={blockNonNumericKeys}
+                            // prefix="$"
+                            value={selectedDiamondFilters?.minCarat}
+                            onChange={(value: any) => {
+                              // setSelectedFilters((prevFilters: any) => ({
+                              //   ...prevFilters,
+                              //   minCarat: value,
+                              //   // maxCarat: value[1],
+                              // }));
+                              dispatch(
+                                setSelectedDiamondFilters({
+                                  minCarat: value,
+                                }),
+                              );
+                              handleFilterChange('carat', [value ?? diamondFilters?.minCarat ?? 0, selectedDiamondFilters?.maxCarat]);
+                            }}
+                          />
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <InputNumber
+                            size="small"
+                            className={NUMBER_BOX}
+                            min={selectedDiamondFilters?.minCarat}
+                            max={diamondFilters?.maxCarat}
+                            style={{ color: 'black' }}
+                            // prefix="$"
+                            step={0.05}
+                            precision={2}
+                            inputMode="decimal"
+                            onKeyDown={blockNonNumericKeys}
+                            value={selectedDiamondFilters?.maxCarat}
+                            onChange={(value: any) => {
+                              // setSelectedFilters((prevFilters: any) => ({
+                              //   ...prevFilters,
+                              //   // minCarat: value,
+                              //   maxCarat: value,
+                              // }));
+                              dispatch(
+                                setSelectedDiamondFilters({
+                                  maxCarat: value,
+                                }),
+                              );
+                              handleFilterChange('carat', [selectedDiamondFilters?.minCarat, value ?? diamondFilters?.maxCarat ?? 0]);
+                            }}
+                          />
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <InputNumber
-                          size="small"
-                          min={selectedDiamondFilters?.minCarat}
-                          max={diamondFilters?.maxCarat}
-                          style={{ color: 'black' }}
-                          // prefix="$"
-                          step={0.05}
-                          precision={2}
-                          inputMode="decimal"
-                          onKeyDown={blockNonNumericKeys}
-                          value={selectedDiamondFilters?.maxCarat}
-                          onChange={(value: any) => {
-                            // setSelectedFilters((prevFilters: any) => ({
-                            //   ...prevFilters,
-                            //   // minCarat: value,
-                            //   maxCarat: value,
-                            // }));
-                            dispatch(
-                              setSelectedDiamondFilters({
-                                maxCarat: value,
-                              }),
-                            );
-                            handleFilterChange('carat', [selectedDiamondFilters?.minCarat, value ?? diamondFilters?.maxCarat ?? 0]);
-                          }}
-                        />
-                      </div>
+                      <Slider
+                        // included={false}
+                        range
+                        defaultValue={[diamondFilters?.minCarat, diamondFilters?.maxCarat]}
+                        value={[selectedDiamondFilters.minCarat, selectedDiamondFilters.maxCarat]}
+                        onChange={(value: any) => {
+                          // setSelectedFilters((prevFilters: any) => ({
+                          //   ...prevFilters,
+                          //   minCarat: value[0],
+                          //   maxCarat: value[1],
+                          // }));
+                          dispatch(
+                            setSelectedDiamondFilters({
+                              minCarat: value[0],
+                              maxCarat: value[1],
+                            }),
+                          );
+                        }}
+                        step={0.01}
+                        min={diamondFilters?.minCarat || 0}
+                        max={diamondFilters?.maxCarat || 0}
+                        onChangeComplete={(value: any) => handleFilterChange('carat', value)}
+                      />
                     </div>
-                    <Slider
-                      // included={false}
-                      range
-                      defaultValue={[diamondFilters?.minCarat, diamondFilters?.maxCarat]}
-                      value={[selectedDiamondFilters.minCarat, selectedDiamondFilters.maxCarat]}
-                      onChange={(value: any) => {
-                        // setSelectedFilters((prevFilters: any) => ({
-                        //   ...prevFilters,
-                        //   minCarat: value[0],
-                        //   maxCarat: value[1],
-                        // }));
-                        dispatch(
-                          setSelectedDiamondFilters({
-                            minCarat: value[0],
-                            maxCarat: value[1],
-                          }),
-                        );
-                      }}
-                      step={0.01}
-                      min={diamondFilters?.minCarat || 0}
-                      max={diamondFilters?.maxCarat || 0}
-                      onChangeComplete={(value: any) => handleFilterChange('carat', value)}
-                    />
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="self-end sm:hidden">
-              <Button
-                size="small"
-                onClick={() => {
-                  replaceUrl(`/custom-jewelry?type=${type}&state=${state}${sId ? `&id=${sId}` : ''}`);
-                  dispatch(setDiamondPageNumber(1));
-                  dispatch(setDiamondPageSize(50));
-                  // setSelectedFilters({
-                  //   ...selectedDiamondFilters,
-                  //   clarity: diamondFilters?.clarity,
-                  //   colors: diamondFilters?.colors,
-                  //   cut: diamondFilters?.cut,
-                  //   minCarat: diamondFilters?.minCarat,
-                  //   maxCarat: diamondFilters?.maxCarat,
-                  //   minAmount: diamondFilters?.minAmount,
-                  //   maxAmount: diamondFilters?.maxAmount,
-                  //   shapes: selectedShapesData ? [data?.find((item: any) => item.id === selectedShapesData)?.code] : [],
-                  // });
-                  dispatch(
-                    setSelectedDiamondFilters({
-                      clarity: diamondFilters?.clarity,
-                      colors: diamondFilters?.colors,
-                      cut: diamondFilters?.cut,
-                      minCarat: diamondFilters?.minCarat,
-                      maxCarat: diamondFilters?.maxCarat,
-                      minAmount: diamondFilters?.minAmount,
-                      maxAmount: diamondFilters?.maxAmount,
-                      shapes: selectedShapesData ? [data?.find((item: any) => item.id === selectedShapesData)?.code] : [diamondFilters?.shapes?.[0]],
-                    }),
-                  );
-                  dispatch(
-                    fetchDiamonds({
-                      data: {
-                        ...selectedDiamondFilters,
+              <div className="self-end sm:hidden">
+                <button
+                  type="button"
+                  className={RESET_LINK}
+                  onClick={() => {
+                    replaceUrl(`/custom-jewelry?type=${type}&state=${state}${sId ? `&id=${sId}` : ''}`);
+                    dispatch(setDiamondPageNumber(1));
+                    dispatch(setDiamondPageSize(50));
+                    // setSelectedFilters({
+                    //   ...selectedDiamondFilters,
+                    //   clarity: diamondFilters?.clarity,
+                    //   colors: diamondFilters?.colors,
+                    //   cut: diamondFilters?.cut,
+                    //   minCarat: diamondFilters?.minCarat,
+                    //   maxCarat: diamondFilters?.maxCarat,
+                    //   minAmount: diamondFilters?.minAmount,
+                    //   maxAmount: diamondFilters?.maxAmount,
+                    //   shapes: selectedShapesData ? [data?.find((item: any) => item.id === selectedShapesData)?.code] : [],
+                    // });
+                    dispatch(
+                      setSelectedDiamondFilters({
                         clarity: diamondFilters?.clarity,
                         colors: diamondFilters?.colors,
                         cut: diamondFilters?.cut,
@@ -1280,17 +1287,34 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                         shapes: selectedShapesData
                           ? [data?.find((item: any) => item.id === selectedShapesData)?.code]
                           : [diamondFilters?.shapes?.[0]],
-                      },
-                      pageData: { page: 1, size: 50 },
-                    }),
-                  );
-                }}
-              >
-                RESET ALL
-              </Button>
+                      }),
+                    );
+                    dispatch(
+                      fetchDiamonds({
+                        data: {
+                          ...selectedDiamondFilters,
+                          clarity: diamondFilters?.clarity,
+                          colors: diamondFilters?.colors,
+                          cut: diamondFilters?.cut,
+                          minCarat: diamondFilters?.minCarat,
+                          maxCarat: diamondFilters?.maxCarat,
+                          minAmount: diamondFilters?.minAmount,
+                          maxAmount: diamondFilters?.maxAmount,
+                          shapes: selectedShapesData
+                            ? [data?.find((item: any) => item.id === selectedShapesData)?.code]
+                            : [diamondFilters?.shapes?.[0]],
+                        },
+                        pageData: { page: 1, size: 50 },
+                      }),
+                    );
+                  }}
+                >
+                  RESET ALL
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </ConfigProvider>
       )}
     </>
   );

@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useRouter, useSearchParams } from 'next/navigation';
+import { LuLoader } from 'react-icons/lu';
 
 import {
   apiCancelPayPalAuthorizeNetOrder,
@@ -115,23 +116,26 @@ const PayPalReturnSection = () => {
   }, [sessionRestored, orderId, cancelled, confirm, router]);
 
   return (
-    <div className="w-full min-h-[50vh] flex items-center justify-center px-4">
-      <div className="max-w-[520px] w-full text-center">
+    <div className="flex min-h-[60vh] w-full items-center justify-center bg-paper px-4 py-16 font-libre text-ink antialiased">
+      <div className="grid w-full max-w-[520px] justify-items-center gap-3.5 text-center" role="status" aria-live="polite">
+        <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">PayPal</span>
         {error ? (
           <>
-            <p className="text-[16px] text-red-600 font-sans mb-4">{error}</p>
-            <div className="flex items-center justify-center gap-3">
+            <p role="alert" className="m-0 max-w-[46ch] border border-danger px-4 py-3 text-[13.5px] leading-[1.6] text-danger">
+              {error}
+            </p>
+            <div className="mt-2 flex flex-wrap items-center justify-center gap-2.5">
               <button
                 type="button"
                 onClick={confirm}
-                className="h-[44px] px-6 bg-secondary text-white uppercase tracking-[1.5px] text-[13px] font-sans cursor-pointer border-0"
+                className="cursor-pointer border-0 inline-flex h-12 items-center justify-center bg-ink px-8 text-[11px] font-medium uppercase tracking-[0.18em] text-paper transition-colors hover:bg-ink-hover"
               >
                 Try again
               </button>
               <button
                 type="button"
                 onClick={() => router.replace('/checkout')}
-                className="h-[44px] px-6 border border-gray-300 uppercase tracking-[1.5px] text-[13px] font-sans cursor-pointer bg-white"
+                className="cursor-pointer inline-flex h-12 items-center justify-center border border-ink bg-transparent px-7 text-[11px] uppercase tracking-[0.18em] text-ink transition-colors hover:bg-ink hover:text-paper"
               >
                 Back to checkout
               </button>
@@ -139,11 +143,11 @@ const PayPalReturnSection = () => {
           </>
         ) : (
           <>
-            <div className="animate-spin h-10 w-10 border-2 border-secondary border-t-transparent rounded-full mx-auto mb-4" />
-            <p className="text-[14px] uppercase tracking-[1.5px] text-[#5b5b5b] font-sans">
+            <LuLoader className="my-1 h-9 w-9 animate-spin text-ink" aria-hidden />
+            <p className="m-0 font-cormorant text-[clamp(28px,3vw,40px)] font-normal leading-[1.05] text-ink">
               {cancelled ? 'Returning to checkout...' : 'Confirming your PayPal payment...'}
             </p>
-            <p className="text-[12px] text-gray-400 mt-1 font-sans">Please don&apos;t close this page</p>
+            <p className="m-0 text-[13px] text-ink-soft">Please don&apos;t close this page</p>
           </>
         )}
       </div>

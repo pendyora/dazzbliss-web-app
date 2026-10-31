@@ -63,8 +63,8 @@ export default function ProtectedVideo({
 
   const PlayOverlay = (
     <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50">
-        <svg className="h-[18px] w-[18px] text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <div className="flex h-8 w-8 items-center justify-center bg-ink/55">
+        <svg className="h-[16px] w-[16px] text-paper" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           {/* Triangle is bounding-box centred on the 24x24 viewBox (x 7.5-16.5, y 5.5-18.5)
               so it sits dead centre of the circle without a nudge. */}
           <path d="M8.5 5.5v13a1 1 0 001.54.84l8.5-6.5a1 1 0 000-1.68l-8.5-6.5A1 1 0 008.5 5.5z" />

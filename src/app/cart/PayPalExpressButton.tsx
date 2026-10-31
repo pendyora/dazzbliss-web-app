@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
+import { LuLoader } from 'react-icons/lu';
 
 import { apiCreatePayPalExpressOrder } from '@/services/paypalService';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -258,11 +259,11 @@ const PayPalExpressButton = ({ cartProducts, couponCode, isConsented, onConsentM
   return (
     <div className="w-full flex flex-col gap-2">
       {processing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="bg-white px-8 py-6 rounded-sm text-center shadow-lg">
-            <div className="animate-spin h-8 w-8 border-2 border-secondary border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-[14px] uppercase tracking-[1.5px] text-[#5b5b5b] font-sans">Completing your order...</p>
-            <p className="text-[12px] text-gray-400 mt-1 font-sans">Please don&apos;t close this page</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 px-4" role="status" aria-live="polite">
+          <div className="grid w-full max-w-[360px] justify-items-center gap-2 bg-paper px-8 py-8 text-center font-libre">
+            <LuLoader className="mb-2 h-8 w-8 animate-spin text-ink" aria-hidden />
+            <p className="m-0 text-[11px] font-medium uppercase tracking-[0.18em] text-ink">Completing your order...</p>
+            <p className="m-0 text-[12.5px] text-ink-soft">Please don&apos;t close this page</p>
           </div>
         </div>
       )}
@@ -285,18 +286,18 @@ const PayPalExpressButton = ({ cartProducts, couponCode, isConsented, onConsentM
         {/* Cart just opened and the PayPal SDK / Smart Button has not painted yet — hold the space
             with a skeleton so the area never renders as an empty gap. */}
         {!buttonRendered && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center gap-2 rounded-sm bg-gray-100 animate-pulse">
-            <div className="animate-spin h-5 w-5 border-2 border-secondary border-t-transparent rounded-full" />
-            <span className="text-[12px] uppercase tracking-[1.5px] text-[#5b5b5b] font-sans">Loading PayPal...</span>
+          <div className="absolute inset-0 z-10 flex items-center justify-center gap-2.5 bg-stone">
+            <LuLoader className="h-4 w-4 animate-spin text-ink-soft" aria-hidden />
+            <span className="font-libre text-[10.5px] uppercase tracking-[0.16em] text-ink-soft">Loading PayPal...</span>
           </div>
         )}
 
         {/* Click -> create-order is in flight: cover the button with a spinner so it reads as busy
             and cannot be clicked a second time. */}
         {starting && !retryOrderId && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center gap-2 bg-white/70 cursor-not-allowed">
-            <div className="animate-spin h-5 w-5 border-2 border-secondary border-t-transparent rounded-full" />
-            <span className="text-[12px] uppercase tracking-[1.5px] text-[#5b5b5b] font-sans">Redirecting to PayPal...</span>
+          <div className="absolute inset-0 z-10 flex cursor-not-allowed items-center justify-center gap-2.5 bg-paper/85">
+            <LuLoader className="h-4 w-4 animate-spin text-ink" aria-hidden />
+            <span className="font-libre text-[10.5px] uppercase tracking-[0.16em] text-ink">Redirecting to PayPal...</span>
           </div>
         )}
 
@@ -305,7 +306,7 @@ const PayPalExpressButton = ({ cartProducts, couponCode, isConsented, onConsentM
             type="button"
             disabled={processing}
             onClick={() => runComplete(retryOrderId)}
-            className="absolute inset-0 z-30 w-full h-[45px] rounded-[4px] bg-secondary text-white uppercase tracking-[1.5px] text-[14px] font-sans cursor-pointer border-0 disabled:opacity-60"
+            className="absolute inset-0 z-30 h-[45px] w-full cursor-pointer border-0 bg-ink font-libre text-[11px] font-medium uppercase tracking-[0.18em] text-paper transition-colors hover:bg-ink-hover disabled:cursor-not-allowed disabled:bg-ink/40"
           >
             {processing ? 'Verifying…' : 'Verify payment'}
           </button>
@@ -320,7 +321,11 @@ const PayPalExpressButton = ({ cartProducts, couponCode, isConsented, onConsentM
           />
         ) : null}
       </div>
-      {error && <p className="text-red-600 text-[12px]">{'*' + error}</p>}
+      {error && (
+        <p role="alert" className="m-0 font-libre text-[12px] leading-[1.5] text-danger">
+          {'*' + error}
+        </p>
+      )}
     </div>
   );
 };

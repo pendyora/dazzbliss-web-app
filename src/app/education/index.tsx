@@ -2,15 +2,14 @@
 
 'use client';
 
-import React, { Suspense, useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 
-import { Image, Pagination } from 'antd';
+import { ConfigProvider, Image, Pagination } from 'antd';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { LuLoader } from 'react-icons/lu';
 
 import { useAppDispatch, useAppSelector } from '../../store';
-import { Text } from './../../components';
 import {
   fetchEducationFilter,
   fetchEducationList,
@@ -19,6 +18,9 @@ import {
   setEducationSelectedCategory,
   setEducationSelectedFilter,
 } from '../../store/slices/education/educationSlice';
+import { plpTheme } from '../[jewelryType]/FilterDrawer';
+
+const SHELL = 'mx-auto w-full max-w-[1440px] px-[clamp(16px,3.2vw,48px)]';
 
 export default function EducationPage({ BannerData }: any) {
   const dispatch = useAppDispatch();
@@ -33,7 +35,6 @@ export default function EducationPage({ BannerData }: any) {
     educationPage,
     educationPrevPage,
   } = useAppSelector((state: any) => state.education);
-  const CHUNK_SIZE = 4;
   const PAGE_LIMIT = 50;
 
   useEffect(() => {
@@ -60,131 +61,124 @@ export default function EducationPage({ BannerData }: any) {
     // Update the ref with the current page after the effect runs
     dispatch(setEducationPrevPage(educationPage));
   }, [educationPage]);
-  const chunkedData = useMemo(() => {
-    if (!educationList?.length) {
-      return [];
-    }
-    return Array.from({ length: Math.ceil(educationList.length / CHUNK_SIZE) }, (_, i) =>
-      educationList.slice(i * CHUNK_SIZE, i * CHUNK_SIZE + CHUNK_SIZE),
-    );
-  }, [educationList]);
   console.log(BannerData, 'BannerData');
 
+  const bannerImage = BannerData?.banner_image?.[0]?.desktop_image;
+
   return (
-    <div className="w-full bg-[#ffffff]">
-      <div
-        className={`flex !h-[380px] items-center justify-center py-[30px] 2xl:h-[380px] xl:h-[280px] xl:py-8 lg:h-[280px] sm:!h-[200px] lg:py-8 md:py-5 sm:py-4`}
-        style={{
-          backgroundImage: BannerData?.banner_image?.[0]?.desktop_image
-            ? `url(${BannerData?.banner_image?.[0]?.desktop_image})`
-            : "bg-[url('/images/blogbanner.png')]",
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        <div className="container-xs flex justify-center px-14 2xl:px-[160px] xl:px-28 lg:px-20 md:px-5 sm:px-3">
-          <Text size="text5xl" as="p" className="uppercase !text-[#ffffff] md:text-[26px] sm:text-[22px]">
-            {BannerData?.banner_image?.[0]?.title || 'Education'}
-          </Text>
+    <div className="bg-paper font-libre text-[14px] leading-[1.55] text-ink antialiased">
+      <section className="border-b border-line bg-haze">
+        <div
+          className={`${SHELL} grid grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] items-center gap-[clamp(28px,4vw,64px)] py-[clamp(32px,4.5vw,64px)] md:grid-cols-1 ${
+            bannerImage ? '' : '!grid-cols-1'
+          }`}
+        >
+          <div>
+            <nav aria-label="Breadcrumb" className="mb-3.5 flex gap-2 text-[12px] text-ink-soft">
+              <Link href="/" className="text-ink-soft hover:text-ink">
+                Home
+              </Link>
+              <span aria-hidden className="text-line-strong">
+                /
+              </span>
+              <span aria-current="page">Education</span>
+            </nav>
+            <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">The learning centre</span>
+            <h1 className="m-0 mt-3 font-cormorant text-[clamp(40px,4.6vw,60px)] font-medium leading-none tracking-[-0.01em]">
+              {BannerData?.banner_image?.[0]?.title || 'Education'}
+            </h1>
+            <p className="m-0 mt-3.5 max-w-[52ch] text-[15px] text-ink-soft">
+              Plain-spoken guides to diamonds, metals and settings, so you can choose with confidence.
+            </p>
+          </div>
+          {bannerImage && (
+            <figure className="m-0 aspect-[16/9] overflow-hidden bg-stone">
+              <img src={bannerImage} alt="" className="h-full w-full object-cover" />
+            </figure>
+          )}
+        </div>
+      </section>
+
+      <div className="sticky top-[var(--header-height,108px)] z-20 border-b border-line bg-paper">
+        <div className={`${SHELL} flex min-h-[58px] items-center gap-6`}>
+          <span className="flex-none text-[10.5px] uppercase tracking-[0.16em] text-ink-faint md:hidden">Category</span>
+          <div role="toolbar" aria-label="Categories" className="flex flex-1 gap-[26px] overflow-x-auto [scrollbar-width:none]">
+            {educationFilter?.map((type: any, index: number) => {
+              const category = index == 0 ? type.type : masterData?.find((el: any) => el.id === type.type);
+              const active = educationSelectedFilter === type?.type;
+              return (
+                <button
+                  key={index}
+                  type="button"
+                  aria-pressed={active}
+                  className={`flex-none whitespace-nowrap border-b-[1.5px] pb-4 pt-[18px] text-[13.5px] capitalize ${
+                    active ? 'border-ink font-semibold text-ink' : 'border-transparent text-ink-soft hover:text-ink'
+                  }`}
+                  onClick={() => {
+                    dispatch(setEducationSelectedFilter(type?.type));
+                  }}
+                >
+                  {category?.name ?? category}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
-      {loading ? (
-        <div className="w-full h-[60vh] flex justify-center items-center">
-          <LuLoader className="h-7 w-7 animate-spin" />
-        </div>
-      ) : (
-        <div>
-          <div className="mt-[30px] sm:mt-3 flex flex-col items-center">
-            <div className="container-xs flex flex-col gap-[20px] xl:px-16 lg:px-16 md:px-5 sm:px-3 sm:gap-3 2xl:px-[160px]">
-              <p className="text-[20px] sm:text-[16px]">CATEGORY</p>
-              <div className="flex flex-wrap sm:flex-nowrap sm:gap-2  sm:overflow-scroll justify-between ">
-                <div className="flex gap-4 flex-wrap self-stretch  overflow-auto py-2">
-                  {educationFilter?.map((type: any, index: number) => {
-                    const category = index == 0 ? type.type : masterData?.find((el: any) => el.id === type.type);
-                    return (
-                      <div
-                        key={index}
-                        className={`flex flex-col  !text-black items-center cursor-pointer gap-2 sm:gap-2 sm:w-fit py-1.5 px-2 ${
-                          educationSelectedFilter === type?.type ? 'opacity-100 border-b border-black ' : 'opacity-30 border-b border-transparent'
-                        } ${educationSelectedFilter == 'all' && 'opacity-100 border-b border-black '}}`}
-                        onClick={() => {
-                          dispatch(setEducationSelectedFilter(type?.type));
-                        }}
-                      >
-                        <p className="tracking-[1.0px] text-nowrap text-center text-[18px] capitalize">{category?.name ?? category}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="border-b min-h-[60vh] border-solid border-[#3b3b3b] py-[50px] 2xl:py-5 xl:py-10 lg:py-8 md:py-5 sm:py-3">
-            <div className="mb-5 flex flex-col items-center">
-              <div className="container-xs flex flex-col items-center gap-[60px] 2xl:px-[160px] xl:px-28 lg:px-20 md:px-5 sm:px-3">
-                <div className="self-stretch">
-                  <div className="">
-                    <Suspense fallback={<div>Loading feed...</div>}>
-                      {chunkedData?.map((chunk: any, i: number) => {
-                        return (
-                          <div key={i} className="grid grid-cols-4 justify-center xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-                            {chunk?.map((item: any, index: number) => (
-                              <div
-                                key={index}
-                                className={`border-black border-r border-b sm:border-l ${index == 0 && 'border-l'} ${i == 0 && 'border-t sm:first:border-t sm:border-t-0'}`}
-                              >
-                                <Link href={`/education/${item?.slug}`}>
-                                  <div className={` flex flex-col items-center w-full gap-6 p-5 sm:gap-1 sm:p-2`}>
-                                    <div className="flex items-start justify-between  gap-5 self-stretch ">
-                                      <Image
-                                        src={item?.thumbnail_image || '/images/noImage1.svg'}
-                                        width={200}
-                                        height={198}
-                                        preview={false}
-                                        alt={`${item?.title}-alt`}
-                                        fallback="/images/noImage1.svg"
-                                        className="self-center object-cover"
-                                      />
-                                      <Text size="textmd" as="p" className="rotate-[90deg] !font-light mt-5 -mr-5">
-                                        {dayjs(item?.createdAt).format('DD.MM.YYYY')}
-                                      </Text>
-                                    </div>
-                                    <div className="flex flex-col items-start gap-[18px] sm:gap-2 self-stretch">
-                                      <Text size="textlg" as="p" className="w-full leading-[18px] text-lg">
-                                        {item?.title}
-                                      </Text>
-                                      <Text size="textmd" as="p" className="capitalize underline">
-                                        {item?.readMoreLink || 'Read more'}
-                                      </Text>
-                                    </div>
-                                  </div>
-                                </Link>
-                              </div>
-                            ))}
-                          </div>
-                        );
-                      })}
-                    </Suspense>
-                  </div>
-                  {educationCounts >= PAGE_LIMIT && (
-                    <div className="py-4 w-full flex justify-end">
-                      <Pagination
-                        current={educationPage}
-                        pageSize={PAGE_LIMIT}
-                        total={educationCounts}
-                        onChange={(page) => dispatch(setEducationPage(page))}
-                        // className="mt-5"
-                        showSizeChanger={false}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+      <div className={`${SHELL} min-h-[60vh] pb-20`}>
+        {loading ? (
+          <div className="flex h-[50vh] w-full items-center justify-center" aria-busy="true">
+            <LuLoader className="h-7 w-7 animate-spin text-ink-soft" />
           </div>
-        </div>
-      )}
+        ) : (
+          <>
+            {educationList?.length > 0 && (
+              <div className="grid grid-cols-4 gap-x-5 gap-y-12 pt-9 lg:grid-cols-3 md:grid-cols-2 md:gap-y-9 sm:grid-cols-1">
+                {educationList.map((item: any, index: number) => (
+                  <Link
+                    key={item?.slug ?? index}
+                    href={`/education/${item?.slug}`}
+                    className="group grid content-start gap-3 text-ink hover:text-ink"
+                  >
+                    <figure className="m-0 aspect-[4/3] overflow-hidden bg-stone [&_.ant-image]:!block [&_.ant-image]:!h-full [&_.ant-image]:!w-full">
+                      <Image
+                        src={item?.thumbnail_image || '/images/noImage1.svg'}
+                        width="100%"
+                        height="100%"
+                        preview={false}
+                        alt={`${item?.title}-alt`}
+                        fallback="/images/noImage1.svg"
+                        className="!h-full w-full object-cover transition-transform duration-[1200ms] ease-luxe group-hover:scale-[1.035]"
+                      />
+                    </figure>
+                    <span className="text-[12.5px] text-ink-faint">{dayjs(item?.createdAt).format('DD.MM.YYYY')}</span>
+                    <h3 className="m-0 font-cormorant text-[24px] font-medium leading-[1.12] group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+                      {item?.title}
+                    </h3>
+                    <span className="justify-self-start border-b border-current text-[11.5px] font-semibold uppercase tracking-[0.12em]">
+                      {item?.readMoreLink || 'Read more'}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            )}
+            {educationCounts >= PAGE_LIMIT && (
+              <div className="flex w-full justify-center pt-12">
+                <ConfigProvider theme={plpTheme}>
+                  <Pagination
+                    current={educationPage}
+                    pageSize={PAGE_LIMIT}
+                    total={educationCounts}
+                    onChange={(page) => dispatch(setEducationPage(page))}
+                    showSizeChanger={false}
+                  />
+                </ConfigProvider>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

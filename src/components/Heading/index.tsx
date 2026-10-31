@@ -16,7 +16,7 @@ const Heading: React.FC<React.PropsWithChildren<HeadingProps>> = ({ children, cl
   const Component = as || 'h6';
 
   return (
-    <Component className={`font-['Noto_Sans'] ${className} ${sizes[size]}`} {...restProps}>
+    <Component className={`font-libre ${className} ${sizes[size]}`} {...restProps}>
       {children}
     </Component>
   );

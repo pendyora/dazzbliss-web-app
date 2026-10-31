@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
+import { LuLoader } from 'react-icons/lu';
 
 import { varifyEmailApi } from '@/services/cartService';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -156,19 +157,20 @@ const ShopPayExpressButton = ({ cartProducts, couponCode, canStart, onBeforeCrea
   return (
     <div className="w-full flex flex-col">
       {processing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="bg-white px-8 py-6 rounded-sm text-center shadow-lg">
-            <div className="animate-spin h-8 w-8 border-2 border-secondary border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-[14px] uppercase tracking-[1.5px] text-[#5b5b5b] font-sans">Confirming your payment...</p>
-            <p className="text-[12px] text-gray-400 mt-1 font-sans">Please don&apos;t close this page</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 px-4" role="status" aria-live="polite">
+          <div className="grid w-full max-w-[360px] justify-items-center gap-2 bg-paper px-8 py-8 text-center font-libre">
+            <LuLoader className="mb-2 h-8 w-8 animate-spin text-ink" aria-hidden />
+            <p className="m-0 text-[11px] font-medium uppercase tracking-[0.18em] text-ink">Confirming your payment...</p>
+            <p className="m-0 text-[12.5px] text-ink-soft">Please don&apos;t close this page</p>
           </div>
         </div>
       )}
 
-      <div className="flex items-center gap-3 my-3">
-        <div className="h-px flex-1 bg-gray-300" />
-        <span className="text-[12px] uppercase tracking-[1.5px] text-gray-500 font-sans">or</span>
-        <div className="h-px flex-1 bg-gray-300" />
+      {/* Keep `my-3`: the bag hides this divider with `[&>div>.my-3]:hidden` because it draws its own. */}
+      <div className="my-3 flex items-center gap-3">
+        <div className="h-px flex-1 bg-line" />
+        <span className="font-libre text-[10.5px] uppercase tracking-[0.16em] text-ink-soft">or</span>
+        <div className="h-px flex-1 bg-line" />
       </div>
 
       <ShopPayButton
@@ -184,7 +186,11 @@ const ShopPayExpressButton = ({ cartProducts, couponCode, canStart, onBeforeCrea
         savedAddresses={savedAddresses}
         fallbackContact={fallbackContact}
       />
-      {error && <p className="pt-2 text-red-600 text-[12px]">{'*' + error}</p>}
+      {error && (
+        <p role="alert" className="m-0 pt-2 font-libre text-[12px] leading-[1.5] text-danger">
+          {'*' + error}
+        </p>
+      )}
     </div>
   );
 };

@@ -1,23 +1,23 @@
 import React from 'react';
 
 const shapes = {
-  round: 'rounded-[20px]',
+  round: 'rounded-none',
   square: 'rounded-[0px]',
 } as const;
 const variants = {
   outline: {
-    white_A700_01: 'border-[#ffffff] border-[1.5px] border-solid text-[#ffffff]',
-    gray_800: 'border-[#3b3b3b] border-[1.5px] border-solid text-[#000000]',
-    black_900_01: 'border-[#000000] border border-solid text-[#0b0b0b]',
+    white_A700_01: 'border border-solid border-paper text-paper transition-colors hover:bg-paper hover:text-ink',
+    gray_800: 'border border-solid border-ink text-ink transition-colors hover:bg-ink hover:text-paper',
+    black_900_01: 'border border-solid border-ink text-ink transition-colors hover:bg-ink hover:text-paper',
   },
   fill: {
-    gray_400: 'bg-[#c5ccb4] text-[#000000]',
+    gray_400: 'bg-ink text-paper transition-colors hover:bg-ink-hover',
   },
 } as const;
 const sizes = {
-  xs: 'h-[30px] px-[28px] text-[20px] lg:text-[14px] 2xl:text-[16px] sm:text-[10px] sm:px-[20px]',
-  sm: 'h-[40px] px-[34px] text-[20px] lg:text-[14px] 2xl:text-[16px] sm:text-[12px] ',
-  md: 'h-[64px] px-[34px] text-[20px] lg:text-[14px] 2xl:text-[16px] sm:text-[12px] ',
+  xs: 'h-[36px] px-6 text-[10.5px] font-medium uppercase tracking-[0.18em] sm:px-4',
+  sm: 'h-12 px-8 text-[11.5px] font-medium uppercase tracking-[0.2em] sm:px-5',
+  md: 'h-14 px-8 text-[11.5px] font-medium uppercase tracking-[0.22em] sm:px-5',
 } as const;
 
 type ButtonProps = Omit<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, 'onClick'> &

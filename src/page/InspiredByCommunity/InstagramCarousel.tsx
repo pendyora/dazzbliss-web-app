@@ -41,11 +41,8 @@ const TILE_WIDTH = 'w-[330px] xl:w-[300px] lg:w-[260px] md:w-[220px] sm:w-[180px
 /** Marks a Reel, so a paused or still-loading video still reads as video. */
 function PlayBadge() {
   return (
-    <span
-      className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-black/45 backdrop-blur-[2px]"
-      aria-hidden="true"
-    >
-      <svg viewBox="0 0 24 24" className="h-3 w-3 translate-x-[1px] fill-white">
+    <span className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center bg-ink/55" aria-hidden="true">
+      <svg viewBox="0 0 24 24" className="h-3 w-3 translate-x-[1px] fill-paper">
         <path d="M8 5v14l11-7z" />
       </svg>
     </span>
@@ -111,23 +108,20 @@ function CarouselTile({
       {/* Hover state: scrim + "View post" + caption. Pointer-events stay off so
           the anchor underneath keeps the whole tile clickable and draggable. */}
       <span
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover/tile:opacity-100 group-focus-within/tile:opacity-100"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/20 to-transparent opacity-0 transition-opacity duration-300 group-hover/tile:opacity-100 group-focus-within/tile:opacity-100"
         aria-hidden="true"
       />
       <span className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-2 p-4 opacity-0 transition-all duration-300 group-hover/tile:translate-y-0 group-hover/tile:opacity-100 group-focus-within/tile:translate-y-0 group-focus-within/tile:opacity-100">
-        <span className="flex items-center gap-2 text-[13px] uppercase tracking-[1.5px] text-white">
+        <span className="flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.18em] text-paper">
           <FaInstagram aria-hidden="true" /> View post
         </span>
-        {tile.caption ? <span className="mt-1.5 line-clamp-2 text-[12px] font-light leading-snug text-white/85">{tile.caption}</span> : null}
+        {tile.caption ? <span className="mt-1.5 line-clamp-2 text-[12.5px] leading-snug text-paper/85">{tile.caption}</span> : null}
       </span>
     </>
   );
 
   return (
-    <div
-      className={`group/tile relative shrink-0 overflow-hidden bg-[#f4f3f0] ${TILE_WIDTH} aspect-[5/6]`}
-      aria-hidden={isClone ? 'true' : undefined}
-    >
+    <div className={`group/tile relative shrink-0 overflow-hidden bg-stone ${TILE_WIDTH} aspect-[5/6]`} aria-hidden={isClone ? 'true' : undefined}>
       {tile.href ? (
         <a
           href={tile.href}
@@ -141,7 +135,7 @@ function CarouselTile({
               event.preventDefault();
             }
           }}
-          className="block h-full w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
+          className="block h-full w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-paper"
         >
           {body}
         </a>

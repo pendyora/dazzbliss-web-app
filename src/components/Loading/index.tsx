@@ -3,8 +3,9 @@ import React from 'react';
 import { LuLoader } from 'react-icons/lu';
 
 const Loading = () => (
-  <div className="w-full flex justify-center items-center">
-    <LuLoader className="h-10 w-10 animate-spin" />
+  <div role="status" className="flex w-full items-center justify-center bg-paper py-16">
+    <LuLoader className="h-7 w-7 animate-spin text-ink-faint" strokeWidth={1.25} aria-hidden="true" />
+    <span className="sr-only">Loading</span>
   </div>
 );
 
