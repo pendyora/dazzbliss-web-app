@@ -1,0 +1,440 @@
+:root {
+  --primary-color: #17381d;
+  --secondary-color: #818d64;
+  --text_w: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  /* font-family: Noto Sans,inherit; */
+}
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Castoro&display=swap');
+
+img {
+  user-drag: none !important;
+  -webkit-user-drag: none !important;
+  pointer-events: none !important;
+}
+
+#onwebchat_chatimage_div {
+  z-index: 1051 !important;
+}
+
+#onwebchat_chatimage, .payment-options{
+  pointer-events:all !important;
+  cursor: pointer !important;
+}
+/* #onwebchat_chatimage_div{
+  margin-right: 50px;
+  
+}*/
+#onwebchat_chatimage{
+height: 48px;
+right:27px !important;
+bottom: 14px !important;
+/* margin-bottom: -4px; */
+} 
+/* #onwbchat_window{
+  right: 80px!important;
+} */
+
+.onwebchat_chatimage {
+  bottom: 14px !important;
+}
+
+* {
+  box-sizing: border-box;
+  line-height: normal;
+  font-family: inherit;
+  margin: unset;
+}
+
+
+.blog-css-setup div p a,.education-css-setup div p a  {
+  color: #17381D !important;
+  text-decoration: underline;
+}
+
+.blog-css-setup div p img{
+  /* margin: 3em 3em 3em 3em !important; */
+}
+.blog-css-setup div p a,.blog-css-setup div p ,.education-css-setup div p a,.education-css-setup div p  {
+  color: #6a6666;
+  font-size: 16px !important;
+  line-height: 22px !important;
+  display: block;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  unicode-bidi: isolate;
+}
+.blog-css-setup div h3,.education-css-setup div h3{
+
+  margin-bottom: 0.5em !important;
+  color: #212121;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.1;
+}
+.blog-css-setup div h2,.education-css-setup div h2{
+
+  margin-bottom: 0.5em !important;
+  color: #212121;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.1;
+}
+.blog-css-setup div h1 ,.education-css-setup div h1{
+
+  margin-bottom: 0.5em !important;
+  color: #212121;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.1;
+}
+.ShopByCategoryShed{
+  background-image: linear-gradient(0deg, #565656, transparent);
+}
+.ant-select-dropdown-placement-bottomRight >div >.rc-virtual-list>.rc-virtual-list-holder {
+  max-height: 400px !important;
+}
+
+.scrollbar-visible {
+  scrollbar-gutter: stable;
+}
+
+.scrollbar-visible::-webkit-scrollbar {
+  width: 7px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: #f2f2f2;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  cursor: grab;
+  background: #d9d9d9;
+}
+.scrollbar-visible::-webkit-scrollbar-thumb:active {
+  cursor: grabbing;
+}
+
+
+/* Header promotional strip: one continuous line that scrolls forever. The row
+   holds N identical copies of the promo list; the component drives the offset
+   on a rAF loop and wraps it by one copy's width, so the loop is seamless and
+   the same transform can also be pushed around by a drag/swipe. The hover pause
+   lives in the component too, not in a `:hover` rule here, so that it can share
+   one code path with the drag pause -- see isHoveredRef there.
+   `touch-action: pan-y` leaves vertical page scrolling to the browser while the
+   horizontal axis stays ours to drag. */
+.promo-marquee {
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.promo-marquee.is-dragging {
+  cursor: grabbing;
+}
+
+.promo-marquee__row {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.box.appliedstrips::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  top:-1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-conic-gradient(from var(--angle, 0deg),
+    var(--l, #0000 0% 0%, #17381d)) border-box;
+  animation: rotateGradient 4s linear infinite;
+
+  /* Mask to make gradient only appear in the border area */
+  mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  -webkit-mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+
+  padding: 3px; /* Border thickness */
+  box-sizing: border-box;
+}
+
+@keyframes rotateGradient {
+  to {
+    --angle: 1turn;
+  }
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .sale-coupon-text {
+      animation: move-bg 10s linear infinite;
+  }
+}
+
+@keyframes move-bg {
+  0% {
+      background-position: 0 0;
+  }
+  100% {
+      background-position: 100% 0;
+  }
+}
+
+.sale-coupon-text, .sale-text {
+  --bg-size: 400%;
+  --color-one: red;
+  --color-two: #fff;
+
+  background: linear-gradient(45deg, var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-two), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-two), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-two), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-two), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-two), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-two), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one), var(--color-one)) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #0000;
+  font-family: sans-serif;
+  font-size: clamp(3rem, 25vmin, 8rem);
+}
+
+
+.custom-modal .ant-modal-content{
+  padding: 0px !important;
+}
+
+
+.Intro-popup-model{
+  background-image: linear-gradient(306deg, #e5e5e5, transparent);
+}
+
+.custom-class .ant-notification-notice-content div .ant-notification-notice-message{
+
+  margin: 0px !important;
+  color: #fff !important;
+  /* padding-inline-end:20px !important */
+
+}
+.custom-class a{
+  top: 10px !important;
+  inset-inline-end: 16px !important;
+  color: #fff !important;
+
+}
+.custom-class{
+  margin-inline-end: auto;
+  margin-inline-start: 0;
+}
+.highlight {
+  margin: 0px !important;
+}
+@media (max-width: 550px){
+  .custom-class{
+    margin-bottom: 0px 0px -10px !important;
+  }
+  .custom-class .ant-notification-notice-message{
+    padding-inline-end: 0px !important;
+  }
+  .custom-class a{
+    top: 7px !important;
+    /* inset-inline-end: 16px !important; */
+    color: #fff !important;
+  }  
+}
+
+
+.about-us-css-setup{
+  width: 100%;
+  min-width: 0;
+}
+.about-us-css-setup .ql-editor{
+  /* Quill's snow theme puts this exact stack on .ql-container, so it is what the admin's
+     CMS editor renders in. Keep the two identical: the editor is how this page is laid out,
+     and any other stack wraps the copy at different words, which moves every heading, list
+     and image down the page relative to what the author positioned them against. */
+  font-family: Helvetica, Arial, sans-serif;
+  width: 100%;
+  max-width: 898px;
+  margin-inline: auto;
+  /* Quill styles .ql-editor as a scrolling edit box: overflow-y: auto, which per spec
+     also forces overflow-x to auto. On a public page that turns the article into a
+     scroll container, and it renders its own horizontal scrollbar for the whitespace
+     `white-space: pre-wrap` leaves hanging past the last line. flow-root keeps the
+     floated images contained, which is the only reason the overflow was wanted. */
+  display: flow-root;
+  overflow: visible;
+}
+/* The admin's Quill editor rebuilds every <img> through a custom ImageBlot
+   (majesca-admin-app src/components/CmsEditor/CmsEditor.js) that carries only `src` and
+   `style` across, so the width/height ATTRIBUTES stored in the CMS HTML are dropped there and
+   the image is laid out at its natural size. Match that, or copy wrapping around a floated
+   image breaks at a different word on the live page than it does in the editor, and the page
+   cannot be laid out from the admin. `auto` rather than `!important` is deliberate: a
+   presentational width/height attribute loses to this rule, but an inline `style="width:..."`
+   still wins - exactly the split the editor's blot makes. */
+.about-us-css-setup .ql-editor img {
+  width: auto;
+  height: auto;
+}
+.about-us-css-setup .ql-editor h2{
+  margin-bottom: 0.5em !important;
+  color: #212121 !important;
+  font-weight: 600!important;
+  font-size: 30px !important;
+  line-height: 1.2666666666666666 !important;
+}
+.about-us-css-setup .ql-editor h3{
+  margin-bottom: 0.5em  !important;
+  color: #212121 !important;
+  font-weight: 600  !important;
+  font-size: 24px !important;
+  line-height: 1.3333333333333333  !important;
+}
+.about-us-css-setup .ql-editor p{
+  color: #212121 !important;
+  word-break: break-word !important;
+  line-height: 1.5714285714285714 !important;
+  font-size: 14px !important;
+  margin-bottom: 1em !important;
+}
+.about-us-css-setup .ql-editor p a{
+  text-decoration: underline !important;
+}
+.about-us-css-setup .ql-editor p a span{
+  text-decoration: none !important;
+}
+.about-us-css-setup .ql-editor ul li {
+  padding: 8px 16px !important; 
+  font-size: 14px !important;
+  border-block-end: 1px solid rgba(5, 5, 5, 0.08) !important;
+}
+
+.about-us-css-setup .ql-editor ul li::before {
+  color: #212121;
+  word-break: break-word;
+  font-size: 14px !important;
+  line-height: 1.5714285714285714 !important;
+}
+
+.video-card:hover .custom-play-icon{
+  display: none;
+}
+/* Affirm "Pay over time" promo message on PDP and cart */
+.affirm-promo-message {
+  margin-top: -4px;
+  margin-bottom: 2px;
+  line-height: 1.3;
+  font-size: 14px;
+  /* Match the "ITEM CODE" line above the price, which renders black. */
+  color: #000000;
+}
+
+/* Affirm renders nothing until its script resolves (and nothing at all for
+   non-USD / under-threshold prices) — collapse the element so it never leaves a
+   blank band between the price and the first variation group. */
+.affirm-promo-message:empty {
+  display: none;
+}
+
+/* Affirm injects its logo/loading spinner inline — keep it on the text baseline
+   instead of letting its intrinsic size overlap the surrounding copy. */
+.affirm-promo-message .affirm-logo,
+.affirm-promo-message img,
+.affirm-promo-message svg {
+  display: inline-block;
+  height: 1em;
+  width: auto;
+  vertical-align: baseline;
+}
+
+.affirm-promo-message .affirm-ala-price {
+  white-space: nowrap;
+}
+
+/* Round "info" badge that replaces Affirm's injected "Learn more" text.
+   Inserted by the MutationObserver in PDPPage, since Affirm owns that markup. */
+.affirm-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  margin-left: 3px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 10px;
+  font-style: italic;
+  line-height: 1;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+/* Cart "Shipping"/"Returns" bullet lists. The leading dash is a desktop-only
+   affordance; on mobile the block is centred (see cart.tsx) and reads cleaner
+   without it, matching the reference design. */
+.cart-info-list li::before {
+  content: '- ';
+}
+@media (max-width: 550px) {
+  .cart-info-list li::before {
+    content: none;
+  }
+}
+
+/* "Why Ashclair" badges on the PDP (compact variant) sit on white, so the remote
+   SVG icons are tinted to the brand green (#818d64). They render as <img>, so a
+   filter chain is the only way to recolour them; brightness(0) normalises the
+   source colour to black first. */
+.why-ashclair-icon {
+  filter: brightness(0) saturate(100%) invert(56%) sepia(13%) saturate(945%) hue-rotate(35deg) brightness(92%) contrast(87%);
+}
+
+/* --- Instagram community feed -------------------------------------------
+   A single row of posts that scrolls horizontally on its own and can be
+   dragged, using the same motion model as the promotional strip in the header
+   (see promotionalStrip.tsx): one rAF loop owns a translate3d on the row, and
+   auto-scroll, drag and flick momentum all feed the same offset.
+
+   Only the drag affordance lives here — everything else is either a utility
+   class or handled in JS. */
+
+.ig-feed {
+  cursor: grab;
+}
+
+.ig-feed.is-dragging {
+  cursor: grabbing;
+}
+
+/* Nothing inside should be selectable: a drag across the row would otherwise
+   start highlighting captions instead of scrolling. */
+.ig-feed,
+.ig-feed * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Reduced motion needs nothing further — the rAF loop declines to auto-scroll,
+   which leaves a row the reader drags themselves. */

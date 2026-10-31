@@ -1,0 +1,1461 @@
+.ant-card-body{
+  padding: 15px !important;
+}
+
+.home-header-select.ant-select.ant-select-sm .ant-select-arrow{
+  display: none;
+}
+.home-header-select.ant-select.ant-select-sm .ant-select-selector .ant-select-selection-wrap .ant-select-selection-search{
+padding: 10px 5px !important;
+}
+.home-header-select.ant-select.ant-select-sm .ant-select-selector .ant-select-selection-item{
+  padding: 0px !important;
+}
+.ant-slider-track{
+  background: var(--secondary-color) !important;
+}
+.ant-slider-dot{
+  border-color: var(--secondary-color) !important;
+}
+.home-header-select {
+  background: transparent !important;
+}
+.home-header-select .ant-select-selector{
+  padding: 0px !important;
+  border: 0px solid transparent !important;
+  background-color: transparent !important;
+}
+
+/* Custom color for selected option */
+.ant-select-item-option-selected,
+.sorting-selection .ant-select-selector {
+  /* background-color: var(--secondary-color) !important;  
+  color: white !important;               */
+  outline: none !important;
+  border: none !important;
+  background-color: transparent !important;
+}
+/* .sorting-selection .ant-select-arrow, .sorting-selection .ant-select-selection-item{
+  color: white !important;  
+} */
+
+/* If you want to style the option when hovered */
+/* .sorting-selection .ant-select-item-option:hover {
+  background-color: var(--secondary-color);
+} */
+.ant-select-focused {
+  display:none;
+}
+
+/* Global styles for the Slider */
+.diamond-slider {
+  width: 100%;
+  /* margin-bottom: 15px; */
+}
+
+/* Rail styling */
+.diamond-slider .MuiSlider-rail {
+  background-color: #D2E0E6 !important;
+}
+
+/* Track styling */
+.diamond-slider .MuiSlider-track {
+  background-color: #d2e6dc8a !important;
+  border: none;
+  height: 5px;
+  width: 100%;
+  /* display:none !important; */
+}
+/* secondary */
+/* Mark styling */
+.diamond-slider .MuiSlider-mark {
+  height: 5px;
+  width: 1.5px;
+  background-color: var(--secondary-color);
+
+}
+
+/* Thumb styling */
+.MuiSlider-thumb {
+  /* background-color: transparent;
+  height: 0px;
+  width: 0px;
+  border: none; */
+  background-color: var(--secondary-color) !important;
+  box-shadow: none !important;
+}
+
+/* Active and Focused Thumb state */
+.diamond-slider .MuiSlider-thumb:focus,
+.diamond-slider .MuiSlider-thumb:hover,
+.diamond-slider .MuiSlider-thumb.Mui-active,
+.diamond-slider .MuiSlider-thumb.Mui-focusVisible {
+  box-shadow: none in !important;
+  /* background-color: transparent; */
+  border: none;
+}
+
+
+
+/* slider subtypes */
+
+.subtype-swiper {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.mySwiper2 .swiper-button-next, .mySwiper2 .swiper-button-prev{
+  color: #17381d !important;
+  scale: 0.7;
+}
+.homepage-banner-swiper .swiper-button-next, .homepage-banner-swiper .swiper-button-prev{
+  color: #17381d !important;
+  background-color: #fff !important;
+  scale: 0.7;
+  padding: 25px !important;
+  border-radius: 70%;
+  background-color: 1px solid transparent !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.homepage-banner-swiper .swiper-button-prev:after, .homepage-banner-swiper .swiper-button-next:after{
+  font-size: 25px !important;
+}
+
+/* Base bullet style */
+.homepage-banner-swiper .swiper-pagination-bullet {
+  width: 40px;
+  height: 1.5px;
+  display: inline-block;
+  border-radius: 1px;
+  background: white;
+  opacity: 1;
+  transition: opacity 0.3s, background 0.3s;
+  margin: 0 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Pagination container positioning */
+.homepage-banner-swiper .swiper-pagination {
+  bottom: 24px !important;
+}
+
+/* On mobile the slide is taller (4/5) and the overlay text sits low, so pull
+   the pagination bar closer to the bottom edge to keep it clear of the copy. */
+@media (max-width: 550px) {
+  .homepage-banner-swiper .swiper-pagination {
+    bottom: 8px !important;
+  }
+}
+
+/* Active bullet with progress animation */
+.homepage-banner-swiper .swiper-pagination-bullet-active {
+  background: white;
+  opacity: 1;
+}
+
+/* Progress bar inside active bullet */
+.homepage-banner-swiper .swiper-pagination-bullet-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #17381d;
+  border-radius: 1px;
+  animation: progressAnimation 6s linear infinite;
+}
+
+/* Progress animation keyframes */
+@keyframes progressAnimation {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+
+.homepage-banner-swiper .swiper-slide{
+  height: 100%;
+}
+.subtype-swiper .swiper-button-next,
+.subtype-swiper .swiper-button-prev {
+  color: #17381d;
+  scale: 0.7;
+}
+
+
+.subtype-swiper .swiper-pagination {
+  display: none;
+}
+.next-try::before{
+  width: 0px;
+    height: 0px;
+    border-top: 36px solid transparent;
+    border-bottom: 36px solid transparent;
+    border-left: 15px solid #ffffff;
+    position: absolute;
+    clip-path: polygon(0 -2%, 50% 50%, 1% 100%);
+    content: "";
+    top: 0px;
+    left: 0;
+    transform: translate(-100%, 0);
+}
+.next-try::after{
+  width: 0;
+    height: 0;
+    border-top: 36px solid transparent;
+    border-bottom: 36px solid transparent;
+    border-left: 15px solid transparent;
+    position: absolute;
+    content: "";
+    top: 0px;
+    right: 0;
+    transform: translate(100%, 0);
+}
+.first-step::after{
+  width: 0;
+    height: 0;
+    border-top: 36px solid transparent;
+    border-bottom: 36px solid transparent;
+    border-left: 13px solid #e7eae1;
+    position: absolute;
+    content: "";
+    top: 0px;
+    right: 0;
+    z-index: 10;
+    transform: translate(100%, 0);
+}
+.last-step::before{
+  width: 0;
+    height: 0;
+    border-top: 36px solid #ffffff;
+    border-bottom: 36px solid #ffffff;
+    border-left: 15px solid transparent;
+    position: absolute;
+    content: "";
+    top: 0px;
+    right: 0;
+    transform: translate(100%, 0);
+}
+/*  mobile screen Styles */
+@media (max-width: 640px) {
+  .subtype-swiper .swiper-button-next,
+  .subtype-swiper .swiper-button-prev {
+    scale: 0.6;
+  }
+.ant-select-dropdown{
+  z-index: 51 !important;
+}
+  /* .ant-select-dropdown */
+  .sorting-selection .ant-select-selector{
+    border:none !important;
+  }
+  .rc-virtual-list-holder-inner div {
+    min-height: 14px !important; /* Set height of every div inside .rc-virtual-list-holder-inner */
+  }
+  .ant-select-item, .ant-select-item-option {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  .ant-select-item-option-content{
+  font-size: 12px !important;
+  height: 14px !important;
+  }
+  /* Header search suggestions: rows hold an image plus a wrapping title and price, so they
+     must not inherit the fixed 14px option height above (it clipped and overlapped them). */
+  .header-search-dropdown .ant-select-item-option-content{
+    height: auto !important;
+    white-space: normal !important;
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+  }
+  .header-search-dropdown .ant-select-item-option{
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+  .ant-card-body{
+    padding: 5px 10px !important;
+  }
+
+.ant-modal-content{
+  padding: 20px 10px !important;
+}
+
+
+  .force-horizontal-steps {
+    .ant-steps-item-title {
+      max-width: 80px;
+    }
+    
+    .ant-steps-item-description {
+      max-width: 80px;
+    }
+    flex-direction: row !important;
+  }
+  .force-horizontal-steps .ant-steps-item-container , .order-details-progress .ant-steps-item-container{
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  }
+
+  .force-horizontal-steps .ant-steps-item-tail , .order-details-progress .ant-steps-item-tail{
+    display: none !important;
+  }
+  .force-horizontal-steps .ant-steps-item-title , .order-details-progress .ant-steps-item-title{
+    font-size: 12px !important;
+    line-height: 12px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+  .force-horizontal-steps .ant-steps-item-description, .order-details-progress .ant-steps-item-description{
+    font-size: 10px !important;
+    text-align: center !important;
+  }
+  .force-horizontal-steps .ant-steps-item-icon, .order-details-progress .ant-steps-item-icon{
+    /* width: 100% !important; */
+    margin: 5px 0 !important;
+    text-align: center !important;
+  }
+
+  .order-details-progress{
+    flex-direction: row !important;
+  }
+  /* Equal-width steps so the labels sit centred under evenly spaced icons. */
+  .order-details-progress .ant-steps-item{
+    position: relative;
+    flex: 1 1 0 !important;
+    min-width: 0;
+  }
+  .order-details-progress .ant-steps-item-title{
+    line-height: 14px !important;
+    white-space: normal !important;
+  }
+  .order-details-progress .ant-steps-item-title::after{
+    display: none !important;
+  }
+  /* antd's own tail is hidden above, so draw the line from this icon to the next one
+     (icon: 32px, 5px top margin, so its centre is 21px down). */
+  .order-details-progress .ant-steps-item:not(:last-child)::after{
+    content: '';
+    position: absolute;
+    top: 21px;
+    left: calc(50% + 22px);
+    width: calc(100% - 44px);
+    height: 1px;
+    background: #d9d9d9;
+  }
+  .currency-selection-modal .ant-modal-body{
+    font-size: 12px !important;
+    h2{
+      font-size: 12px !important; 
+    }
+  }
+
+  .next-try::before{
+    width: 0px;
+      height: 0px;
+      border-top: 27px solid transparent;
+      border-bottom: 27px solid transparent;
+      border-left: 12px solid #ffffff;
+      position: absolute;
+      content: "";
+      top: 0px;
+      left: 0;
+      transform: translate(-100%, 0);
+  }
+  .next-try::after{
+    width: 0;
+      height: 0;
+      border-top: 27px solid transparent;
+      border-bottom: 27px solid transparent;
+      border-left: 12px solid transparent;
+      position: absolute;
+      content: "";
+      top: 0px;
+      right: 0;
+      transform: translate(100%, 0);
+  }
+  .first-step::after{
+    width: 0;
+      height: 0;
+      border-top: 27px solid transparent;
+      border-bottom: 27px solid transparent;
+      border-left: 11px solid #e7eae1;
+      position: absolute;
+      content: "";
+      top: 0px;
+      right: 0;
+      /* z-index: 10; */
+      transform: translate(100%, 0);
+  }
+  .last-step::before{
+    width: 0;
+      height: 0;
+      border-top: 27px solid #ffffff;
+      border-bottom: 27px solid #ffffff;
+      border-left: 12px solid transparent;
+      position: absolute;
+      content: "";
+      top: 0px;
+      right: 0;
+      transform: translate(100%, 0);
+  }
+}
+
+.promotional-strip .swiper-wrapper{
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* laptop lg screen Styles */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .next-try::before{
+    width: 0px;
+      height: 0px;
+      border-top: 32px solid transparent;
+      border-bottom: 32px solid transparent;
+      border-left: 12px solid #ffffff;
+      position: absolute;
+      content: "";
+      top: 0px;
+      left: 0;
+      transform: translate(-100%, 0);
+  }
+  .next-try::after{
+    width: 0;
+      height: 0;
+      border-top: 32px solid transparent;
+      border-bottom: 32px solid transparent;
+      border-left: 12px solid #ffffff;
+      position: absolute;
+      content: "";
+      top: 0px;
+      right: 0;
+      z-index: 10;
+      transform: translate(100%, 0);
+  }
+  .first-step::after{
+    width: 0;
+      height: 0;
+      border-top: 29px solid transparent;
+      border-bottom: 27px solid transparent;
+      border-left: 12px solid #e7eae1;
+      position: absolute;
+      content: "";
+      top: 0px;
+      right: 0;
+      /* z-index: 10; */
+      transform: translate(100%, 0);
+  }
+  .last-step::before{
+    width: 0;
+      height: 0;
+      border-top: 32px solid #ffffff;
+      border-bottom: 32px solid #ffffff;
+      border-left: 12px solid transparent;
+      position: absolute;
+      content: "";
+      top: 0px;
+      right: 0;
+      transform: translate(100%, 0);
+  }
+}
+
+
+/* Center the review-form modal and let it scroll within the viewport so the
+   top (rating) and bottom (submit) are always reachable on short screens. */
+.modal-backdrop.yotpo-review-form-modal {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow-y: auto !important;
+  padding: 24px 16px !important;
+}
+
+.modal-backdrop.yotpo-review-form-modal .yotpo-modal {
+  height: auto !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  margin: auto !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+}
+
+
+/* =========================================================
+   Yotpo Star bottom-line (PDP) — tighten the gap between the
+   star/review line and the price by removing the widget's
+   inherent vertical margins/padding on every nested container.
+   ========================================================= */
+.yotpo-star-line {
+  margin: 0;
+  line-height: 1;
+  display: flex;
+}
+.yotpo-star-line,
+.yotpo-star-line * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+.yotpo-star-line .yotpo-widget-instance,
+.yotpo-star-line .yotpo-bottomline,
+.yotpo-star-line [class*="bottomline"],
+.yotpo-star-line [class*="bottom-line"] {
+  min-height: 0 !important;
+}
+/* Keep the star rating + review count visually subordinate to the item code above
+   it. Yotpo ships its own sizes inline, hence the !important overrides. The stars
+   render as svg/img, which do not scale with font-size, so they are sized too. */
+.yotpo-star-line,
+.yotpo-star-line * {
+  font-size: 12px !important;
+}
+.yotpo-star-line svg,
+.yotpo-star-line img,
+.yotpo-star-line [class*="star"] svg,
+.yotpo-star-line [class*="star"] img {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* =========================================================
+   Yotpo Reviews Widget - custom card layout (v1)
+   Targets the light-DOM markup of the reviews widget only.
+   ========================================================= */
+
+/* --- Make the native widget fill the full section width, matching the custom
+   "What our customers say" grid. Yotpo's own layout container otherwise adds a
+   max-width + side padding that insets the whole widget (summary box, filters
+   and cards). We deliberately do NOT touch `.card-container` so cards keep their
+   inner padding. --- */
+.product-reviews-section .yotpo-widget-instance > div,
+.product-reviews-section .yotpo-widget-instance [class*="main-widget"],
+.product-reviews-section .yotpo-widget-instance [class*="reviews-main"],
+.product-reviews-section .yotpo-widget-instance [class*="yotpo-layout"] {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* ...but the summary header (the grey box: star breakdown + average + "Write A
+   Review") is the one piece of the native widget we keep, and its wrapper class
+   matches the `[class*="yotpo-layout"]` selector above — so it lost its side
+   padding too and the "Write A Review" button ended up flush against the box's
+   right edge. Give that wrapper its inset back. Scoped to the header only, so
+   the filters and cards below (ours) still run the full section width. The
+   `.yotpo-display-m` rule further down does the same for Yotpo's medium layout;
+   this one covers every display size. */
+.product-reviews-section .product-reviews-native .yotpo-widget-instance .yotpo-layout-header-wrapper {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* "Customer Reviews": hide Yotpo's own filter bar and capped card list — we
+   render those ourselves below. Leave the empty state IN the widget so its
+   native design (centered copy, shooting stars, white-on-green button) is
+   unchanged. Tabs are portaled in above that empty block. */
+/* Higher specificity (…-native .yotpo-widget-instance …) so this wins over the
+   `.yotpo-widget-instance .yotpo-reviews-cart-list { display: grid !important }`
+   rule defined later in this file. */
+.product-reviews-native .yotpo-widget-instance .yotpo-filters-container,
+.product-reviews-native .yotpo-widget-instance .yotpo-reviews-cart-list,
+.product-reviews-native .yotpo-widget-instance .yotpo-load-more,
+.product-reviews-native .yotpo-widget-instance [class*='pagination'] {
+  display: none !important;
+}
+
+/* On "All Product Reviews", hide the native empty CTA so it doesn't sit above
+   the store-wide list. Product Reviews tab keeps it visible. */
+.product-reviews-native--hide-empty .yotpo-widget-instance .yotpo-empty-state,
+.product-reviews-native--hide-empty .yotpo-widget-instance .yotpo-new-review-btn,
+.product-reviews-native--hide-empty .product-reviews-tabs-mount {
+  display: none !important;
+}
+
+/* Tabs mount inside the Yotpo widget (above empty state). Reset Yotpo button
+   styles so ReviewTabs match the existing Product Reviews tab design. */
+.product-reviews-tabs-mount {
+  width: 100%;
+  margin: 12px 0 8px;
+}
+.product-reviews-tabs-mount [role='tablist'] {
+  display: flex !important;
+  align-items: center !important;
+  gap: 32px !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+  margin-bottom: 24px !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+.product-reviews-tabs-mount button[role='tab'] {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: -1px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid transparent;
+  font-family: 'Noto Sans', sans-serif !important;
+  font-size: 17px !important;
+  line-height: 1 !important;
+  letter-spacing: normal !important;
+  color: #6b6b6b !important;
+  font-weight: 400 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  width: auto !important;
+  text-transform: none !important;
+}
+.product-reviews-tabs-mount button[role='tab'][aria-selected='true'] {
+  border-bottom-color: #2c2c2c !important;
+  color: #2c2c2c !important;
+  font-weight: 700 !important;
+}
+.product-reviews-tabs-mount button[role='tab']:hover {
+  color: #2c2c2c !important;
+}
+@media (max-width: 640px) {
+  .product-reviews-tabs-mount [role='tablist'] {
+    gap: 24px !important;
+    margin-bottom: 16px !important;
+  }
+  .product-reviews-tabs-mount button[role='tab'] {
+    font-size: 15px;
+  }
+}
+
+/* --- Turn Yotpo's JS masonry into a responsive grid --- */
+.yotpo-widget-instance [item-selector=".yotpo-review-card"] {
+  height: auto !important;
+}
+
+.yotpo-filters-container .yotpo-filters-container-inner {
+  flex-direction: row !important;
+}
+
+.yotpo-widget-instance .yotpo-reviews-cart-list {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 24px !important; /* match the custom "What our customers say" grid (gap-6) */
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* Cards fill their grid cell (no width cap) so rows/columns align evenly,
+   exactly like the custom card grid. */
+.yotpo-widget-instance .yotpo-review-card {
+  position: static !important;
+  width: auto !important;
+  max-width: none !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  margin: 0 !important;
+  /* Be a full-height flex column so the card body can stretch to the (equal)
+     grid-cell height — required for the footer to anchor to the bottom. */
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+.yotpo-widget-instance .yotpo-gutter {
+  display: none !important;
+}
+
+/* --- Card container: match the custom ReviewCard (bg-[#f6f6f4] rounded-2xl p-6) --- */
+.yotpo-widget-instance .card-container {
+  display: flex !important;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  flex: 1 1 auto !important; /* fill the full-height review-card */
+  background: #f6f6f4 !important;
+  border: 0;
+  border-radius: 16px !important;
+  /* 24px top/bottom, tighter 16px left/right so the content isn't inset so far. */
+  padding: 24px 16px !important;
+  box-shadow: none;
+}
+/* Content block fills the remaining card height as a flex column, so the
+   "Was this review helpful?" footer (margin-top:auto below) anchors to the
+   bottom of the card — matching the custom ReviewCard, where short reviews
+   leave the gap ABOVE the footer instead of below it. */
+.yotpo-widget-instance .content-container-with-votes {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0;
+}
+.yotpo-widget-instance .yotpo-review-border-smooth { display: none !important; }
+
+/* --- Review photo (full width, on top) --- */
+.yotpo-widget-instance .yotpo-media-button {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin-bottom: 0 !important; /* spacing handled on the stars row below */
+  cursor: pointer;
+}
+.yotpo-widget-instance .yotpo-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+/* --- Header row: stars left, date right --- */
+.yotpo-widget-instance .content-header {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px !important; /* space between the photo and the stars row */
+}
+.yotpo-widget-instance .content-header .yotpo-review-date {
+  display: flex;
+  align-items: center;
+}
+.yotpo-widget-instance .yotpo-date-label {
+  display: none; /* hide the "Published date" label, show only the date */
+}
+.yotpo-widget-instance .yotpo-date-format {
+  color: #9a9a9a;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* --- Title --- */
+.yotpo-widget-instance .yotpo-review-title {
+  /* space between the star rating and the title (was 4px — too cramped) */
+  margin: 12px 0 0 !important;
+  line-height: 1.4 !important;
+}
+.yotpo-widget-instance .yotpo-review-title strong {
+  font-size: 18px; /* match custom card title (text-lg) */
+  font-weight: 700;
+  color: #111827; /* text-gray-900 */
+}
+.yotpo-widget-instance .yotpo-review-content {
+  margin-top: 8px !important;
+}
+
+.yotpo-widget-instance .yotpo-reviewer {
+/* Push the reviewer (name | Verified Reviewer) and the footer that follows it
+   to the bottom of the card, so short reviews leave the gap ABOVE them — the
+   same layout as the custom ReviewCard (which puts mt-auto on the reviewer). */
+margin-top: auto !important;
+margin-bottom: 0px !important;
+/* Always keep a little gap between the content / "Read more" and this row, even
+   for long reviews where margin-top:auto collapses to 0 (padding is unaffected). */
+padding-top: 10px !important;
+}
+
+/* --- Body --- */
+.yotpo-widget-instance .yotpo-read-more-text {
+  color: #4b5563; /* text-gray-600, matches custom card body */
+  font-size: 15px;
+  line-height: 1.625; /* leading-relaxed */
+}
+/* "Read more" / "Read less" toggle — match the custom ReviewCard link exactly:
+   dark-green (#17381D), 15px, medium weight, underlined (was bold/dark/larger).
+   Targets the clickable toggle (button/link, or a read-more/show-more element),
+   but NOT the .yotpo-read-more-text body copy. */
+.yotpo-widget-instance .yotpo-review-content button,
+.yotpo-widget-instance .yotpo-review-content a,
+.yotpo-widget-instance .yotpo-text-container button,
+.yotpo-widget-instance .yotpo-text-container a,
+.yotpo-widget-instance .yotpo-read-more-text button,
+.yotpo-widget-instance .yotpo-read-more-text a,
+.yotpo-widget-instance [class*='read-more']:not(.yotpo-read-more-text),
+.yotpo-widget-instance [class*='read-less'],
+.yotpo-widget-instance [class*='show-more'],
+.yotpo-widget-instance [class*='show-less'] {
+  color: #17381d !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+  line-height: 1.625 !important;
+}
+
+/* --- Reviewer name (green), hide the duplicate inline date --- */
+.yotpo-widget-instance .yotpo-reviewer {
+  margin-bottom: 4px;
+}
+.yotpo-widget-instance .yotpo-reviewer-name {
+  color: #173820 !important;
+  font-weight: 600;
+}
+.yotpo-widget-instance .yotpo-reviewer .yotpo-review-date-container {
+  display: none !important;
+}
+/* "Verified Reviewer" label + icon on the product review card. */
+.yotpo-widget-instance .yotpo-verified-buyer,
+.yotpo-widget-instance .yotpo-verified-buyer span,
+.yotpo-widget-instance [class*='verified-buyer'] {
+  color: #207a44 !important;
+}
+/* Recolor the verified badge to #207A44 (same as the text + the custom card
+   icon), keeping the inner checkmark white. The badge icon is the only svg in
+   the reviewer line, so target it there and in any verified-* wrapper; handle
+   both currentColor and explicit fills, and skip white/empty fills so the
+   checkmark stays white. */
+.yotpo-widget-instance .yotpo-reviewer svg,
+.yotpo-widget-instance [class*='verified'] svg {
+  color: #207a44 !important;
+}
+.yotpo-widget-instance .yotpo-reviewer svg circle:not([fill='none']):not([fill='#fff']):not([fill='#FFFFFF']):not([fill='#ffffff']):not([fill='white']),
+.yotpo-widget-instance .yotpo-reviewer svg path:not([fill='none']):not([fill='#fff']):not([fill='#FFFFFF']):not([fill='#ffffff']):not([fill='white']),
+.yotpo-widget-instance [class*='verified'] svg circle:not([fill='none']):not([fill='#fff']):not([fill='#FFFFFF']):not([fill='#ffffff']):not([fill='white']),
+.yotpo-widget-instance [class*='verified'] svg path:not([fill='none']):not([fill='#fff']):not([fill='#FFFFFF']):not([fill='#ffffff']):not([fill='white']) {
+  fill: #207a44 !important;
+}
+
+/* --- "Was this review helpful?" footer: grey bar, question left / thumbs right --- */
+.yotpo-widget-instance .yotpo-review-votes-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end; /* match custom card: question + thumbs on the right */
+  gap: 16px;
+  margin-top: 0; /* sits directly under the reviewer, which now carries mt-auto */
+  padding: 12px 0 0 !important;
+  border-top: 1px solid #e5e7eb !important; /* border-gray-200 */
+  background: transparent !important;
+  border-radius: 0;
+  color: #374151;
+  font-size: 14px;
+}
+/* the question label */
+.yotpo-widget-instance .yotpo-review-votes-wrapper > span,
+.yotpo-widget-instance .yotpo-review-votes-wrapper [id$="votes_label"],
+.yotpo-widget-instance .yotpo-review-votes-wrapper .yotpo-vote-title {
+  color: #3a3a3a;
+  font-size: 15px;
+}
+/* keep the thumbs together on the right */
+.yotpo-widget-instance .yotpo-review-votes-wrapper .yotpo-vote-btns,
+.yotpo-widget-instance .yotpo-review-votes-wrapper .yotpo-votes-buttons {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+  width: auto !important;
+}
+/* plain thumbs inside the grey bar (no per-thumb box - keeps the count
+   next to its icon regardless of how Yotpo nests the count element) */
+.yotpo-widget-instance .yotpo-review-votes-wrapper button,
+.yotpo-widget-instance .yotpo-review-votes-wrapper [role="button"] {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #3a3a3a;
+  cursor: pointer;
+}
+
+/* --- "Search reviews" field (.yotpo-search-filter is the pill) --- */
+/* input: no own border/outline (that was the inner black focus line), + left text padding */
+.yotpo-widget-instance .yotpo-search-filter input,
+.yotpo-widget-instance .yotpo-search-filter input:focus {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding-left: 16px !important;
+}
+/* the pill: one grey border in every state (kills the black-on-focus border) */
+.yotpo-widget-instance .yotpo-search-filter,
+.yotpo-widget-instance .yotpo-search-filter:focus-within {
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 999px !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+/* Search button: a dark-green circle with a white icon, matching the custom
+   "What our customers say" search button (bg-[#17381D], h-8 w-8). Yotpo's
+   default is a light-grey circle that only turns green on hover; we make it
+   green by default. These are the same CSS custom properties Yotpo sets inline
+   on the button, so overriding them recolours/resizes the whole control. */
+.yotpo-widget-instance .yotpo-search-filter__icon-button {
+  --background: #17381d !important;
+  --color: #ffffff !important;
+  --hover-background: #1f4a28 !important;
+  --hover-color: #ffffff !important;
+  --icon-button-height: 32px !important;
+  --icon-button-width: 32px !important;
+}
+.yotpo-widget-instance .yotpo-search-filter__icon-button .yotpo-icon-button__icon,
+.yotpo-widget-instance .yotpo-search-filter__icon-button svg {
+  color: #ffffff !important;
+}
+
+.yotpo-display-m .yotpo-bold-layout .yotpo-layout-header-wrapper {
+  /* padding: 20px !important; */
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+.yotpo-widget-instance .yotpo-base-layout {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.yotpo-search-filter--focus, .yotpo-search-filter:hover,
+.yotpo-media-select:focus-visible:after, .yotpo-media-select:hover:after {
+  border: none !important;
+}
+
+.yotpo-filters-container .yotpo-filters-container-inner .yotpo-filters-top-panel {
+  align-items: center !important;
+}
+
+.yotpo-media-select .yotpo-radio-icon {
+  margin-right: 0 !important;
+  height: 24px !important;
+}
+
+.yotpo-media-select .yotpo-radio-icon> circle {
+  stroke: #9ca3af !important;
+  stroke-width: 0.5 !important;
+}
+
+.yotpo-dropdown-label {
+  top: 50% !important;
+  transform: translatey(-50%) !important;
+}
+/* WEB VIEW ONLY: match the size + shape of the custom "What our customers say"
+   filter pills exactly (that section is the design reference). Mobile keeps
+   Yotpo's compact defaults + the lighter #d9d9d9 border above. */
+@media (min-width: 641px) {
+  .yotpo-widget-instance .yotpo-search-filter,
+  .yotpo-widget-instance .yotpo-search-filter:focus-within {
+    border-color: #949494 !important;
+    /* custom search pill: min-w-[240px], py-1 + h-8 button => 42px tall */
+    min-width: 240px !important;
+    height: 42px !important;
+    padding: 4px 3px 4px 4px !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+  }
+
+  /* Rating pill = the bordered .yotpo-dropdown-base. Custom: h-42, pl-5/pr-4,
+     content width (Yotpo forces a fixed ~173px, so collapse it to content). */
+  .yotpo-widget-instance .yotpo-score-filter-container,
+  .yotpo-widget-instance .yotpo-score-filter-container .yotpo-dropdown-closable {
+    width: auto !important;
+    min-width: 0 !important;
+    height: 42px !important;
+    flex: 0 0 auto !important;
+  }
+  .yotpo-widget-instance .yotpo-score-filter-container .yotpo-dropdown-base {
+    height: 42px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    padding: 0 16px 0 20px !important;
+    white-space: nowrap !important;
+    border: 1px solid #949494 !important;
+    border-radius: 9999px !important;
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+
+  /* "With media" pill = .yotpo-media-select. Custom is 34px tall and ~133px wide.
+     Yotpo keeps its label in a zero-width container, so a content-fit width
+     clips the text — pin an explicit width that fits "With media" + the circle. */
+  .yotpo-widget-instance .yotpo-media-filter {
+    width: auto !important;
+    min-width: 0 !important;
+    height: 34px !important;
+    flex: 0 0 auto !important;
+  }
+  .yotpo-widget-instance .yotpo-media-select {
+    width: 140px !important;
+    min-width: 0 !important;
+    height: 34px !important;
+    padding: 0 6px 0 20px !important;
+    white-space: nowrap !important;
+    justify-content: space-between !important;
+    border: 1px solid #949494 !important;
+    border-radius: 9999px !important;
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px;
+  }
+  .yotpo-widget-instance .yotpo-media-select .yotpo-radio-base {
+    width: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  .yotpo-widget-instance .yotpo-media-select .yotpo-selected-value {
+    white-space: nowrap !important;
+  }
+  /* Web: add breathing room between the filter bar and the first row of review
+     cards (matches the custom "What our customers say" filter's mb-6). */
+  .yotpo-widget-instance .yotpo-reviews-cart-list {
+    margin-top: 24px !important;
+  }
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .yotpo-widget-instance .yotpo-reviews-cart-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 640px) {
+  /* --- Mobile filter bar: match the custom "What our customers say" layout ---
+     The rule above forces the inner wrapper to a row, which on mobile cramps
+     "Sort by" next to the pills and stretches everything full-width. On mobile
+     we stack it into rows that mirror the custom section:
+       row 1: [ Search (grows) ] [ Rating ]
+       row 2: [ With media ]
+       row 3: [ Sort by ]
+     and give the pills the same shape/height as the desktop bar. */
+  .yotpo-widget-instance .yotpo-filters-container .yotpo-filters-container-inner {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .yotpo-widget-instance .yotpo-filters-top-panel {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  .yotpo-widget-instance .yotpo-filters-right-panel {
+    width: 100% !important;
+    justify-content: flex-end !important;
+  }
+  /* The sort container can fill the full-width right panel, which cancels out
+     justify-content — push it to the right edge with an auto left margin so
+     "Sort by" is right-aligned, matching the custom section. */
+  .yotpo-widget-instance .yotpo-sorting-filter-container {
+    margin-left: auto !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+  }
+  /* Search grows to fill the rest of row 1 beside Rating */
+  .yotpo-widget-instance .yotpo-search-filter,
+  .yotpo-widget-instance .yotpo-search-filter:focus-within {
+    flex: 1 1 190px !important;
+    min-width: 180px !important;
+    height: 42px !important;
+    border-color: #949494 !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+  }
+  /* Rating: content width */
+  .yotpo-widget-instance .yotpo-score-filter-container,
+  .yotpo-widget-instance .yotpo-score-filter-container .yotpo-dropdown-closable {
+    width: auto !important;
+    min-width: 0 !important;
+    height: 42px !important;
+    flex: 0 0 auto !important;
+  }
+  .yotpo-widget-instance .yotpo-score-filter-container .yotpo-dropdown-base {
+    height: 42px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    padding: 0 16px 0 18px !important;
+    white-space: nowrap !important;
+    border: 1px solid #949494 !important;
+    border-radius: 9999px !important;
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  /* With media: content width, wraps to its own row */
+  .yotpo-widget-instance .yotpo-media-filter {
+    width: auto !important;
+    min-width: 0 !important;
+    height: 34px !important;
+    flex: 0 0 auto !important;
+  }
+  .yotpo-widget-instance .yotpo-media-select {
+    width: 140px !important;
+    min-width: 0 !important;
+    height: 34px !important;
+    padding: 0 6px 0 20px !important;
+    white-space: nowrap !important;
+    justify-content: space-between !important;
+    border: 1px solid #949494 !important;
+    border-radius: 9999px !important;
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px;
+  }
+  .yotpo-widget-instance .yotpo-media-select .yotpo-radio-base {
+    width: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+
+  .yotpo-widget-instance .yotpo-reviews-cart-list {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    /* stretch (not center) so the card fills the full container width, matching
+       the custom "What our customers say" card on mobile. */
+    justify-items: stretch !important;
+  }
+  .yotpo-widget-instance .yotpo-review-card,
+  .yotpo-widget-instance .card-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  /* Match the custom "What our customers say" card on mobile: keep the full 24px
+     padding, the 16/9 photo and the same internal spacing as the desktop card
+     (no mobile-specific shrinking, since the custom card has no mobile override). */
+  .yotpo-widget-instance .yotpo-image {
+    aspect-ratio: 16 / 9 !important;
+    max-height: none !important;
+  }
+  .yotpo-widget-instance .content-header {
+    margin-top: 12px !important;
+  }
+
+  /* Trim the tall vertical whitespace of Yotpo's empty state ("We're looking
+     for stars") on mobile, so the Customer Reviews block sits closer to
+     Product Details above and to "What our customers say" below. */
+  .yotpo-widget-instance .yotpo-empty-state {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    margin-top: 0 !important;
+  }
+  .yotpo-display-m .yotpo-bold-layout .yotpo-layout-header-wrapper {
+    padding: 8px !important;
+  }
+}
+
+/* =========================================================
+   Yotpo SEO Page widget (PDP) — COMMENTED OUT.
+   These rules style the "SEO Page" widget (Site Reviews /
+   Product Reviews tabs), which the PDP no longer renders — it
+   uses the custom "Customer Reviews" + "What our customers say"
+   sections styled above instead. Kept here so the SEO widget can
+   be switched back on together with YotpoSeoPageWidget in
+   src/app/[jewelryType]/premade/yotpoReiew.tsx.
+
+   .yotpo-seo-page-section .yotpo-widget-instance,
+   .yotpo-seo-page-section .yotpo-widget-instance > div,
+   .yotpo-seo-page-section .yotpo-widget-instance .yotpo-base-layout,
+   .yotpo-seo-page-section .yotpo-widget-instance [class*="main-widget"],
+   .yotpo-seo-page-section .yotpo-widget-instance [class*="yotpo-layout"] {
+     max-width: 100% !important;
+     width: 100% !important;
+     margin-left: 0 !important;
+     margin-right: 0 !important;
+   }
+
+   Pagination prev/next arrows: flex the link so the arrow icon is
+   centered instead of falling into anonymous block-splitting.
+   .yotpo-seo-page-section .yotpo-widget-instance .yotpo-reviews-seo-pagination-item {
+     display: inline-flex !important;
+     align-items: center !important;
+     justify-content: center !important;
+   }
+
+   Read more / read less links: put the review body back into normal
+   text flow so the link sits at the end of the truncated line.
+   .yotpo-seo-page-section .yotpo-review-content {
+     display: block !important;
+   }
+   .yotpo-seo-page-section .yotpo-review-content .yotpo-read-more-text {
+     display: inline !important;
+   }
+   .yotpo-seo-page-section .yotpo-review-content .yotpo-read-more,
+   .yotpo-seo-page-section .yotpo-read-more-toggle {
+     display: inline;
+     margin-left: 4px;
+     padding: 0;
+     border: 0;
+     background: none;
+     cursor: pointer;
+     font-family: inherit;
+     font-size: inherit;
+     line-height: inherit;
+     font-weight: 600;
+     color: #17381d;
+     text-decoration: underline;
+     text-underline-offset: 2px;
+     white-space: nowrap;
+   }
+   .yotpo-seo-page-section .yotpo-review-content .yotpo-read-more:hover,
+   .yotpo-seo-page-section .yotpo-read-more-toggle:hover,
+   .yotpo-seo-page-section .yotpo-read-more-toggle:focus-visible {
+     opacity: 0.75;
+   }
+
+   Mobile side gutters: Yotpo's own layout wrapper ships a fixed 40px
+   margin per side, which eats a ninth of a phone screen per side.
+   @media (max-width: 550px) {
+     .yotpo-seo-page-section .yotpo-seo-page-layout {
+       margin-left: 8px !important;
+       margin-right: 8px !important;
+     }
+   }
+   ========================================================= */
+
+/* =========================================================
+   Yotpo Reviews Carousel (homepage) — mobile header layout.
+   Yotpo only switches to its own centred/stacked mobile
+   presentation below its internal breakpoint. Between that
+   breakpoint and desktop it keeps the desktop header — a
+   full-size heading and a left-aligned inline star line —
+   which overflows and looks off-centre on narrow screens.
+   These rules reproduce the widget's mobile presentation.
+
+   Scoped to the header/bottomline only: Glide positions the
+   carousel slides using pixel offsets it measured at init, so
+   card and track widths are deliberately left untouched —
+   restyling those would desync the slides from their offsets.
+   ========================================================= */
+@media (max-width: 768px) {
+  .yotpo-reviews-carousel-section .yotpo-reviews-carousel-header-container {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* The rating row's own wrappers stay left-aligned so the row can start at the
+     card inset (see the .reviews-carousel-reviews-bottomline rule below). */
+  .yotpo-reviews-carousel-section .yotpo-reviews-carousel-bottomline-seo,
+  .yotpo-reviews-carousel-section .yotpo-reviews-carousel-bottomline-container {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+  }
+
+  /* Inset the title so it lines up with the cards below instead of running
+     edge to edge — at full width the text nearly fills the row, so centring
+     it has no visible effect and it reads as left-aligned. The smaller size
+     keeps it on a single line within that inset, as the widget shows it. */
+  .yotpo-reviews-carousel-section .yotpo-reviews-carousel-header {
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 20px !important;
+    line-height: 1.35 !important;
+    padding-left: 48px !important;
+    padding-right: 24px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Stars and "N reviews" stay on one line, starting at the same inset as the
+     cards below (--yotpo-carousel-card-inset, measured in YotpoReviewsCarousel)
+     so the row reads as the head of the card column rather than a separate
+     block. The "Write a Review" CTA is absolutely positioned onto the right-hand
+     end of this same line, so the row is left-aligned and left short of it. */
+  .yotpo-reviews-carousel-section .reviews-carousel-reviews-bottomline {
+    width: auto !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Yotpo renders each star as a 20x20 SVG with a hard-coded width/height
+     attribute — too heavy next to 14px text once the row is inline on a phone.
+     Tighten the glyphs and the spacing Yotpo sets inline between them. */
+  .yotpo-reviews-carousel-section .reviews-carousel-reviews-bottomline .yotpo-star-container {
+    margin-right: 3px !important;
+  }
+  .yotpo-reviews-carousel-section .reviews-carousel-reviews-bottomline .yotpo-star-container:last-child {
+    margin-right: 0 !important;
+  }
+  .yotpo-reviews-carousel-section .reviews-carousel-reviews-bottomline .yotpo-star-container svg {
+    width: 15px !important;
+    height: 15px !important;
+    display: block !important;
+  }
+  .yotpo-reviews-carousel-section .reviews-carousel-reviews-bottomline .reviews-bottomline-total-reviews {
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* =========================================================
+   Yotpo Badges widget (header/footer/mobile strip — see
+   src/components/YotpoBadge) — force the overlay layout Yotpo's own
+   default badge design intends (count + stars centered in the seal,
+   "Certified reviews" inside the ribbon band) instead of the plain
+   stacked-below-the-image fallback it renders here (its own
+   positioning CSS/JS doesn't reliably apply once embedded in our
+   scaled wrapper). Percentages/px below are calibrated against the
+   badge.png artwork's fixed 152x138 aspect ratio at our 120px
+   reference width (see REFERENCE_WIDTH in YotpoBadge) — the ribbon
+   band sits at ~65%-78% of the image's height.
+   ========================================================= */
+.y-badge.yotpo-display-wrapper {
+  position: relative !important;
+  width: 120px !important;
+  height: 130px !important;
+  overflow: hidden !important;
+}
+.y-badge.yotpo-display-wrapper .y-badge-image {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 120px !important;
+  height: 109px !important;
+  display: block !important;
+}
+.y-badge.yotpo-display-wrapper .y-badge-reviews {
+  position: absolute !important;
+  top: 32px !important;
+  left: 0 !important;
+  width: 120px !important;
+  text-align: center !important;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  color: #fff !important;
+}
+.y-badge.yotpo-display-wrapper .y-badge-stars {
+  position: absolute !important;
+  top: 56px !important;
+  left: 0 !important;
+  width: 120px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 1px !important;
+}
+/* The star shape itself is our own injected SVG (not Yotpo's icon font) —
+   see fixYotpoStarGlyphs in src/components/YotpoBadge for why. This rule
+   just needs to recolor it: the SVG fills with `currentColor`, which
+   inherits from `color` here, overriding Yotpo's default gray. */
+.y-badge.yotpo-display-wrapper .y-badge-stars .yotpo-icon-star {
+  color: #f4b740 !important;
+}
+.y-badge.yotpo-display-wrapper .y-badges-certified {
+  position: absolute !important;
+  top: 74px !important;
+  left: 10px !important;
+  width: 100px !important;
+  text-align: center !important;
+  font-weight: 700 !important;
+  font-size: 9px !important;
+  line-height: 1.2 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  color: #3d6690 !important;
+}
+.y-badge.yotpo-display-wrapper .y-powered-by {
+  position: absolute !important;
+  top: 113px !important;
+  left: 0 !important;
+  width: 120px !important;
+  text-align: center !important;
+  font-size: 10px !important;
+  color: #8a8a8a !important;
+}
+
+/* Homepage Reviews Carousel: Yotpo leaves only ~8px between its rating row
+   ("★★★★★ 6174 reviews") and the first review card, which reads as cramped now
+   that the "Write a Review" button sits at the right-hand end of that row.
+   Adds breathing room under the row without touching the cards themselves.
+
+   The padding lines the stars up with the left edge of the review cards below.
+   Yotpo insets the widget by a percentage of the section width and Glide then
+   centres a track of fixed-width cards inside that, so the distance between the
+   two edges isn't a constant — YotpoReviewsCarousel measures the rendered cards
+   and publishes it as --yotpo-carousel-card-inset. The 0px fallback is the
+   pre-measurement layout (row flush with the widget edge), i.e. what this looked
+   like before. The CTA's matching right-hand offset comes from
+   --yotpo-carousel-cta-right, applied inline by the same component. */
+.yotpo-reviews-carousel-section .reviews-carousel-reviews-bottomline {
+  margin-bottom: 20px !important;
+  padding-left: var(--yotpo-carousel-card-inset, 0px) !important;
+  /* Preflight makes everything border-box, which would let the padding eat into
+     the row instead of shifting it if Yotpo ever gives the row a fixed width. */
+  box-sizing: content-box !important;
+}
+
+/* antd Image preview (product photos in the cart, the free-gift card, PDPs).
+
+   The overlay's own chrome sits hard against the viewport edges, which on a phone
+   puts it on top of things the browser owns: the close button lands over the site
+   header / notch area, and the zoom-rotate toolbar collides with the chat bubble
+   and Safari's bottom bar. The default 45% mask also leaves the page showing
+   through strongly enough that a white-background product shot never separates
+   from it.
+
+   Darkening applies at every width; the two insets are phone-only, since on
+   desktop there is nothing at those edges to collide with. */
+.ant-image-preview-mask {
+  background-color: rgba(0, 0, 0, 0.82) !important;
+}
+
+@media (max-width: 550px) {
+  /* Clear of the browser chrome and the site header behind the overlay. */
+  .ant-image-preview-close {
+    top: 60px !important;
+    inset-block-start: 60px !important;
+    right: 12px !important;
+    inset-inline-end: 12px !important;
+    background-color: rgba(0, 0, 0, 0.55) !important;
+  }
+
+  /* Lifts zoom / rotate / flip above the chat bubble and the browser's bottom bar. */
+  .ant-image-preview-footer {
+    bottom: 84px !important;
+    inset-block-end: 84px !important;
+  }
+}
+
+/* PDP mobile zoom viewer (PDPPage `rootClassName="pdp-mobile-zoom"`). The global
+   `img { pointer-events: none }` in index.css also hits the preview image, and antd
+   binds pinch / drag / double-tap on that <img>, so zoom would be dead. Re-enable it
+   for this viewer only; the long-press save menu stays blocked (touch-callout here,
+   contextmenu in PDPPage). */
+.pdp-mobile-zoom .ant-image-preview-img {
+  pointer-events: auto !important;
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+
+/* PDP mobile inline pinch zoom (Swiper `zoom` on the mobile gallery, PDPPage).
+   Swiper's zoom.css sizes only a direct `> img`, but antd `Image` renders a
+   `<div class="ant-image">` in between, so the wrapper has to be stretched or the
+   slide collapses inside the zoom container's flex row. This class exists in one
+   place only (PDPPage mobile slide). */
+.swiper-zoom-container > .ant-image {
+  width: 100%;
+}

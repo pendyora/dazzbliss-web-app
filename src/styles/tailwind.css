@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /*------Color variables------*/
+    --white_text:#fff;
+    --amber_a400: #ffcc00;
+    --black_900: #000000;
+    --black_900_7f: #0000007f;
+    --blue_gray_100_3f: #d2d2d23f;
+    --blue_gray_400: #8d8e90;
+    --blue_gray_900: #2f2f2f;
+    --gray_200: #eceded;
+    --gray_200_01: #eaeaea;
+    --gray_400: #c5ccb4;
+    --gray_400_01: #c9c9c9;
+    --gray_50: #f9f9f9;
+    --gray_500: #ababab;
+    --gray_600: #757575;
+    --gray_600_01: #707070;
+    --gray_800: #494949;
+    --gray_800_01: #3b3b3b;
+    --gray_900: #231f20;
+    --gray_900_01: #240c0c;
+    --gray_900_02: #17381d;
+    --indigo_900: #172276;
+    --indigo_900_01: #003087;
+    --indigo_900_02: #001c64;
+    --light_blue_700: #0070e0;
+    --orange_a700: #ff5a00;
+    --red_800: #d2002e;
+    --red_a700: #eb001b;
+    --white_a700: #ffffff;
+    --yellow_800: #f79e1b;
+
+    /*------Border radius variables------*/
+    --radius-xs: 14px;
+
+    /*------Spacing variables------*/
+    --space-xs: 8px;
+    --space-sm: 10px;
+    --space-md: 14px;
+    --space-lg: 16px;
+    --space-xl: 18px;
+    --space-2xl: 20px;
+    --space-3xl: 32px;
+    --space-4xl: 40px;
+    --space-5xl: 56px;
+    --space-6xl: 60px;
+  }
+}
+
+.ant-input{
+  border-radius: 0 !important;
+}
+
+.ant-table-thead tr th.ant-table-cell{
+background-color :#C4B8AB !important;
+}
+.ant-table-wrapper table{
+  border-radius: 0 !important;
+}
+.ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:first-child ,.ant-table-wrapper .ant-table-container table>thead>tr:first-child>*:last-child{
+  border-radius: 0 !important;
+}
+.ant-table-wrapper .ant-table-thead >tr>th{
+  color:white !important;
+}
+.ant-btn-primary.ant-btn-solid,.ant-btn-primary {
+  color: #000000 !important;
+}
+.ant-pagination-item{
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* .ant-skeleton-image{
+  width: 100% !important;
+  min-height: 412px;
+} */
+
+
+[type="text"],
+input:where(:not([type])),
+[type="email"],
+[type="url"],
+[type="password"],
+[type="number"],
+[type="date"],
+[type="datetime-local"],
+[type="month"],
+[type="search"],
+[type="tel"],
+[type="time"],
+[type="week"],
+[multiple],
+textarea,
+select {
+  appearance: none;
+  background-color: transparent;
+  border-color: unset;
+  border-width: 0;
+  border-radius: unset;
+  padding: unset;
+  font-size: unset;
+  line-height: unset;
+}
+
+/* Override default focus colors for tailwindcss-forms https://github.com/tailwindlabs/tailwindcss-forms */
+[type="text"]:focus,
+[type="email"]:focus,
+[type="url"]:focus,
+[type="password"]:focus,
+[type="number"]:focus,
+[type="date"]:focus,
+[type="search"]:focus,
+[multiple]:focus,
+textarea:focus,
+select:focus {
+  --tw-ring-color: transparent;
+  border-color: transparent;
+}
+[type="radio"]:focus,
+[type="checkbox"]:focus {
+  --tw-ring-color: transparent;
+}
+
+li:focus-visible {
+  outline: none;
+}
+li:hover {
+  cursor: pointer;
+}
+@layer components {
+  /*-------------------------------------
+  Container CSS
+--------------------------------------*/
+  .container-xs {
+    @apply w-full mx-auto max-w-[1710px];
+  }
+
+  /* Product card variation swiper — keep selection ring visible on first/last slides */
+  .product-variation-swiper.swiper,
+  .product-variation-swiper .swiper-wrapper,
+  .product-variation-swiper .swiper-slide {
+    overflow: visible !important;
+  }
+
+  .product-variation-swiper .swiper-slide {
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 768px) {
+  input,
+  textarea,
+  select,
+  .ant-input,
+  .ant-input-affix-wrapper input,
+  .ant-select-selector {
+    font-size: 16px !important;
+  }
+}
