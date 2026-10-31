@@ -4,7 +4,6 @@ import { Button, Form, Input, Radio } from 'antd';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 
-import { Text } from '@/components';
 import { apiCreateAffirmCheckout, apiCaptureAffirmCharge, apiCancelAffirmOrder, apiReportAffirmFailure } from '@/services/affirmService';
 import {
   apiCreatePayPalOrder,
@@ -17,6 +16,7 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { clearCartProducts } from '@/store/slices/Cart/cartSlice';
 import { formatCurrency } from '@/utils/common';
 
+import { PRIMARY_BTN } from './checkoutTheme';
 import GooglePayButton from './GooglePayButton';
 
 type PaymentProps = {
@@ -712,44 +712,44 @@ const Payment = ({
     <>
       {/* PayPal processing overlay */}
       {isProcessingPayPal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="bg-white px-8 py-6 rounded-sm text-center shadow-lg">
-            <div className="animate-spin h-8 w-8 border-2 border-secondary border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-[14px] uppercase tracking-[1.5px] text-[#5b5b5b] font-sans">Processing payment...</p>
-            <p className="text-[12px] text-gray-400 mt-1 font-sans">Please don&apos;t close this page</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-noir/40">
+          <div className="bg-paper px-8 py-6 text-center shadow-lg shadow-ink/10">
+            <div className="animate-spin h-8 w-8 border-2 border-ink border-t-transparent rounded-full mx-auto mb-3" />
+            <p className="text-[12px] uppercase tracking-[0.16em] text-ink">Processing payment</p>
+            <p className="mt-1 text-[12px] text-ink-soft">Please keep this page open.</p>
           </div>
         </div>
       )}
 
       {/* Affirm processing overlay */}
       {isProcessingAffirm && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30">
-          <div className="bg-white px-8 py-6 rounded-sm text-center shadow-lg">
-            <div className="animate-spin h-8 w-8 border-2 border-secondary border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-[14px] uppercase tracking-[1.5px] text-[#5b5b5b] font-sans">Processing payment...</p>
-            <p className="text-[12px] text-gray-400 mt-1 font-sans">Please don&apos;t close this page</p>
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-noir/40">
+          <div className="bg-paper px-8 py-6 text-center shadow-lg shadow-ink/10">
+            <div className="animate-spin h-8 w-8 border-2 border-ink border-t-transparent rounded-full mx-auto mb-3" />
+            <p className="text-[12px] uppercase tracking-[0.16em] text-ink">Processing payment</p>
+            <p className="mt-1 text-[12px] text-ink-soft">Please keep this page open.</p>
           </div>
         </div>
       )}
 
       {/* Google Pay processing overlay */}
       {isProcessingGpay && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30">
-          <div className="bg-white px-8 py-6 rounded-sm text-center shadow-lg">
-            <div className="animate-spin h-8 w-8 border-2 border-secondary border-t-transparent rounded-full mx-auto mb-3" />
-            <p className="text-[14px] uppercase tracking-[1.5px] text-[#5b5b5b] font-sans">Processing payment...</p>
-            <p className="text-[12px] text-gray-400 mt-1 font-sans">Please don&apos;t close this page</p>
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-noir/40">
+          <div className="bg-paper px-8 py-6 text-center shadow-lg shadow-ink/10">
+            <div className="animate-spin h-8 w-8 border-2 border-ink border-t-transparent rounded-full mx-auto mb-3" />
+            <p className="text-[12px] uppercase tracking-[0.16em] text-ink">Processing payment</p>
+            <p className="mt-1 text-[12px] text-ink-soft">Please keep this page open.</p>
           </div>
         </div>
       )}
 
-      <div className="flex flex-col items-end gap-5 lg:gap-5">
+      <div className="flex flex-col items-stretch gap-5">
         {/* <div className="flex flex-col items-start md:-mb-6 sm:-mb-3 gap-4 self-stretch">
           <Text as="p" size="text5xl" className="text-black-900 font-normal uppercase">
             payment
           </Text>
         </div> */}
-        <div className="w-full flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-2.5">
           {/* Credit Or Debit Card option */}
           <div
             role="button"
@@ -768,57 +768,19 @@ const Payment = ({
                 setPaymentType('card');
               }
             }}
-            className={`w-full border p-4 md:p-3 cursor-pointer transition-colors ${paymentType === 'card' ? 'border-black-900 border-[2px]' : 'border-gray-200'}`}
+            className={`w-full border px-[18px] py-4 cursor-pointer transition-colors ${paymentType === 'card' ? 'border-ink bg-stone/40' : 'border-line hover:border-line-strong'}`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Radio checked={paymentType === 'card'} className="pointer-events-none" />
-                <Text as="p" size="textlg" className="text-black-900 text-[18px] font-normal">
-                  Credit Or Debit Card
-                </Text>
+                <span className="text-[13.5px] font-medium text-ink">Credit or debit card</span>
               </div>
-              <div className="flex items-center gap-2">
-                {/* Visa */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" className="md:h-5 h-7 w-auto">
-                  <rect width="48" height="32" rx="4" fill="#1A1F71" />
-                  <text
-                    x="24"
-                    y="20"
-                    textAnchor="middle"
-                    fill="#FFFFFF"
-                    fontSize="14"
-                    fontWeight="bold"
-                    fontFamily="Arial, sans-serif"
-                    fontStyle="italic"
-                  >
-                    VISA
-                  </text>
-                </svg>
-                {/* Mastercard */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" className="md:h-5 h-7 w-auto">
-                  <rect width="48" height="32" rx="4" fill="#252525" />
-                  <circle cx="19" cy="16" r="8" fill="#EB001B" />
-                  <circle cx="29" cy="16" r="8" fill="#F79E1B" />
-                  <path d="M24 9.8a8 8 0 0 1 0 12.4 8 8 0 0 1 0-12.4z" fill="#FF5F00" />
-                </svg>
-                {/* American Express */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" className="md:h-5 h-7 w-auto">
-                  <rect width="48" height="32" rx="4" fill="#2E77BC" />
-                  <text x="24" y="14" textAnchor="middle" fill="#FFFFFF" fontSize="6" fontWeight="bold" fontFamily="Arial, sans-serif">
-                    AMERICAN
-                  </text>
-                  <text x="24" y="22" textAnchor="middle" fill="#FFFFFF" fontSize="6" fontWeight="bold" fontFamily="Arial, sans-serif">
-                    EXPRESS
-                  </text>
-                </svg>
-                {/* Discover */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" className="md:h-5 h-7 w-auto">
-                  <rect width="48" height="32" rx="4" fill="#F1F1F1" />
-                  <text x="24" y="18" textAnchor="middle" fill="#FF6000" fontSize="8" fontWeight="bold" fontFamily="Arial, sans-serif">
-                    DISCOVER
-                  </text>
-                  <circle cx="36" cy="15" r="5" fill="#FF6000" opacity="0.3" />
-                </svg>
+              <div className="flex flex-wrap items-center justify-end gap-[5px]">
+                {['VISA', 'MASTERCARD', 'AMEX', 'DISCOVER'].map((mark) => (
+                  <span key={mark} className="border border-line bg-paper px-1.5 py-[3px] text-[9px] font-semibold tracking-[0.06em] text-ink-soft">
+                    {mark}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -841,14 +803,12 @@ const Payment = ({
                 setPaymentType('paypal');
               }
             }}
-            className={`w-full border p-4 md:p-3 cursor-pointer transition-colors ${paymentType === 'paypal' ? 'border-black-900 border-[2px]' : 'border-gray-200'}`}
+            className={`w-full border px-[18px] py-4 cursor-pointer transition-colors ${paymentType === 'paypal' ? 'border-ink bg-stone/40' : 'border-line hover:border-line-strong'}`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Radio checked={paymentType === 'paypal'} className="pointer-events-none" />
-                <Text as="p" size="textlg" className="text-black-900 text-[18px] font-normal">
-                  Pay with PayPal
-                </Text>
+                <span className="text-[13.5px] font-medium text-ink">PayPal</span>
               </div>
               <img src="/images/paypal_logo.png" alt="PayPal" className="h-6 object-contain" />
             </div>
@@ -880,25 +840,23 @@ const Payment = ({
                   setPaymentType('affirm');
                 }
               }}
-              className={`w-full border p-4 md:p-3 transition-colors ${
+              className={`w-full border px-[18px] py-4 transition-colors ${
                 hasFreeTextCity
-                  ? 'cursor-not-allowed border-gray-200 opacity-50'
-                  : `cursor-pointer ${paymentType === 'affirm' ? 'border-black-900 border-[2px]' : 'border-gray-200'}`
+                  ? 'cursor-not-allowed border-line opacity-50'
+                  : `cursor-pointer ${paymentType === 'affirm' ? 'border-ink bg-stone/40' : 'border-line hover:border-line-strong'}`
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Radio checked={paymentType === 'affirm'} disabled={hasFreeTextCity} className="pointer-events-none" />
-                  <Text as="p" size="textlg" className="text-black-900 text-[18px] font-normal">
-                    Buy Now, Pay Later
-                  </Text>
+                  <span className="text-[13.5px] font-medium text-ink">Affirm · Pay over time</span>
                 </div>
                 <img src="/images/affirm_logo.svg" alt="Affirm" className="h-6 object-contain" />
               </div>
               {hasFreeTextCity && (
-                <Text as="p" size="textxs" className="mt-2 text-[13px] font-normal text-gray-500">
+                <p className="m-0 mt-2 text-[12.5px] text-ink-soft">
                   Not available because your address uses a city that we could not verify. Pick a city from the list to pay with Affirm.
-                </Text>
+                </p>
               )}
             </div>
           )}
@@ -923,14 +881,12 @@ const Payment = ({
                   setPaymentType('gpay');
                 }
               }}
-              className={`w-full border p-4 md:p-3 cursor-pointer transition-colors ${paymentType === 'gpay' ? 'border-black-900 border-[2px]' : 'border-gray-200'}`}
+              className={`w-full border px-[18px] py-4 cursor-pointer transition-colors ${paymentType === 'gpay' ? 'border-ink bg-stone/40' : 'border-line hover:border-line-strong'}`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Radio checked={paymentType === 'gpay'} className="pointer-events-none" />
-                  <Text as="p" size="textlg" className="text-black-900 text-[18px] font-normal">
-                    Google Pay
-                  </Text>
+                  <span className="text-[13.5px] font-medium text-ink">Google Pay</span>
                 </div>
                 {/* Official Google Pay mark, unmodified. The brand guidelines forbid rendering it smaller than
                     any other payment option here: the card logos are h-7/md:h-5 and PayPal and Affirm are h-6,
@@ -951,20 +907,13 @@ const Payment = ({
                   cardNumber: values?.cardNumber?.replace(/\s/g, ''),
                 });
               }}
-              className="flex flex-col gap-5 sm:gap-2 self-stretch"
+              className="flex flex-col gap-2 self-stretch border border-line bg-stone/40 px-[18px] pb-1 pt-5"
             >
-              <div className="flex flex-col gap-4 lg:gap-4 md:gap-[10px] sm:mb-2">
-                <div className="flex">
-                  <Text as="p" size="textlg" className="text-black-900 text-[20px] font-normal">
-                    Enter Card Detail
-                  </Text>
-                </div>
-              </div>
               <div className="flex flex-col ">
-                <div className="grid grid-cols-2 gap-8 md:gap-4 sm:grid-col-1">
+                <div className="grid grid-cols-2 gap-x-4 sm:grid-cols-1">
                   <Form.Item
                     name="cardName"
-                    label="Name on Card"
+                    label="Name on card"
                     rules={[
                       {
                         required: true,
@@ -985,7 +934,7 @@ const Payment = ({
                       },
                     ]}
                   >
-                    <Input placeholder="Name on Card" />
+                    <Input autoComplete="cc-name" />
                   </Form.Item>
                   <Form.Item
                     name="cardNumber"
@@ -996,11 +945,12 @@ const Payment = ({
                       const digitsOnly = value.replace(/\D/g, '').slice(0, 16);
                       return digitsOnly.replace(/(.{4})/g, '$1 ').trim();
                     }}
-                    label="Card Number"
+                    label="Card number"
                     rules={[{ required: true, message: 'Please enter your card number!' }]}
                   >
                     <Input
-                      placeholder="Card Number"
+                      placeholder="1234 1234 1234 1234"
+                      autoComplete="cc-number"
                       inputMode="numeric"
                       onKeyPress={(event) => {
                         if (!/[0-9]/.test(event.key)) {
@@ -1011,10 +961,10 @@ const Payment = ({
                     />
                   </Form.Item>
                 </div>
-                <div className="grid grid-cols-2 gap-8 md:gap-4 sm:grid-col-1">
+                <div className="grid grid-cols-2 gap-x-4 sm:grid-cols-1">
                   <Form.Item
                     name="expiryDate"
-                    label="Expiry Date"
+                    label="Expiry date"
                     normalize={(value) => {
                       if (!value) {
                         return '';
@@ -1049,11 +999,12 @@ const Payment = ({
                       },
                     ]}
                   >
-                    <Input placeholder="MM/YY" maxLength={5} inputMode="numeric" />
+                    <Input placeholder="MM/YY" maxLength={5} inputMode="numeric" autoComplete="cc-exp" />
                   </Form.Item>
-                  <Form.Item name="cvv" label="CVV" rules={[{ required: true, message: 'Please enter your CVV!' }]}>
+                  <Form.Item name="cvv" label="Security code" rules={[{ required: true, message: 'Please enter your CVV!' }]}>
                     <Input
-                      placeholder="CVV"
+                      placeholder="3 or 4 digits"
+                      autoComplete="cc-csc"
                       onKeyPress={(event) => {
                         if (!/[0-9]/.test(event.key)) {
                           event.preventDefault();
@@ -1065,16 +1016,15 @@ const Payment = ({
                   </Form.Item>
                 </div>
               </div>
-              {error && <p className="text-red-500">{'*' + error}</p>}
+              {error && (
+                <p role="alert" className="m-0 text-[12.5px] text-danger">
+                  {error}
+                </p>
+              )}
               <Form.Item>
                 <div className="flex w-full">
-                  <Button
-                    htmlType="submit"
-                    type="default"
-                    loading={loading}
-                    className="!text-text_w !bg-secondary w-full !h-[44px] md:!h-[38px] flex flex-row items-center justify-center text-center uppercase tracking-[2.00px]"
-                  >
-                    Pay {formatCurrency(totalAmount)}
+                  <Button htmlType="submit" type="default" loading={loading} className={`${PRIMARY_BTN} w-full !h-14`}>
+                    Pay now · {formatCurrency(totalAmount)}
                   </Button>
                 </div>
               </Form.Item>
@@ -1083,25 +1033,29 @@ const Payment = ({
 
           {/* Affirm payment section */}
           {paymentType === 'affirm' && (
-            <div className="w-full flex flex-col gap-4">
+            <div className="w-full flex flex-col gap-4 border border-line bg-stone/40 p-[18px]">
               <div className="flex w-full">
                 <Button
                   type="default"
                   loading={isProcessingAffirm}
                   disabled={!affirmReady || isProcessingAffirm}
                   onClick={handleAffirmCheckout}
-                  className="!text-text_w !bg-secondary w-full !h-[44px] md:!h-[38px] flex flex-row items-center justify-center text-center uppercase tracking-[2.00px]"
+                  className={`${PRIMARY_BTN} w-full !h-14`}
                 >
-                  {affirmReady ? `Pay ${formatCurrency(totalAmount)}` : 'Loading Affirm...'}
+                  {affirmReady ? `Continue with Affirm · ${formatCurrency(totalAmount)}` : 'Loading Affirm…'}
                 </Button>
               </div>
-              {affirmError && <p className="text-red-500">{'*' + affirmError}</p>}
+              {affirmError && (
+                <p role="alert" className="m-0 text-[12.5px] text-danger">
+                  {affirmError}
+                </p>
+              )}
             </div>
           )}
 
           {/* PayPal payment section */}
           {paymentType === 'paypal' && (
-            <div className="w-full flex flex-col gap-4">
+            <div className="w-full flex flex-col gap-4 border border-line bg-stone/40 p-[18px]">
               {/* translateZ(0) forces the PayPal zoid iframe onto the page's own compositing layer;
                   without it iOS Safari mis-composites the iframe during momentum scroll and paints
                   the button at a stale viewport position (appearing "stuck" over the header). */}
@@ -1120,17 +1074,21 @@ const Payment = ({
                   onClick={() => capturePayPalOrder(paypalRetryOrderId)}
                   loading={isProcessingPayPal}
                   disabled={isProcessingPayPal}
-                  className="!text-text_w !bg-secondary w-full !h-[44px] md:!h-[38px] flex flex-row items-center justify-center text-center uppercase tracking-[2.00px]"
+                  className={`${PRIMARY_BTN} w-full`}
                 >
                   Verify payment
                 </Button>
               )}
               {!paypalRetryOrderId && (
-                <p className="text-[13px] text-gray-600">
-                  Do not switch tabs while PayPal is opening. If the popup is blocked, allow popups and click PayPal again.
+                <p className="m-0 text-[12.5px] text-ink-soft">
+                  Stay on this tab while PayPal opens. If nothing appears, allow pop-ups for this site and select PayPal again.
                 </p>
               )}
-              {paypalError && <p className="text-red-500">{'*' + paypalError}</p>}
+              {paypalError && (
+                <p role="alert" className="m-0 text-[12.5px] text-danger">
+                  {paypalError}
+                </p>
+              )}
             </div>
           )}
 
@@ -1146,7 +1104,11 @@ const Payment = ({
               onError={handleGooglePayError}
               onAvailabilityChange={setGpayAvailable}
             />
-            {gpayError && <p className="text-red-500">{'*' + gpayError}</p>}
+            {gpayError && (
+              <p role="alert" className="m-0 text-[12.5px] text-danger">
+                {gpayError}
+              </p>
+            )}
           </div>
         </div>
       </div>

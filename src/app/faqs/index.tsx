@@ -1,5 +1,6 @@
 import React from 'react';
 
+import CareLayout from '@/components/ClientCare/CareLayout';
 import { decrypt } from '@/utils/enc-decy';
 
 import Faqs from './Faqs';
@@ -34,9 +35,13 @@ const FAQ = async () => {
   const aboutData = await getFaqsData();
   const content = aboutData ? JSON.parse(aboutData?.content) : null;
   return (
-    <div className="flex max-w-[1200px] p-5 m-auto  sm:pt-10 ">
+    <CareLayout
+      title="Frequently asked questions"
+      crumb="FAQs"
+      intro="Quick answers about orders, sizing, diamonds and care. Can't find what you need? Our team is a message away."
+    >
       <Faqs content={content} />
-    </div>
+    </CareLayout>
   );
 };
 

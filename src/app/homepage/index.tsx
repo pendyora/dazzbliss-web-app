@@ -3,19 +3,17 @@ import React, { Suspense } from 'react';
 import InspiredByCommunity from '@/page/InspiredByCommunity';
 import { decrypt } from '@/utils/enc-decy';
 
-// import { FeaturedIn } from '../../page';
-import WhyAllorya from './../../components/WhyAllorya';
-import AlloryaStory from './AlloryaStory';
-import CustomizedForYou from './CustomizedForYou';
+import Craftsmanship from './Craftsmanship';
+import Drops from './Drops';
 import HomepageBanner from './HomepageBanner';
 import HomepageHighlights from './HomepageHighlights';
-import MobileReviewsBadgeStrip from './MobileReviewsBadgeStrip';
+import Motion from './Motion';
 import OurBestSellers from './OurBestSellers';
 import OurCollabrations from './OurCollabrations';
+import RingBuilder from './RingBuilder';
 import ShopByCategory from './ShopByCategory';
-import ShopGemStone from './ShopGemStone';
-import YotpoReviewsCarousel from './YotpoReviewsCarousel';
-import GiftguideFrame67 from '../giftguide/GiftguideFrame67';
+import ShopByLook from './ShopByLook';
+import Testimonials from './Testimonials';
 
 async function getBannerData() {
   try {
@@ -145,28 +143,42 @@ async function InspiredByCommunitySection() {
 }
 
 export default async function HOMEPAGEPage() {
-  const initialBannerData = await getBannerData();
-  const initialCategoryBannerData = await getCategoryBannerData();
-  const initialHomepageHighlightsData = await getHomepageHighlightsData();
+  // Independent requests, and each helper already returns null on failure, so load them together.
+  const [initialBannerData, initialCategoryBannerData, initialHomepageHighlightsData] = await Promise.all([
+    getBannerData(),
+    getCategoryBannerData(),
+    getHomepageHighlightsData(),
+  ]);
   // const masterData = await getMasterData();
   return (
     <div className="w-full bg-[#ffffff] sm:relative">
       <div>
-        <MobileReviewsBadgeStrip />
+        {/* <MobileReviewsBadgeStrip /> */}
         <HomepageBanner bannerData={initialBannerData} />
-        <HomepageHighlights data={initialHomepageHighlightsData} />
+        {/* <div className="mt-16 sm:mt-10" /> */}
+        <Motion />
         <ShopByCategory bannerData={initialCategoryBannerData} />
-        <CustomizedForYou />
-        <ShopGemStone />
-        <OurCollabrations />
+        {/* CMS-driven (/homepage-highlights/section); renders nothing until the section is enabled with cards. */}
+        <HomepageHighlights data={initialHomepageHighlightsData} />
         <OurBestSellers />
-        <YotpoReviewsCarousel />
+        <Craftsmanship />
+        <ShopByLook />
+        {/* <CustomizedForYou /> */}
+        {/* <ShopGemStone /> */}
+        <OurCollabrations />
+
+        <RingBuilder />
+        {/* <AlloryaStory /> */}
+
+        <Drops />
+        {/* <GiftguideFrame67 /> */}
+        {/* <YotpoReviewsCarousel /> — live Yotpo reviews; Testimonials below is the design's static set. */}
+        <Testimonials />
+        {/* Live Instagram feed (/instagram/feed), streamed so a slow response never delays the page. */}
         <Suspense fallback={<InspiredByCommunity loading showTopBorder={false} />}>
           <InspiredByCommunitySection />
         </Suspense>
-        <AlloryaStory />
-        <GiftguideFrame67 />
-        <WhyAllorya />
+        {/* <WhyAllorya /> */}
         {/* <FeaturedIn /> */}
       </div>
     </div>

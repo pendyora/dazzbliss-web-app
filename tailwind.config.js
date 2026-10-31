@@ -1,3 +1,5 @@
+const themeColors = require('./src/styles/theme-colors');
+
 module.exports = {
   mode: 'jit',
   content: ['./src/**/**/*.{js,ts,jsx,tsx,html,mdx}', './src/**/*.{js,ts,jsx,tsx,html,mdx}'],
@@ -14,17 +16,38 @@ module.exports = {
           },
         },
       },
-      colors: {
-        primary: '#18381d',
-        secondary: '#818d64',
-        text_w: '#ffffff',
+      colors: themeColors,
+      transitionTimingFunction: {
+        luxe: 'cubic-bezier(0.2, 0.7, 0.2, 1)',
+      },
+      keyframes: {
+        shimmer: {
+          from: { backgroundPosition: '120% 0' },
+          to: { backgroundPosition: '-120% 0' },
+        },
+        rise: {
+          from: { opacity: '0', transform: 'translateY(6px)' },
+          to: { opacity: '1', transform: 'none' },
+        },
+        progress: {
+          from: { width: '0%' },
+          to: { width: '100%' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 1.2s linear infinite',
+        progress: 'progress 6s linear forwards',
+        rise: 'rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both',
       },
 
       boxShadow: {},
-      // fontFamily: { notosans: 'Noto Sans' },
       fontFamily: {
-        notosans: ['Noto Sans', 'sans-serif'],
-        castoro: ['Castoro', 'serif'],
+        sans: ['Libre Franklin', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'serif'],
+        notosans: ['Libre Franklin', 'sans-serif'],
+        castoro: ['Cormorant Garamond', 'serif'],
+        libre: ['Libre Franklin', 'sans-serif'],
+        cormorant: ['Cormorant Garamond', 'serif'],
       },
     },
     screens: {

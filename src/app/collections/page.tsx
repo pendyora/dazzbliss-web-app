@@ -5,8 +5,8 @@ import { Metadata } from 'next';
 import Page from '.';
 
 export const metadata: Metadata = {
-  title: 'Ashclair - Gems & Jewelry',
-  description: 'Ashclair - Gems & Jewelry',
+  title: 'Collections | Pendyora',
+  description: 'Explore Pendyora collections: each one begins with a single piece, finished by hand in our atelier.',
   // ogTitle:'...'
 };
 

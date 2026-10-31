@@ -4,23 +4,14 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Button, Checkbox, Image, InputNumber, Radio, RadioChangeEvent, Select, Skeleton, Slider, SliderSingleProps } from 'antd';
+import { ConfigProvider, InputNumber, Select, Skeleton, Slider, SliderSingleProps } from 'antd';
 import { debounce } from 'lodash';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { BsFilterLeft, BsThreeDots } from 'react-icons/bs';
-import { FiMinus } from 'react-icons/fi';
-import { HiPlus } from 'react-icons/hi2';
 import { LuLoader } from 'react-icons/lu';
-import { RiFilter2Line } from 'react-icons/ri';
 import { RxCross2 } from 'react-icons/rx';
-import { Virtual, Navigation, Pagination } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 
-import { Text } from '@/components';
+import useStaticHeader from '@/components/Header/useStaticHeader';
 import {
   clearProducts,
   fetchProducts,
@@ -32,7 +23,6 @@ import {
   setFilterLoadingFirst,
   setIsFasterPopup,
   setLoadingFilterId,
-  setShouldLoadFilter,
   setShouldLoadList,
   useAppDispatch,
   useAppSelector,
@@ -40,21 +30,45 @@ import {
 import { isObjectEmpty } from '@/utils/objectUtils';
 import { findSubTypesByParam, subTypeCodeToParam } from '@/utils/subTypeParam';
 
-import ChunkComponent from './ChunkComponent';
-const dropDownOptions = [
-  { label: <div className="flex justify-end items-center pr-[10px]">{'Sort By'}</div>, value: '' },
-  { label: <div className="flex justify-end items-center pr-[10px]">{'High to Low'}</div>, value: 'hightolow' },
-  { label: <div className="flex justify-end items-center pr-[10px]">{'Low to High'}</div>, value: 'lowtohigh' },
-  { label: <div className="flex justify-end items-center pr-[10px]">{'Fast Delivery'}</div>, value: 'fastdelivery' },
+import FilterDrawer, { DrawerSection, FilterGroup, FilterPanel, FilterPanelProps, plpTheme } from './FilterDrawer';
+import PlpGrid, { PlpGridSkeleton } from './PlpGrid';
+
+const SORT_OPTIONS = [
+  { label: 'Featured', value: '' },
+  { label: 'Price, high to low', value: 'hightolow' },
+  { label: 'Price, low to high', value: 'lowtohigh' },
+  { label: 'Fastest delivery', value: 'fastdelivery' },
 ];
 
-function chunkArray(arr: any, chunkSize: number) {
-  const result = [];
-  for (let i = 0; i < arr?.length; i += chunkSize) {
-    result.push(arr.slice(i, i + chunkSize));
-  }
-  return result;
-}
+const SHARED_LEDE = 'Set with lab-grown and ethically mined diamonds, certified at origin.';
+const LEDE: Record<string, string> = {
+  all: `Rings, earrings, necklaces and bracelets in recycled gold. ${SHARED_LEDE}`,
+  'new-arrivals': `The newest pieces from our atelier, in recycled gold. ${SHARED_LEDE}`,
+  rings: `Solitaires, bands and statement rings in recycled gold. ${SHARED_LEDE}`,
+  'engagement-rings': `Engagement rings in recycled gold, made to be worn every day. ${SHARED_LEDE}`,
+  'wedding-bands': `Wedding bands in recycled gold, from slim and polished to fully set. ${SHARED_LEDE}`,
+  earrings: `Studs, hoops and drops in recycled gold. ${SHARED_LEDE}`,
+  necklaces: `Pendants and chains in recycled gold. ${SHARED_LEDE}`,
+  bracelets: `Tennis bracelets, chains and bangles in recycled gold. ${SHARED_LEDE}`,
+  collection: `Recycled gold. ${SHARED_LEDE}`,
+};
+
+const GUTTER = 'px-[clamp(16px,3.2vw,56px)]';
+const FILTER_URL_KEY: Record<FilterGroup, string> = {
+  metal: 'metal',
+  shape: 'shape',
+  diamond_color: 'diamondColor',
+  subTypes: 'subTypes',
+  specialTitle: 'specialTitle',
+};
+
+const toTitle = (slug: string) =>
+  slug
+    .split('-')
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+
 function isJewelryTypeExist(jewelryTypeName: string) {
   switch (jewelryTypeName) {
     case 'earrings':
@@ -74,8 +88,6 @@ function isJewelryTypeExist(jewelryTypeName: string) {
 export default function PRODUCTPAGEPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const dropdownRefMobile = useRef<HTMLDivElement | null>(null);
   const productsLoading = useAppSelector((state) => state.products?.loading);
   const products = useAppSelector((state) => state.products?.products?.rows);
   const PromotionalImages = useAppSelector((state) => state.products?.PromotionalImages);
@@ -134,14 +146,10 @@ export default function PRODUCTPAGEPage() {
   const carat = searchParams.get('carat');
   const gender = searchParams.get('gender');
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isItemsOpen, setIsItemsOpen] = useState(true);
-  const [isMetalOpen, setIsMetalOpen] = useState(false);
-  const [isSpecialTitleOpen, setSpecialTitleOpen] = useState(false);
-  const [isDiamondColorOpen, setIsDiamondColorOpen] = useState(false);
-  const [isShapeOpen, setIsShapeOpen] = useState(false);
-  const [isCaratWeightOpen, setIsCaratWeightOpen] = useState(false);
-  const [isPriceOpen, setIsPriceOpen] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerFocus, setDrawerFocus] = useState<DrawerSection | null>(null);
+  // Desktop filter rail; hiding it widens the grid from 3 to 4 columns.
+  const [showRail, setShowRail] = useState(true);
   const [isProductCall, setIsProductCall] = useState(false);
   // Warm re-entry: if we're returning to the same jewelryType/collectionType with rows already
   // cached in Redux, skip the spinner and show the cached grid while a silent refresh runs.
@@ -172,9 +180,7 @@ export default function PRODUCTPAGEPage() {
   // the refresh resolves; handleScroll could otherwise fire page=currentPage+1 immediately).
   const warmRefreshInFlightRef = useRef<boolean>(isWarmMountRef.current);
   const [isLoading, setLoading] = useState(!isWarmMountRef.current);
-  const [isOpenSubType, setIsOpenSubType] = useState(false);
   const [isFasterPopupShow, setIsFasterPopupShow] = useState(false);
-  const [isOpenSubTypeMobile, setIsOpenSubTypeMobile] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<any>({
     metal: [],
     shape: [],
@@ -193,22 +199,11 @@ export default function PRODUCTPAGEPage() {
   // new ceiling. `undefined` means "not being edited" (mirror selectedFilters); `null` means the
   // shopper deliberately emptied it and we leave it blank until they type or blur.
   const [priceDraft, setPriceDraft] = useState<{ min?: number | null; max?: number | null }>({});
-  const [selectedMoreSubType, setSelectedMoreSubType] = useState<any>([]);
   const [collectionData, setCollectionData] = useState<any>();
   const previousCollectionType = useRef<string | null>(null);
-  const [swiperRef, setSwiperRef] = useState<any>(null);
-  const [swiperRefDesk, setSwiperRefDesk] = useState<any>(null);
-  const prevRef = useRef<HTMLButtonElement>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
-  const prevRefDesk = useRef<HTMLButtonElement>(null);
-  const nextRefDesk = useRef<HTMLButtonElement>(null);
-  const [isBeginning, setIsBeginning] = useState(true);
-  const [isEnd, setIsEnd] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isSortLoading, setIsSortLoading] = useState(false);
   const productsLoadingPrevRef = useRef<boolean>(productsLoading);
-  const [windowWidth, setWindowWidth] = useState<number>(0);
-
   // Clear the sort-change loader once the products fetch completes (true → false transition).
   useEffect(() => {
     if (productsLoadingPrevRef.current && !productsLoading && isSortLoading) {
@@ -216,20 +211,6 @@ export default function PRODUCTPAGEPage() {
     }
     productsLoadingPrevRef.current = productsLoading;
   }, [productsLoading, isSortLoading]);
-
-  useEffect(() => {
-    setWindowWidth(window.innerWidth);
-
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   const scrollRestoreKey = `listing-scroll:${pathname}?${searchParams.toString()}`;
   const restoreTargetRef = useRef<{ scrollY: number; currentPage: number } | null>(null);
@@ -344,14 +325,7 @@ export default function PRODUCTPAGEPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
-  // const jewelry_type = [{ name: 'Engagement Rings' }, { name: 'Wedding Bands' }, { name: 'Earrings' }, { name: 'Necklaces' }, { name: 'Bracelets' }];
-  const handleMenuToggle = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-  const handleJewelryToggle = () => {
-    setIsItemsOpen(!isItemsOpen);
-  };
-  const [chunkedData, setChunkedData] = useState([]);
+  const [productCards, setProductCards] = useState<any[]>([]);
 
   function getPriceViaRingAndMetal(ringSize: null | string = '0', metal: string) {
     const ProductPrice = masterRingSizePrice?.find((item: any) => item.ring_size_id == ringSize && item.metal_type_id == metal);
@@ -401,8 +375,7 @@ export default function PRODUCTPAGEPage() {
         specialProductTitles: item?.specialProductTitles,
       };
     });
-    const d: any = chunkArray(newData, 5);
-    setChunkedData(d);
+    setProductCards(newData ?? []);
   };
 
   function getValuesInRange(min: any, max: any) {
@@ -422,62 +395,6 @@ export default function PRODUCTPAGEPage() {
       }),
     );
   };
-  // console.log(dropdownRef.current, 'dropdownRef.current');
-  // console.log('-----');
-
-  const handleClickOutside = (event: MouseEvent) => {
-    // Ensure dropdownRef.current is a valid element before calling contains
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setIsOpenSubType(false);
-    }
-    if (dropdownRefMobile.current && !dropdownRefMobile.current.contains(event.target as Node)) {
-      setIsOpenSubTypeMobile(false);
-    }
-  };
-  const applyPriceRange = (minValue: number, maxValue: number) => {
-    setSelectedFilters((prevFilters: any) => ({ ...prevFilters, min_price: minValue, max_price: maxValue }));
-    handleFilterChange('price', [minValue, maxValue]);
-    dispatch(setFilterData({ ...filtersData, min_price: minValue, max_price: maxValue }));
-  };
-
-  // Keeps an emptied box empty. The filter only moves once there is a number that makes a valid
-  // range - so typing "1500" back into the max box doesn't fire 1, 15 and 150 (each of them an
-  // inverted range against the current floor) on the way there.
-  const handlePriceInputChange = (bound: 'min' | 'max', value: number | null) => {
-    setPriceDraft((prevDraft) => ({ ...prevDraft, [bound]: value }));
-    if (value === null || value === undefined) {
-      return;
-    }
-    const minValue = bound === 'min' ? value : selectedFilters?.min_price;
-    const maxValue = bound === 'max' ? value : selectedFilters?.max_price;
-    if (Number(minValue) > Number(maxValue)) {
-      return;
-    }
-    applyPriceRange(minValue, maxValue);
-  };
-
-  // Leaving the box (blur or Enter) settles it: empty means "no bound here" (back to the catalogue
-  // edge), and a number that crosses the other bound is clamped to it rather than applied inverted.
-  const handlePriceInputCommit = (bound: 'min' | 'max') => {
-    const draftValue = priceDraft[bound];
-    setPriceDraft((prevDraft) => ({ ...prevDraft, [bound]: undefined }));
-    if (draftValue === undefined) {
-      return;
-    }
-    const currentMin = Number(selectedFilters?.min_price) || 0;
-    const currentMax = Number(selectedFilters?.max_price) || 0;
-    const catalogueFloor = filters?.price_range?.min_price ?? 0;
-    const catalogueCeiling = filters?.price_range?.max_price ?? 0;
-    const editedMin = draftValue === null ? catalogueFloor : currentMax > 0 ? Math.min(draftValue, currentMax) : draftValue;
-    const editedMax = draftValue === null ? catalogueCeiling : Math.max(draftValue, currentMin);
-    const minValue = bound === 'min' ? editedMin : currentMin;
-    const maxValue = bound === 'max' ? editedMax : currentMax;
-    if (minValue === currentMin && maxValue === currentMax) {
-      return;
-    }
-    applyPriceRange(minValue, maxValue);
-  };
-
   const handleFilterChange = useCallback(
     (filterType: string, value: any) => {
       let newFilters = { ...selectedFilters };
@@ -507,9 +424,9 @@ export default function PRODUCTPAGEPage() {
             ?.filter((item: any) => value.includes(item.id))
             ?.map((item: any) => encodeURIComponent(item.title?.replace(/\s+/g, '-')))
             ?.join(',');
-          currentParams.set('specialtitle', selectedTitles);
-          if (selectedTitles?.length === 0) {
-            currentParams.delete('specialtitle');
+          currentParams.set('specialTitle', selectedTitles);
+          if (!selectedTitles) {
+            currentParams.delete('specialTitle');
           }
           break;
 
@@ -803,7 +720,6 @@ export default function PRODUCTPAGEPage() {
   }, [collections, collectionData, headerData]);
 
   useEffect(() => {
-    console.log(isProductCall, jewelryType, filtersData, isObjectEmpty(filters), 'isProductCall');
     if (isProductCall) {
       if (jewelryType && filtersData) {
         // Absorb the first filtersData change that follows a warm mount (URL-derived
@@ -982,7 +898,7 @@ export default function PRODUCTPAGEPage() {
     if (isLoading || productsLoading) {
       return;
     }
-    if (!chunkedData || chunkedData.length === 0) {
+    if (productCards.length === 0) {
       return;
     }
     hasRestoredRef.current = true;
@@ -994,1701 +910,626 @@ export default function PRODUCTPAGEPage() {
         window.scrollTo(0, y);
       });
     });
-  }, [chunkedData, isLoading, productsLoading]);
+  }, [productCards, isLoading, productsLoading]);
 
-  useEffect(() => {
-    if (filtersData) {
-      if (filtersData?.metal && filtersData?.metal?.length > 0) {
-        setIsMetalOpen(true);
-      }
-      if (filtersData?.shape && filtersData?.shape?.length > 0) {
-        setIsShapeOpen(true);
-      }
-      if (filtersData.diamond_color?.length > 0) {
-        setIsDiamondColorOpen(true);
-      }
-      if (filtersData.carats?.length > 0) {
-        setIsCaratWeightOpen(true);
-      }
-      if (filtersData.min_price || filtersData.max_price) {
-        setIsPriceOpen(true);
-      }
-      if ((filtersData.specialTitle?.length ?? 0) > 0) {
-        setSpecialTitleOpen(true);
-      }
+  // ───── Layout helpers ─────
+  // This page has its own sticky filter bar, so the site header scrolls away here.
+  useStaticHeader();
+
+  const railRef = useRef<HTMLDivElement>(null);
+  const [railEdges, setRailEdges] = useState({ atStart: true, atEnd: true });
+  const updateRailEdges = useCallback(() => {
+    const el = railRef.current;
+    if (!el) {
+      return;
     }
-  }, [filtersData]);
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    // console.log('start listning...');
-
-    return () => {
-      // console.log('stop listning...');
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    setRailEdges({ atStart: el.scrollLeft <= 4, atEnd: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4 });
   }, []);
-  return (
-    <div className="w-full bg-[#ffffff] ">
-      {collectionType && (
-        <div className="flex flex-col justify-center items-center">
-          {collectionData?.desktop_image && (
-            <div className={`${collectionData?.desktop_image ? 'h-fit max-h-[310px]' : ''} overflow-hidden sm:h-auto`}>
-              <Image
-                src={collectionData?.desktop_image}
-                preview={false}
-                alt="collection banner"
-                className="object-cover h-[310px] w-full sm:hidden"
-              />
-            </div>
-          )}
-          {collectionData?.mobile_image && (
-            <div className={`${collectionData?.desktop_image ? 'h-fit max-h-[310px]' : ''} overflow-hidden sm:h-auto hidden sm:block`}>
-              <Image
-                src={collectionData?.mobile_image}
-                preview={false}
-                alt="collection banner"
-                className="hidden object-cover h-[310px] w-full sm:block"
-              />
-            </div>
-          )}
-          <h4
-            className={`py-4 text-4xl sm:text-3xl ${collectionData?.desktop_image ? 'mt-4' : '-mb-5'}${
-              collectionData?.mobile_image ? 'sm:mt-2' : 'sm:-mt-5'
-            } sm:py-2 capitalize`}
-          >
-            {collectionData?.name}
-          </h4>
-        </div>
-      )}
-      <div className={`flex justify-center border-b border-solid border-[#3b3b3b] sm:hidden`}>
-        <div
-          className={`container-xs relative ${collectionType ? 'pb-5' : 'pb-14'} lg:pb-10 md:pb-5 mb-[22px] flex items-start justify-center 2xl:px-[50px] xl:px-[50px] lg:px-[30px] lg:gap-5 md:gap-3 md:px-5 sm:px-5`}
-        >
-          <div
-            className={`sm:hidden sticky ${collectionType ? 'pt-5' : 'pt-6'} lg:pt-8 md:pt-5 top-0  flex flex-col items-start gap-[30px] md:!w-[33%] 2xl:w-[23%] xl:w-[26%] lg:gap-[30px] lg:w-[25%] pr-5 lg:pr-0 w-[20%]`}
-          >
-            {jewelryType !== 'all' && (
-              <Text size="text5xl" as="p" className="uppercase">
-                {isJewelryTypeExist(jewelryType as string)
-                  ? jewelryType.toString()?.replace('-', ' ') && jewelryType == 'all'
-                    ? null
-                    : jewelryType.toString()?.replace('-', ' ')
-                  : 'Collection'}
-              </Text>
-            )}
-            <div
-              className={`flex flex-col max-h-[95vh] min-h-[100vh] ${jewelryType == 'all' ? 'pb-[110px]' : 'pb-[170px]'} px-[2px] items-start gap-[20px] self-stretch overflow-y-scroll scrollbar-visible pr-5`}
-            >
-              <Text size="textxl" as="p" className="!font-normal ">
-                <span>{counts ?? 0}</span> items
-              </Text>
-              <div className="flex flex-col gap-5 w-full lg:gap-5">
-                {/* <div className="radio-group-plp">
-                  <Radio.Group
-                    className="flex flex-wrap justify-evenly lg:!grid lg:!grid-cols-3 lg:gap-0 gap-4 lg:!text-[10px]"
-                    onChange={(e: RadioChangeEvent) => {
-                      dispatch(
-                        setFilterData({
-                          ...filtersData,
-                          gender_category: e.target.value,
-                        }),
-                      );
-                    }}
-                    value={filtersData.gender_category}
-                  >
-                    <Radio value={1} className="lg:my-auto lg:self-center lg:!text-[11px]">
-                      BOTH
-                    </Radio>
-                    <Radio value={2} className="lg:my-auto lg:self-center lg:!text-[11px] lg:!pr-0">
-                      FOR HIM
-                    </Radio>
-                    <Radio value={3} className="lg:my-auto lg:self-center lg:!text-[11px] lg:!pr-0">
-                      FOR HER
-                    </Radio>
-                  </Radio.Group>
-                </div> */}
-                <div className="flex flex-col items-start gap-1 lg:gap-[1px] md:gap-1">
-                  {/* PRICE */}
-                  <div className="flex flex-col items-start gap-1 self-stretch relative">
-                    <div
-                      className="flex items-center justify-between gap-1 self-stretch cursor-pointer py-5"
-                      onClick={() => setIsPriceOpen(!isPriceOpen)}
-                    >
-                      <Text size="textlg" as="p" className="font-light ">
-                        PRICE
-                      </Text>
-                      {!isPriceOpen ? (
-                        <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsPriceOpen(!isPriceOpen)} />
-                      ) : (
-                        <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsPriceOpen(!isPriceOpen)} />
-                      )}
-                    </div>
-                    {isPriceOpen && (
-                      <div className="w-full px-0 pb-4">
-                        {/* Tablet: antd gives each box a fixed 90px, and with the currency signs the pair
-                            needs ~200px — wider than this sidebar at 551-600px and 800-834px, so the max
-                            box ran past the column edge. Here the two halves share the row instead. */}
-                        <div className="flex justify-between [@media(min-width:551px)_and_(max-width:1024px)]:gap-2">
-                          <div className="flex items-center gap-1 [@media(min-width:551px)_and_(max-width:1024px)]:min-w-0 [@media(min-width:551px)_and_(max-width:1024px)]:flex-1">
-                            <p>{filters?.currency_symbol}</p>
-                            <InputNumber
-                              size="small"
-                              className="[@media(min-width:551px)_and_(max-width:1024px)]:!w-full [@media(min-width:551px)_and_(max-width:1024px)]:min-w-0"
-                              min={0}
-                              max={filters?.price_range?.max_price}
-                              style={{ color: 'black' }}
-                              // prefix="$"
-                              value={priceDraft.min !== undefined ? priceDraft.min : selectedFilters?.min_price}
-                              onChange={(value: any) => handlePriceInputChange('min', value)}
-                              onBlur={() => handlePriceInputCommit('min')}
-                              onPressEnter={() => handlePriceInputCommit('min')}
-                            />
-                          </div>
-                          <div className="flex items-center gap-1 [@media(min-width:551px)_and_(max-width:1024px)]:min-w-0 [@media(min-width:551px)_and_(max-width:1024px)]:flex-1">
-                            <p>{filters?.currency_symbol}</p>
-                            <InputNumber
-                              size="small"
-                              className="[@media(min-width:551px)_and_(max-width:1024px)]:!w-full [@media(min-width:551px)_and_(max-width:1024px)]:min-w-0"
-                              min={0}
-                              max={filters?.price_range?.max_price}
-                              style={{ color: 'black' }}
-                              // prefix="$"
-                              // style={{ margin: "0 16px" }}
-                              value={priceDraft.max !== undefined ? priceDraft.max : selectedFilters?.max_price}
-                              onChange={(value: any) => handlePriceInputChange('max', value)}
-                              onBlur={() => handlePriceInputCommit('max')}
-                              onPressEnter={() => handlePriceInputCommit('max')}
-                            />
-                          </div>
-                        </div>
-                        <div className="w-full px-0">
-                          <Slider
-                            range
-                            min={filters?.price_range?.min_price}
-                            max={filters?.price_range?.max_price}
-                            defaultValue={[filters?.price_range?.min_price, filters?.price_range?.max_price]}
-                            value={[selectedFilters.min_price, selectedFilters.max_price]}
-                            onChange={(value: any) => {
-                              // setTimeout(() => {
-                              setSelectedFilters((prevFilters: any) => ({
-                                ...prevFilters,
-                                min_price: value[0],
-                                max_price: value[1],
-                              }));
-                              // }, 300);
-                            }}
-                            onChangeComplete={(value: any) => {
-                              // setTimeout(() => {
-                              handleFilterChange('price', value);
-                              dispatch(
-                                setFilterData({
-                                  ...filtersData,
-                                  min_price: value[0],
-                                  max_price: value[1],
-                                }),
-                              );
-                              // }, 300);
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
-                    <div className="h-[1.5px] w-full bg-[#707070]" />
-                  </div>
-                  {/* ITEMS */}
-                  <div className="flex flex-col items-start gap-1 self-stretch relative">
-                    <div className="flex items-center justify-between gap-5 self-stretch cursor-pointer py-5" onClick={handleJewelryToggle}>
-                      <Text size="textlg" as="p" className="font-light">
-                        ITEM
-                      </Text>
-                      {!isItemsOpen ? (
-                        <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={handleJewelryToggle} />
-                      ) : (
-                        <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={handleJewelryToggle} />
-                      )}
-                    </div>
-                    {isItemsOpen && (
-                      <div className="pb-4">
-                        {filters?.jewelry_types && filters?.jewelry_types?.length !== 0 ? (
-                          <div className="flex flex-col gap-3">
-                            {filters?.jewelry_types?.map((item, index) => (
-                              <Text
-                                as="p"
-                                key={index}
-                                size="textmd"
-                                className={`font-extralight tracking-[1px]  cursor-pointer ${
-                                  jewelryType == item?.name?.toLowerCase()?.replace(/\s+/g, '-') ? '!font-bold !text-[#18381d]' : ''
-                                }`}
-                                onClick={() => {
-                                  // dispatch(setShouldLoadList(true));
-                                  router.push(
-                                    collectionType
-                                      ? `/${item?.name?.toLowerCase().replace(/\s+/g, '-')}?collections=${collectionData?.name?.toLowerCase().split(' ').join('-')}`
-                                      : `/${item?.name?.toLowerCase().replace(/\s+/g, '-')}`,
-                                  );
-                                  dispatch(setCurrentPage(1));
-                                  dispatch(setFilterLoadingFirst());
-                                }}
-                              >
-                                {/* <Link
-                                  href={
-                                    collectionType
-                                      ? `/${item?.name?.toLowerCase().replace(/\s+/g, '-')}?collections=${collectionData?.name?.toLowerCase().split(' ').join('-')}`
-                                      : `/${item?.name?.toLowerCase().replace(/\s+/g, '-')}`
-                                  }
-                                  // scroll={false}
-                                  key={index}
-                                > */}
-                                {item?.name}
-                                {/* </Link> */}
-                              </Text>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="flex flex-col gap-2">
-                            <Skeleton.Input active={true} size="small" />
-                            <Skeleton.Input active={true} size="small" />
-                            <Skeleton.Input active={true} size="small" />
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    <div className="h-[1.5px] w-full bg-[#707070]" />
-                  </div>
+  useEffect(() => {
+    updateRailEdges();
+    window.addEventListener('resize', updateRailEdges);
+    return () => window.removeEventListener('resize', updateRailEdges);
+  }, [updateRailEdges, filters?.subTypes]);
+  const scrollRail = (direction: 1 | -1) => {
+    const el = railRef.current;
+    el?.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: 'smooth' });
+  };
 
-                  {/* Special Title */}
-                  <div className="flex flex-col items-start gap-1 self-stretch relative">
-                    <div
-                      className="flex items-center justify-between gap-5 self-stretch cursor-pointer py-5"
-                      onClick={() => setSpecialTitleOpen(!isSpecialTitleOpen)}
-                    >
-                      <Text size="textlg" as="p" className="font-light ">
-                        SPECIAL TITLE
-                      </Text>
-                      {!isSpecialTitleOpen ? (
-                        <HiPlus className="h-[20px] w-[20px] cursor-pointer" onClick={() => setSpecialTitleOpen(!isSpecialTitleOpen)} />
-                      ) : (
-                        <FiMinus className="h-[18px] w-[18px] cursor-pointer" onClick={() => setSpecialTitleOpen(!isSpecialTitleOpen)} />
-                      )}
-                    </div>
-                    {isSpecialTitleOpen && (
-                      <div className="pb-4">
-                        <div className="flex flex-col gap-3">
-                          {/* Check if filters.special_title exists before mapping */}
-                          {filters?.special_title && filters.special_title.length > 0 ? (
-                            filters.special_title?.map((item: any, index: number) => {
-                              const isSelected = filtersData?.specialTitle?.includes(item.id);
-                              return (
-                                <div key={index}>
-                                  <Checkbox
-                                    checked={isSelected}
-                                    onClick={() => {
-                                      dispatch(setLoadingFilterId(item?.id));
-                                      const updatedSpecialTitles = isSelected
-                                        ? filtersData?.specialTitle?.filter((titleId) => titleId !== item.id)
-                                        : [...(filtersData?.specialTitle || []), item.id];
+  const openDrawer = (section: DrawerSection | null = null) => {
+    setDrawerFocus(section);
+    setDrawerOpen(true);
+  };
 
-                                      handleFilterChange('specialTitle', updatedSpecialTitles);
-                                      dispatch(
-                                        setFilterData({
-                                          ...filtersData,
-                                          specialTitle: updatedSpecialTitles,
-                                        }),
-                                      );
-                                    }}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <Text
-                                        as="p"
-                                        size="textmd"
-                                        className={`font-extralight tracking-[1px] cursor-pointer ${isSelected ? '!font-bold text-[#18381d]' : ''}`}
-                                      >
-                                        {item?.title}
-                                      </Text>{' '}
-                                      {loadingFilterId === item?.id && <LuLoader className="h-4 w-4 animate-spin opacity-80" />}
-                                    </div>
-                                  </Checkbox>
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <Text as="p" size="textmd" className="font-extralight tracking-[1px] text-gray-500">
-                              No special titles available
-                            </Text>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    <div className="h-[1.5px] w-full bg-[#707070]" />
-                  </div>
+  // ───── Filter actions ─────
+  const toggleFilter = (group: FilterGroup, id: string) => {
+    dispatch(setLoadingFilterId(id));
+    const current: string[] = (filtersData as any)?.[group] ?? [];
+    // Style (subTypes) is single selection: picking another style replaces the current one.
+    const updated =
+      group === 'subTypes' ? (current.includes(id) ? [] : [id]) : current.includes(id) ? current.filter((value) => value !== id) : [...current, id];
+    handleFilterChange(FILTER_URL_KEY[group], updated);
+    dispatch(setFilterData({ ...filtersData, [group]: updated }));
+  };
 
-                  {/* METAL */}
-                  <div className="flex flex-col items-start gap-1 self-stretch relative">
-                    <div
-                      className="flex items-center justify-between gap-5 self-stretch cursor-pointer py-5"
-                      onClick={() => setIsMetalOpen(!isMetalOpen)}
-                    >
-                      <Text size="textlg" as="p" className="font-light ">
-                        METAL
-                      </Text>
-                      {!isMetalOpen ? (
-                        <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsMetalOpen(!isMetalOpen)} />
-                      ) : (
-                        <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsMetalOpen(!isMetalOpen)} />
-                      )}
-                    </div>
-                    {isMetalOpen && (
-                      <div className="pb-4">
-                        <div className="flex flex-col gap-3">
-                          {productFilter
-                            ?.filter((obj: any) => filters?.metal_color_id?.includes(obj.id))
-                            ?.map((item: any, index: number) => {
-                              const isSelected = filtersData?.metal?.includes(item.id);
-                              // const isSelected = selectedFilters?.metal?.includes(item.id);
+  const removeParam = (key: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete(key);
+    const query = decodeURIComponent(params.toString());
+    router.replace(`/${jewelryType}${query ? `?${query}` : ''}`, { scroll: false });
+  };
 
-                              return (
-                                <div key={index}>
-                                  <Checkbox
-                                    checked={isSelected}
-                                    onClick={() => {
-                                      dispatch(setLoadingFilterId(item?.id));
-                                      const updatedMetals = isSelected
-                                        ? filtersData?.metal?.filter((metalId) => metalId !== item.id)
-                                        : [...(filtersData?.metal || []), item.id];
-                                      // setSelectedFilters({ ...selectedFilters, metal: updatedMetals });
-                                      handleFilterChange('metal', updatedMetals);
-                                      dispatch(
-                                        setFilterData({
-                                          ...filtersData,
-                                          metal: updatedMetals,
-                                        }),
-                                      );
-                                    }}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <Text
-                                        as="p"
-                                        size="textmd"
-                                        className={`font-extralight tracking-[1px]  cursor-pointer ${isSelected ? '!font-bold text-[#18381d]' : ''}`}
-                                      >
-                                        {item?.name}
-                                      </Text>{' '}
-                                      {loadingFilterId == item?.id && <LuLoader className="h-4 w-4 animate-spin opacity-80" />}
-                                    </div>
-                                  </Checkbox>
-                                </div>
-                              );
-                            })}
-                        </div>
-                      </div>
-                    )}
-                    <div className="h-[1.5px] w-full bg-[#707070]" />
-                  </div>
+  const setGender = (value: number) => {
+    if (value === 1) {
+      removeParam('gender');
+    } else {
+      handleFilterChange('gender', value);
+    }
+    dispatch(setFilterData({ ...filtersData, gender_category: value }));
+  };
 
-                  {/* DIAMOND COLOR */}
-                  <div className="flex flex-col items-start gap-1 self-stretch relative">
-                    <div
-                      className="flex items-center justify-between gap-5 self-stretch cursor-pointer py-5"
-                      onClick={() => setIsDiamondColorOpen(!isDiamondColorOpen)}
-                    >
-                      <Text size="textlg" as="p" className="font-light ">
-                        DIAMOND COLOR
-                      </Text>
-                      {!isDiamondColorOpen ? (
-                        <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsDiamondColorOpen(!isDiamondColorOpen)} />
-                      ) : (
-                        <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsDiamondColorOpen(!isDiamondColorOpen)} />
-                      )}
-                    </div>
-                    {isDiamondColorOpen && (
-                      <div className="pb-4">
-                        <div className="flex flex-col gap-3">
-                          {productFilter
-                            ?.filter((obj: any) => filters?.diamond_color_id?.includes(obj.id))
-                            ?.map((item, index) => {
-                              const isItemSelected = filtersData?.diamond_color?.includes(item.id);
+  const changeSort = (value: string) => {
+    setIsSortLoading(true);
+    handleFilterChange('sort', value);
+    dispatch(setFilterData({ ...filtersData, sort_order: value }));
+  };
 
-                              return (
-                                <Checkbox
-                                  checked={isItemSelected}
-                                  key={index}
-                                  onClick={() => {
-                                    dispatch(setLoadingFilterId(item?.id));
-                                    const updatedColors = isItemSelected
-                                      ? filtersData?.diamond_color?.filter((colorId) => colorId !== item.id)
-                                      : [...(filtersData?.diamond_color || []), item.id];
-                                    handleFilterChange('diamondColor', updatedColors);
-                                    dispatch(
-                                      setFilterData({
-                                        ...filtersData,
-                                        diamond_color: updatedColors,
-                                      }),
-                                    );
-                                  }}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <Text
-                                      as="p"
-                                      // key={index}
-                                      size="textmd"
-                                      // onClick={() => {
-                                      //   const updatedColors = isItemSelected
-                                      //     ? filtersData?.diamond_color?.filter(
-                                      //         (colorId) => colorId !== item.id
-                                      //       )
-                                      //     : [
-                                      //         ...(filtersData?.diamond_color || []),
-                                      //         item.id,
-                                      //       ];
+  const priceRange = filters?.price_range;
+  const commitPrice = (value: number[]) => {
+    setSelectedFilters((prev: any) => ({ ...prev, min_price: value[0], max_price: value[1] }));
+    handleFilterChange('price', value);
+    dispatch(setFilterData({ ...filtersData, min_price: value[0], max_price: value[1] }));
+  };
+  // Keeps an emptied box empty. The filter only moves once there is a number that makes a valid
+  // range - so typing "1500" back into the max box doesn't fire 1, 15 and 150 (each of them an
+  // inverted range against the current floor) on the way there.
+  const handlePriceInputChange = (bound: 'min' | 'max', value: number | null) => {
+    setPriceDraft((prevDraft) => ({ ...prevDraft, [bound]: value }));
+    if (value === null || value === undefined) {
+      return;
+    }
+    const minValue = bound === 'min' ? value : selectedFilters?.min_price;
+    const maxValue = bound === 'max' ? value : selectedFilters?.max_price;
+    if (Number(minValue) > Number(maxValue)) {
+      return;
+    }
+    commitPrice([minValue, maxValue]);
+  };
 
-                                      //   dispatch(
-                                      //     setFilterData({
-                                      //       ...filtersData,
-                                      //       diamond_color: updatedColors,
-                                      //     })
-                                      //   );
-                                      // }}
-                                      className={` font-extralight tracking-[1px]  cursor-pointer ${isItemSelected ? '!font-semibold' : ''}`}
-                                    >
-                                      {item?.name}
-                                    </Text>
-                                    {loadingFilterId == item?.id && <LuLoader className="h-4 w-4 animate-spin opacity-80" />}
-                                  </div>
-                                </Checkbox>
-                              );
-                            })}
-                        </div>
-                      </div>
-                    )}
-                    <div className="h-[1.5px] w-full bg-[#707070]"></div>
-                  </div>
+  // Leaving the box (blur or Enter) settles it: empty means "no bound here" (back to the catalogue
+  // edge), and a number that crosses the other bound is clamped to it rather than applied inverted.
+  const handlePriceInputCommit = (bound: 'min' | 'max') => {
+    const draftValue = priceDraft[bound];
+    setPriceDraft((prevDraft) => ({ ...prevDraft, [bound]: undefined }));
+    if (draftValue === undefined) {
+      return;
+    }
+    const currentMin = Number(selectedFilters?.min_price) || 0;
+    const currentMax = Number(selectedFilters?.max_price) || 0;
+    const catalogueFloor = priceRange?.min_price ?? 0;
+    const catalogueCeiling = priceRange?.max_price ?? 0;
+    const editedMin = draftValue === null ? catalogueFloor : currentMax > 0 ? Math.min(draftValue, currentMax) : draftValue;
+    const editedMax = draftValue === null ? catalogueCeiling : Math.max(draftValue, currentMin);
+    const minValue = bound === 'min' ? editedMin : currentMin;
+    const maxValue = bound === 'max' ? editedMax : currentMax;
+    if (minValue === currentMin && maxValue === currentMax) {
+      return;
+    }
+    commitPrice([minValue, maxValue]);
+  };
+  const resetPrice = () => {
+    // Clears the slider range and any deep-link `min_price` floor in one navigation.
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('price');
+    params.delete('min_price');
+    const query = decodeURIComponent(params.toString());
+    router.replace(`/${jewelryType}${query ? `?${query}` : ''}`, { scroll: false });
+    setSelectedFilters((prev: any) => ({ ...prev, min_price: priceRange?.min_price, max_price: priceRange?.max_price }));
+    dispatch(setFilterData({ ...filtersData, min_price: priceRange?.min_price, max_price: priceRange?.max_price }));
+  };
 
-                  {/* SHAPE */}
-                  <div className="flex flex-col items-start gap-1  self-stretch relative">
-                    <div
-                      className="flex items-center justify-between gap-5 self-stretch cursor-pointer py-5"
-                      onClick={() => setIsShapeOpen(!isShapeOpen)}
-                    >
-                      <Text size="textlg" as="p" className="font-light ">
-                        SHAPE
-                      </Text>
-                      {!isShapeOpen ? (
-                        <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsShapeOpen(!isShapeOpen)} />
-                      ) : (
-                        <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsShapeOpen(!isShapeOpen)} />
-                      )}
-                    </div>
-                    {isShapeOpen && (
-                      <div className="pb-4">
-                        <div className="flex flex-col gap-3">
-                          {productFilter
-                            ?.filter((obj: any) => filters?.shape_id?.includes(obj.id))
-                            ?.map((item, index) => {
-                              const isItemSelected = filtersData?.shape?.includes(item.id);
+  const caratValues = Object.keys(caratWeight ?? {}).map(Number);
+  const caratMin = caratValues.length ? Math.min(...caratValues) : 0;
+  const caratMax = caratValues.length ? Math.max(...caratValues) : 0;
+  const commitCarat = (value: number[]) => {
+    setSelectedFilters((prev: any) => ({ ...prev, min_carat: value[0], max_carat: value[1] }));
+    handleFilterChange('carat', value);
+    handleSliderChange(value);
+  };
+  const resetCarat = () => {
+    removeParam('carat');
+    setSelectedFilters((prev: any) => ({ ...prev, min_carat: caratMin, max_carat: caratMax }));
+    dispatch(setFilterData({ ...filtersData, carats: [] }));
+  };
 
-                              return (
-                                <Checkbox
-                                  key={index}
-                                  checked={isItemSelected}
-                                  onClick={() => {
-                                    dispatch(setLoadingFilterId(item?.id));
-                                    const updatedShapes = isItemSelected
-                                      ? filtersData?.shape?.filter((shapeId) => shapeId !== item.id)
-                                      : [...(filtersData?.shape || []), item.id];
-                                    handleFilterChange('shape', updatedShapes);
-                                    dispatch(
-                                      setFilterData({
-                                        ...filtersData,
-                                        shape: updatedShapes,
-                                      }),
-                                    );
-                                  }}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <Text
-                                      as="p"
-                                      size="textmd"
-                                      className={` font-extralight tracking-[1px]  cursor-pointer ${isItemSelected ? '!font-semibold' : ''}`}
-                                    >
-                                      {item?.name}
-                                    </Text>
-                                    {loadingFilterId == item?.id && <LuLoader className="h-4 w-4 animate-spin opacity-80" />}
-                                  </div>
-                                </Checkbox>
-                              );
-                            })}
-                        </div>
-                      </div>
-                    )}
-                    <div className="h-[1.5px] w-full bg-[#707070]"></div>
-                  </div>
+  const clearAll = () => {
+    const params = new URLSearchParams();
+    if (collections) {
+      params.set('collections', collections);
+    }
+    if (sort) {
+      params.set('sort', sort);
+    }
+    const query = decodeURIComponent(params.toString());
+    router.replace(`/${jewelryType}${query ? `?${query}` : ''}`, { scroll: false });
+    dispatch(
+      setFilterData({
+        ...filtersData,
+        metal: [],
+        shape: [],
+        diamond_color: [],
+        subTypes: [],
+        specialTitle: [],
+        gender_category: 1,
+        min_price: priceRange?.min_price,
+        max_price: priceRange?.max_price,
+        carats: [],
+      }),
+    );
+  };
 
-                  {/* CARAT WEIGHT */}
-                  <div className="flex flex-col items-start gap-1  self-stretch relative">
-                    <div
-                      className="flex items-center justify-between gap-5 self-stretch cursor-pointer py-5"
-                      onClick={() => setIsCaratWeightOpen(!isCaratWeightOpen)}
-                    >
-                      <Text size="textlg" as="p" className="font-light ">
-                        CARAT WEIGHT
-                      </Text>
-                      {!isCaratWeightOpen ? (
-                        <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsCaratWeightOpen(!isCaratWeightOpen)} />
-                      ) : (
-                        <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsCaratWeightOpen(!isCaratWeightOpen)} />
-                      )}
-                    </div>
-                    {isCaratWeightOpen && (
-                      <div className="w-full px-2 pb-4">
-                        {/* Same tablet treatment as the price row: the fixed-width boxes overflow the sidebar. */}
-                        <div className="flex justify-between [@media(min-width:551px)_and_(max-width:1024px)]:gap-2">
-                          <div className="flex items-center gap-1 [@media(min-width:551px)_and_(max-width:1024px)]:min-w-0 [@media(min-width:551px)_and_(max-width:1024px)]:flex-1">
-                            <InputNumber
-                              size="small"
-                              className="[@media(min-width:551px)_and_(max-width:1024px)]:!w-full [@media(min-width:551px)_and_(max-width:1024px)]:min-w-0"
-                              min={Math.min(...Object.keys(caratWeight as any).map(Number))}
-                              max={Math.max(...Object.keys(caratWeight as any).map(Number))}
-                              style={{ color: 'black' }}
-                              step={0.01}
-                              // prefix="$"
-                              value={selectedFilters?.min_carat ?? Math.min(...Object.keys(caratWeight as any).map(Number))}
-                              onChange={
-                                (value: any) => {
-                                  setSelectedFilters((prevFilters: any) => ({
-                                    ...prevFilters,
-                                    min_carat: value ?? 0,
-                                    // max_price: value[1],
-                                  }));
-                                  handleFilterChange('carat', [value ?? 0, selectedFilters?.max_carat]);
-                                  dispatch(
-                                    setFilterData({
-                                      ...filtersData,
-                                      min_price: value ?? 0,
-                                      // max_price: value[1],
-                                    }),
-                                  );
-                                }
-                                // console.log(value,"minprice")
-                              }
-                            />
-                          </div>
-                          <div className="flex items-center gap-1 [@media(min-width:551px)_and_(max-width:1024px)]:min-w-0 [@media(min-width:551px)_and_(max-width:1024px)]:flex-1">
-                            <InputNumber
-                              size="small"
-                              className="[@media(min-width:551px)_and_(max-width:1024px)]:!w-full [@media(min-width:551px)_and_(max-width:1024px)]:min-w-0"
-                              min={Math.min(...Object.keys(caratWeight as any).map(Number))}
-                              max={Math.max(...Object.keys(caratWeight as any).map(Number))}
-                              style={{ color: 'black' }}
-                              step={0.01}
-                              // prefix="$"
-                              // style={{ margin: "0 16px" }}
-                              value={selectedFilters?.max_carat ?? Math.max(...Object.keys(caratWeight as any).map(Number))}
-                              onChange={
-                                (value: any) => {
-                                  setSelectedFilters((prevFilters: any) => ({
-                                    ...prevFilters,
-                                    // min_price: value[0],
-                                    max_carat: value ?? Math.max(...Object.keys(caratWeight as any).map(Number)) ?? 0,
-                                  }));
-                                  handleFilterChange('carat', [
-                                    selectedFilters?.min_carat,
-                                    selectedFilters?.max_carat ?? Math.max(...Object.keys(caratWeight as any).map(Number)),
-                                  ]);
-                                  dispatch(
-                                    setFilterData({
-                                      ...filtersData,
-                                      // min_price: value[0],
-                                      max_price: value ?? Math.max(...Object.keys(caratWeight as any).map(Number)) ?? 0,
-                                    }),
-                                  );
-                                }
-                                // console.log(value,"maxprice")
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="w-full">
-                          <Slider
-                            // marks={caratWeight}
-                            // included={true}
-                            range
-                            step={0.01}
-                            defaultValue={[
-                              Math.min(...Object.keys(caratWeight as any).map(Number)),
-                              Math.max(...Object.keys(caratWeight as any).map(Number)),
-                            ]}
-                            value={[selectedFilters.min_carat, selectedFilters.max_carat]}
-                            min={Math.min(...Object.keys(caratWeight as any).map(Number))}
-                            max={Math.max(...Object.keys(caratWeight as any).map(Number))}
-                            style={{ color: '#c5ccb4' }}
-                            onChange={(value: any) => {
-                              setSelectedFilters((prevFilters: any) => ({
-                                ...prevFilters,
-                                min_carat: value[0],
-                                max_carat: value[1],
-                              }));
-                            }}
-                            onChangeComplete={(value: any) => {
-                              handleFilterChange('carat', value);
-                              handleSliderChange(value);
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
-                    <div className="h-[1.5px] w-full bg-[#707070]" />
-                  </div>
+  // ───── Derived view data ─────
+  const typeKey = String(jewelryType ?? '');
+  const pageTitle = collectionType
+    ? (collectionData?.name ?? 'Collection')
+    : typeKey === 'all'
+      ? 'Fine Jewelry'
+      : isJewelryTypeExist(typeKey)
+        ? toTitle(typeKey)
+        : 'Collection';
+  const lede = collectionType ? (collectionData?.description ?? LEDE.collection) : (LEDE[typeKey] ?? LEDE.all);
+  const masterName = (id: string) => productFilter?.find((item: any) => item.id === id)?.name;
+  const currency = filters?.currency_symbol ?? '';
 
-                  {/* GENDER  */}
-                  <div className="flex flex-col items-start gap-1  self-stretch relative">
-                    <div className="radio-group-plp py-6">
-                      <Radio.Group
-                        className="flex flex-wrap justify-evenly lg:!grid lg:!grid-cols-3 lg:gap-0 gap-4 lg:!text-[10px]"
-                        onChange={(e: RadioChangeEvent) => {
-                          handleFilterChange('gender', e.target.value);
-                          dispatch(
-                            setFilterData({
-                              ...filtersData,
-                              gender_category: e.target.value,
-                            }),
-                          );
-                        }}
-                        value={filtersData.gender_category}
-                      >
-                        <Radio value={1} className="lg:my-auto lg:self-center lg:!text-[11px]">
-                          BOTH
-                        </Radio>
-                        <Radio value={2} className="lg:my-auto lg:self-center lg:!text-[11px] lg:!pr-0">
-                          FOR HIM
-                        </Radio>
-                        <Radio value={3} className="lg:my-auto lg:self-center lg:!text-[11px] lg:!pr-0">
-                          FOR HER
-                        </Radio>
-                      </Radio.Group>
-                    </div>
-                    {/* <div className="h-[1.5px] w-full bg-[#707070]" /> */}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className={`flex flex-col w-[75%] gap-4 self-start lg:gap-6 2xl:w-4/5 xl:w-4/5 lg:w-[75%] md:w-[67%] sm:w-full relative`}>
-            <div
-              className={`ml-8  ${collectionType ? 'pt-5' : 'pt-6'} lg:pt-5 md:pt-5 sm:pt-3 top-0 z-[10] bg-white flex flex-col items-start gap-[10px] lg:gap-[10px] lg:ml-0  xl:gap-[10px] `}
-            >
-              <div className="flex gap-4 lg:gap-3 2xl:gap-3 md:gap-1 self-stretch min-h-10 md:flex-col">
-                <div className="flex w-full flex-col gap-3 self-stretch mt-[10px]">
-                  <div className="relative w-full">
-                    <div className="w-[96%] lg:w-[95%] mx-auto">
-                      <Swiper
-                        key={`subtype-desk-${String(jewelryType)}-${collectionType ?? ''}`}
-                        modules={[Virtual, Navigation, Pagination]}
-                        onSwiper={(swiper) => {
-                          setSwiperRefDesk(swiper);
-                        }}
-                        onSlideChange={(swiper) => {
-                          // Update states on slide change
-                          setIsBeginning(swiper.isBeginning);
-                          setIsEnd(swiper.isEnd);
-                        }}
-                        slidesPerView={
-                          windowWidth < 640
-                            ? 2 // sm
-                            : windowWidth <= 768
-                              ? 4 // md
-                              : windowWidth <= 1024
-                                ? 5 // lg
-                                : windowWidth < 1536
-                                  ? 6 // xl
-                                  : 7 // 2xl
-                        }
-                        spaceBetween={10}
-                        pagination={{
-                          type: 'fraction',
-                        }}
-                        navigation={{
-                          prevEl: prevRefDesk.current,
-                          nextEl: nextRefDesk.current,
-                        }}
-                        virtual
-                        className="subtype-swiper !px-0"
-                      >
-                        {filters?.subTypes?.map((item, index) => (
-                          <SwiperSlide key={`${item.id}-${index}`} virtualIndex={index}>
-                            <div
-                              className={`flex items-center flex-col justify-center cursor-pointer group overflow-hidden`}
-                              onClick={() => {
-                                dispatch(setLoadingFilterId(item?.id));
-                                // Trigger the external logic for filter apply
-                                // Single selection: picking another subtype replaces the current one
-                                const updatedStyles = filtersData.subTypes.includes(item?.id) ? [] : [item.id];
-                                handleFilterChange('subTypes', updatedStyles);
-                                dispatch(
-                                  setFilterData({
-                                    ...filtersData,
-                                    subTypes: updatedStyles,
-                                  }),
-                                );
-                              }}
-                            >
-                              <div
-                                style={{ backgroundColor: '#f9f9f9' }}
-                                className={`aspect-square relative min-w-[85%] w-[85%] p-3 lg:p-2 flex items-center justify-center bg-[#f9f9f9] ${loadingFilterId == item.id ? 'border-0' : 'border-2 group-hover:border-primary'}  group-hover:bg-[#f9f9f9] !overflow-hidden ${
-                                  filtersData.subTypes.includes(item?.id) ? 'border-primary' : 'border-transparent'
-                                } `}
-                              >
-                                <Image
-                                  preview={false}
-                                  className="object-cover !mix-blend-multiply box appliedstrips"
-                                  fallback="/images/no_images.svg"
-                                  style={{ mixBlendMode: 'multiply' }}
-                                  src={productFilter.find((el: any) => el.id === item.id)?.image?.[0]}
-                                  alt={productFilter.find((el: any) => el.id === item.id)?.name}
-                                />
-                                <div
-                                  className={`box absolute top-0 w-full h-full border-0 ${
-                                    loadingFilterId == item.id ? 'border-primary/20 appliedstrips' : 'border-transparent'
-                                  } z-[0] !overflow-hidden`}
-                                ></div>
-                              </div>
-                              <span className="text-[14px] line-clamp-2 font-normal py-2 xl:text-[13px] lg:text-[12px] text-center overflow-hidden px-0.5 lg:px-0.5">
-                                {productFilter.find((el: any) => el.id === item.id)?.name}
-                              </span>
-                            </div>
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    </div>
-                    {!isLoading && (
-                      <div className="absolute top-[40%] w-full flex justify-between items-center">
-                        <button
-                          ref={prevRefDesk}
-                          className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 py-1.5 px-0 ${isBeginning ? 'opacity-30' : ''}`}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                          </svg>
-                        </button>
-                        <button
-                          ref={nextRefDesk}
-                          className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 py-1.5 px-0 ${isEnd ? 'opacity-30' : ''}`}
-                          // onClick={() => {
-                          //   console.log(swiperRef.activeIndex, swiperRef?.visibleSlidesIndexes, swiperRef.current);
-                          //   if (swiperRef.current) {
-                          //     swiperRef.current.slideNext();
-                          //   }
-                          // }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                          </svg>
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex sticky top-0 justify-end items-center w-full">
-                <div className="flex relative w-[16%] md:pb-2 items-center justify-end gap-4 md:w-full self-start 2xl:gap-1 2xl:w-fit lg:w-1/5">
-                  <Select
-                    suffixIcon={<BsFilterLeft className="h-6 w-6 text-black" />}
-                    placeholder={`SORT BY`}
-                    options={dropDownOptions}
-                    defaultValue={dropDownOptions[0]}
-                    value={filtersData.sort_order}
-                    onChange={(option: any) => {
-                      setIsSortLoading(true);
-                      setTimeout(() => {
-                        handleFilterChange('sort', option);
-                        dispatch(
-                          setFilterData({
-                            ...filtersData,
-                            sort_order: option,
-                          }),
-                        );
-                      }, 1000);
-                    }}
-                    className="sorting-selection w-[136px] !h-8 gap-2.5 !border-none !bg-transparent whitespace-nowrap placeholder:text-black text-[16px] lg:text-[14px] 2xl:gap-2"
-                  />
-                  {isFasterPopup && isFasterPopupShow && products?.length > 0 && (
-                    <div className="absolute top-[50px] md:top-[139px] w-[276px]">
-                      <div className="flex items-center relative bg-white gap-2 p-2 py-3 rounded-md shadow-[0px_0px_6px_rgba(0,0,0,0.2)] before:content-[''] before:rotate-45 before:absolute before:-top-[9px] before:right-[65px] before:border-t before:border-l  before:w-[16px] before:h-[16px] before:bg-white before:clip-path-[polygon(100%_0,0_0,100%_100%)]">
-                        {/* Notch */}
-                        {/* <div className="absolute -top-[6px] z-0 right-2 w-4 h-4 bg-white rotate-45 shadow-[0px_0px_6px_rgba(0,0,0,0.2)]"></div> */}
-                        <div className="w-1/6 flex items-center justify-center">
-                          <Image src={'/images/delivery.svg'} preview={false} alt="Delivery" />
-                        </div>
-                        <div className="flex flex-col gap-1.5">
-                          <p className="text-[16px]">Need it Faster?</p>
-                          <p className="text-[12px]">
-                            <span
-                              className="underline cursor-pointer"
-                              onClick={() => {
-                                setIsSortLoading(true);
-                                handleFilterChange('sort', 'fastdelivery');
-                                dispatch(
-                                  setFilterData({
-                                    ...filtersData,
-                                    sort_order: 'fastdelivery',
-                                  }),
-                                );
-                                dispatch(setIsFasterPopup(false));
-                              }}
-                            >
-                              Show me
-                            </span>{' '}
-                            what arrive the soonest.
-                          </p>
-                        </div>
-                        <div className="absolute top-2 right-2 cursor-pointer" onClick={() => dispatch(setIsFasterPopup(false))}>
-                          <RxCross2 />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+  const chips: { key: string; label: string; onRemove: () => void }[] = [];
+  filtersData?.subTypes?.forEach((id) =>
+    chips.push({ key: `st-${id}`, label: masterName(id) ?? 'Style', onRemove: () => toggleFilter('subTypes', id) }),
+  );
+  filtersData?.metal?.forEach((id) => chips.push({ key: `m-${id}`, label: masterName(id) ?? 'Metal', onRemove: () => toggleFilter('metal', id) }));
+  filtersData?.shape?.forEach((id) => chips.push({ key: `sh-${id}`, label: masterName(id) ?? 'Shape', onRemove: () => toggleFilter('shape', id) }));
+  filtersData?.diamond_color?.forEach((id) =>
+    chips.push({ key: `dc-${id}`, label: `Color ${masterName(id) ?? ''}`.trim(), onRemove: () => toggleFilter('diamond_color', id) }),
+  );
+  filtersData?.specialTitle?.forEach((id) =>
+    chips.push({
+      key: `t-${id}`,
+      label: filters?.special_title?.find((t) => t.id === id)?.title ?? 'Featured',
+      onRemove: () => toggleFilter('specialTitle', id),
+    }),
+  );
+  if (price || minPriceParam) {
+    chips.push({ key: 'price', label: `${currency}${selectedFilters?.min_price} – ${currency}${selectedFilters?.max_price}`, onRemove: resetPrice });
+  }
+  if (carat) {
+    chips.push({ key: 'carat', label: `${selectedFilters?.min_carat} – ${selectedFilters?.max_carat} ct`, onRemove: resetCarat });
+  }
+  if (filtersData?.gender_category && filtersData.gender_category !== 1) {
+    chips.push({ key: 'gender', label: filtersData.gender_category === 2 ? 'For him' : 'For her', onRemove: () => setGender(1) });
+  }
 
-            <div className="ml-8 flex flex-col items-center gap-[60px] lg:ml-0 md:ml-0 sm:gap-[30px]">
-              <div className="flex flex-col gap-6 self-stretch">
-                <div className="flex flex-col items-end gap-10">
-                  {(isLoading || isSortLoading) && (
-                    // scaletons
-                    <>
-                      <div className="w-full flex justify-center items-center">
-                        <LuLoader className="h-10 w-10 animate-spin" />
-                      </div>
-                    </>
-                  )}
-                  {!isLoading && !isSortLoading && products?.length === 0 && (
-                    <div className="ml-8 px-8 w-full flex flex-col items-center justify-center gap-[10px] lg:ml-0 md:ml-0 sm:gap-[30px] min-h-[30vh]">
-                      <p className="text-[22px]">We found no results that match your search criteria.</p>
-                      <p className="text-[22px]">
-                        Please expand your search or
-                        <span
-                          className="inline underline cursor-pointer pl-1"
-                          onClick={() => {
-                            router.push(`/${jewelryType}`);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                metal: [],
-                                shape: [],
-                                diamond_color: [],
-                                subTypes: [],
-                                gender_category: 1,
-                                sort_order: '',
-                                min_price: filters?.price_range?.min_price,
-                                max_price: filters?.price_range?.max_price,
-                                carats: [],
-                                // min_carat: carat ? Number(carat?.split('-')?.[0]) : Math.min(...Object.keys(caratWeight as any).map(Number)),
-                                // max_carat: carat ? Number(carat?.split('-')?.[1]) : Math.max(...Object.keys(caratWeight as any).map(Number)),
-                              }),
-                            );
-                            // handleApiCall({ jewelryType, filtersData, currentPage: 1, pageSize, collectionType });
-                          }}
-                        >
-                          reset your filters
-                        </span>
-                        .
-                      </p>
-                    </div>
-                  )}
-                  {!isLoading && !isSortLoading && products?.length > 0 && (
-                    <>
-                      <div className="w-full flex flex-col items-center">
-                        {chunkedData.map((chunk, index) => (
-                          <ChunkComponent
-                            key={index}
-                            chunk={chunk}
-                            index={index}
-                            bannerData={PromotionalImages || []}
-                            pageJewelryType={jewelryType as string}
-                          />
-                        ))}
-                        {isLoadingMore && (
-                          <div className="w-full flex justify-center items-center py-4">
-                            <LuLoader className="h-8 w-8 animate-spin opacity-80" />
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+  const optionsFrom = (ids?: string[]) =>
+    (productFilter ?? [])
+      .filter((item: any) => ids?.includes(item.id))
+      .map((item: any) => ({ id: item.id, name: item.name, image: item.image?.[0] }));
+
+  const categories = (filters?.jewelry_types ?? []).map((item) => {
+    const slug = item?.name?.toLowerCase().replace(/\s+/g, '-');
+    return {
+      name: item?.name,
+      href: collectionType ? `/${slug}?collections=${collections}` : `/${slug}`,
+      active: jewelryType == slug,
+      onClick: () => {
+        dispatch(setCurrentPage(1));
+        dispatch(setFilterLoadingFirst());
+      },
+    };
+  });
+
+  const rangeLabel = 'grid flex-1 gap-1.5 text-[10.5px] uppercase tracking-[0.16em] text-ink-soft';
+  const priceSlot = priceRange ? (
+    <div>
+      <div className="mb-1.5 flex justify-between gap-3">
+        <label className={rangeLabel}>
+          Min
+          <InputNumber
+            prefix={currency}
+            min={priceRange.min_price}
+            max={priceRange.max_price}
+            value={priceDraft.min !== undefined ? priceDraft.min : selectedFilters?.min_price}
+            onChange={(value) => handlePriceInputChange('min', value as number | null)}
+            onBlur={() => handlePriceInputCommit('min')}
+            onPressEnter={() => handlePriceInputCommit('min')}
+            className="!w-full !bg-transparent tabular-nums"
+          />
+        </label>
+        <label className={rangeLabel}>
+          Max
+          <InputNumber
+            prefix={currency}
+            min={priceRange.min_price}
+            max={priceRange.max_price}
+            value={priceDraft.max !== undefined ? priceDraft.max : selectedFilters?.max_price}
+            onChange={(value) => handlePriceInputChange('max', value as number | null)}
+            onBlur={() => handlePriceInputCommit('max')}
+            onPressEnter={() => handlePriceInputCommit('max')}
+            className="!w-full !bg-transparent tabular-nums"
+          />
+        </label>
       </div>
+      <Slider
+        range
+        min={priceRange.min_price}
+        max={priceRange.max_price}
+        value={[selectedFilters.min_price, selectedFilters.max_price]}
+        onChange={(value: number[]) => setSelectedFilters((prev: any) => ({ ...prev, min_price: value[0], max_price: value[1] }))}
+        onChangeComplete={(value: number[]) => commitPrice(value)}
+      />
+    </div>
+  ) : (
+    <Skeleton.Input active size="small" block />
+  );
 
-      {/* mobile screen */}
-      <div className="sm:flex hidden justify-center border-b border-solid border-[#3b3b3b] py-14 lg:py-10 md:py-5 sm:py-4">
-        <div className="container-xs flex flex-col px-5 sm:px-3">
-          <div className="flex items-start justify-between flex-wrap">
-            {!collectionData?.name && (
-              <Text size="text5xl" as="p" className="uppercase pb-2 ">
-                {isJewelryTypeExist(jewelryType as string)
-                  ? jewelryType.toString()?.replace('-', ' ') && jewelryType == 'all'
-                    ? ''
-                    : jewelryType.toString()?.replace('-', ' ')
-                  : 'Collection'}
-              </Text>
-            )}
-            <div className=" flex gap-3 items-start justify-between w-full ">
-              <div className=" sm:min-w-[96px] px-[11px] py-[4.5px] flex items-center justify-center gap-0" onClick={handleMenuToggle}>
-                <p className="capitalize tracking-[1px] text-[14px] flex gap-2">Filter</p>
-                <div>
-                  <RiFilter2Line className="h-6 w-6 p-0.5" />
-                </div>
+  const caratSlot =
+    caratValues.length > 1 ? (
+      <div>
+        <div className="mb-1.5 flex justify-between gap-3">
+          <label className={rangeLabel}>
+            From (ct)
+            <InputNumber
+              step={0.01}
+              min={caratMin}
+              max={caratMax}
+              value={selectedFilters?.min_carat ?? caratMin}
+              onChange={(value) => setSelectedFilters((prev: any) => ({ ...prev, min_carat: value ?? caratMin }))}
+              onBlur={() => commitCarat([selectedFilters.min_carat ?? caratMin, selectedFilters.max_carat ?? caratMax])}
+              onPressEnter={() => commitCarat([selectedFilters.min_carat ?? caratMin, selectedFilters.max_carat ?? caratMax])}
+              className="!w-full !bg-transparent tabular-nums"
+            />
+          </label>
+          <label className={rangeLabel}>
+            To (ct)
+            <InputNumber
+              step={0.01}
+              min={caratMin}
+              max={caratMax}
+              value={selectedFilters?.max_carat ?? caratMax}
+              onChange={(value) => setSelectedFilters((prev: any) => ({ ...prev, max_carat: value ?? caratMax }))}
+              onBlur={() => commitCarat([selectedFilters.min_carat ?? caratMin, selectedFilters.max_carat ?? caratMax])}
+              onPressEnter={() => commitCarat([selectedFilters.min_carat ?? caratMin, selectedFilters.max_carat ?? caratMax])}
+              className="!w-full !bg-transparent tabular-nums"
+            />
+          </label>
+        </div>
+        <Slider
+          range
+          step={0.01}
+          min={caratMin}
+          max={caratMax}
+          value={[selectedFilters.min_carat ?? caratMin, selectedFilters.max_carat ?? caratMax]}
+          onChange={(value: number[]) => setSelectedFilters((prev: any) => ({ ...prev, min_carat: value[0], max_carat: value[1] }))}
+          onChangeComplete={(value: number[]) => commitCarat(value)}
+        />
+      </div>
+    ) : null;
+
+  const showSkeleton = isLoading || isSortLoading;
+  const shownCount = productCards.length;
+  const totalCount = counts ?? 0;
+
+  const panelProps: FilterPanelProps = {
+    loadingFilterId,
+    categories,
+    styles: (filters?.subTypes ?? []).map((item) => ({ id: item.id, name: masterName(item.id) ?? item.name })),
+    metals: optionsFrom(filters?.metal_color_id),
+    shapes: optionsFrom(filters?.shape_id),
+    diamondColors: optionsFrom(filters?.diamond_color_id).map(({ id, name }: any) => ({ id, name })),
+    specialTitles: (filters?.special_title ?? []).map((item) => ({ id: item.id, name: item.title })),
+    selected: {
+      metal: filtersData?.metal ?? [],
+      shape: filtersData?.shape ?? [],
+      diamond_color: filtersData?.diamond_color ?? [],
+      subTypes: filtersData?.subTypes ?? [],
+      specialTitle: filtersData?.specialTitle ?? [],
+    },
+    onToggle: toggleFilter,
+    gender: Number(filtersData?.gender_category ?? 1),
+    onGender: setGender,
+    priceSlot,
+    priceActive: !!(price || minPriceParam),
+    caratSlot,
+    caratActive: !!carat,
+  };
+  const columns = showRail ? 3 : 4;
+  const piecesLabel = `${totalCount} ${totalCount === 1 ? 'piece' : 'pieces'}`;
+  const filterIcon = (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.3} className="h-[18px] w-[18px]" aria-hidden>
+      <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />
+      <circle cx="16" cy="7" r="2" />
+      <circle cx="10" cy="17" r="2" />
+    </svg>
+  );
+
+  return (
+    <ConfigProvider theme={plpTheme}>
+      <div className="w-full bg-paper font-libre text-[14px] leading-[1.55] text-ink antialiased">
+        {/* Collection banner */}
+        {collectionType && (collectionData?.desktop_image || collectionData?.mobile_image) && (
+          <div className="relative w-full overflow-hidden bg-stone">
+            <picture className="block">
+              {collectionData?.mobile_image && <source media="(max-width: 550px)" srcSet={collectionData.mobile_image} />}
+              <img
+                src={collectionData?.desktop_image || collectionData?.mobile_image}
+                alt={collectionData?.name ? `${collectionData.name} collection` : 'Collection'}
+                className="block h-[clamp(220px,32vw,460px)] w-full object-cover"
+              />
+            </picture>
+          </div>
+        )}
+
+        <div className={`mx-auto max-w-[1440px] ${GUTTER}`}>
+          {/* Title row */}
+          <section className="pt-7 md:pt-5">
+            <nav aria-label="Breadcrumb" className="flex flex-wrap gap-2 text-[12px] text-ink-soft">
+              <Link href="/" className="text-ink-soft hover:text-ink">
+                Home
+              </Link>
+              <span aria-hidden className="text-line-strong">
+                /
+              </span>
+              {collectionType && (
+                <>
+                  <Link href="/collections" className="text-ink-soft hover:text-ink">
+                    Collections
+                  </Link>
+                  <span aria-hidden className="text-line-strong">
+                    /
+                  </span>
+                </>
+              )}
+              <span aria-current="page">{pageTitle}</span>
+            </nav>
+            <div className="mb-1.5 mt-3.5 flex flex-wrap items-baseline gap-x-3.5 gap-y-1">
+              <h1 className="m-0 font-cormorant text-[clamp(38px,4vw,54px)] font-medium leading-none tracking-[-0.01em] text-ink">{pageTitle}</h1>
+              <small className="text-[13px] tabular-nums text-ink-soft">{piecesLabel}</small>
+            </div>
+            {lede && <p className="m-0 max-w-[62ch] text-[14.5px] text-ink-soft">{lede}</p>}
+          </section>
+
+          {/* Style row: square tiles from the CMS styles */}
+          {(filters?.subTypes?.length ?? 0) > 0 && (
+            <div className="relative pb-[30px] pt-[26px]">
+              <div
+                ref={railRef}
+                onScroll={updateRailEdges}
+                role="toolbar"
+                aria-label="Shop by style"
+                className="flex gap-3 overflow-x-auto scroll-smooth [scrollbar-width:none]"
+              >
+                {filters?.subTypes?.map((item) => {
+                  const meta = productFilter?.find((el: any) => el.id === item.id);
+                  const active = !!filtersData?.subTypes?.includes(item.id);
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => toggleFilter('subTypes', item.id)}
+                      className="group grid flex-[0_0_clamp(96px,9.2vw,132px)] gap-2.5 text-center"
+                    >
+                      <span
+                        className={`relative block aspect-square overflow-hidden border-b-2 bg-stone transition-colors ${
+                          active ? 'border-ink' : 'border-transparent group-hover:border-line-strong'
+                        }`}
+                      >
+                        <img
+                          src={meta?.image?.[0] || '/images/no_images.svg'}
+                          alt=""
+                          loading="lazy"
+                          className="h-full w-full object-contain p-[10%] mix-blend-multiply transition-transform duration-[900ms] ease-luxe group-hover:scale-105"
+                        />
+                        {loadingFilterId == item.id && (
+                          <span className="absolute inset-0 z-[1] animate-shimmer bg-gradient-to-r from-transparent via-paper/60 to-transparent bg-[length:220%_100%]" />
+                        )}
+                      </span>
+                      <span className={`text-[13px] leading-[1.35] text-ink ${active ? 'font-semibold' : 'font-medium'}`}>
+                        {meta?.name ?? item.name}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
-              <div className="relative">
+              {!railEdges.atStart && (
+                <button
+                  type="button"
+                  aria-label="Scroll styles left"
+                  onClick={() => scrollRail(-1)}
+                  className="absolute -left-2.5 top-[calc(26px+clamp(96px,9.2vw,132px)/2)] z-[2] grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-paper text-ink shadow-md shadow-ink/10 md:hidden"
+                >
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.4} className="h-3.5 w-3.5" aria-hidden>
+                    <path d="M10 3 5 8l5 5" />
+                  </svg>
+                </button>
+              )}
+              {!railEdges.atEnd && (
+                <button
+                  type="button"
+                  aria-label="Scroll styles right"
+                  onClick={() => scrollRail(1)}
+                  className="absolute -right-2.5 top-[calc(26px+clamp(96px,9.2vw,132px)/2)] z-[2] grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-paper text-ink shadow-md shadow-ink/10 md:hidden"
+                >
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.4} className="h-3.5 w-3.5" aria-hidden>
+                    <path d="m6 3 5 5-5 5" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Toolbar */}
+        <div className="sticky top-0 z-20 border-y border-line bg-paper">
+          <div className={`mx-auto flex min-h-14 max-w-[1440px] items-center gap-3.5 py-2 ${GUTTER}`}>
+            <button
+              type="button"
+              aria-expanded={showRail}
+              aria-controls="plp-filter-rail"
+              onClick={() => setShowRail((v) => !v)}
+              className="inline-flex flex-none items-center gap-2.5 text-[13px] font-medium text-ink lg:hidden"
+            >
+              {filterIcon}
+              {showRail ? 'Hide filters' : 'Show filters'}
+              {chips.length > 0 && (
+                <span className="inline-grid h-[18px] min-w-[18px] place-items-center rounded-full bg-ink px-[5px] text-[10px] text-paper">
+                  {chips.length}
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => openDrawer(null)}
+              className="hidden h-9 flex-none items-center gap-2 border border-ink px-3.5 text-[13px] font-medium text-ink lg:inline-flex"
+            >
+              {filterIcon}
+              Filters{chips.length > 0 ? ` · ${chips.length}` : ''}
+            </button>
+
+            {chips.length > 0 && (
+              <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 md:hidden">
+                {chips.map((chip) => (
+                  <button
+                    key={chip.key}
+                    type="button"
+                    onClick={chip.onRemove}
+                    aria-label={`Remove filter ${chip.label}`}
+                    className="inline-flex h-[30px] items-center gap-2 bg-stone px-3 text-[12.5px] text-ink transition-colors hover:bg-stone-deep"
+                  >
+                    {chip.label}
+                    <RxCross2 className="h-2.5 w-2.5 text-ink-soft" />
+                  </button>
+                ))}
+                <button type="button" onClick={clearAll} className="text-[12.5px] text-ink-soft underline underline-offset-[3px] hover:text-ink">
+                  Clear all
+                </button>
+              </div>
+            )}
+
+            <div className="ml-auto flex flex-none items-center gap-[18px] text-[13px] text-ink-soft">
+              <span className="tabular-nums sm:hidden">{piecesLabel}</span>
+              <div className="relative flex items-center gap-1">
+                <span className="text-ink sm:hidden">Sort:</span>
                 <Select
-                  suffixIcon={<BsFilterLeft className="h-6 w-6 text-black" />}
-                  placeholder={`SORT BY`}
-                  defaultValue={dropDownOptions[0]}
-                  options={dropDownOptions}
-                  value={filtersData.sort_order}
-                  onChange={(option: any) => {
-                    setIsSortLoading(true);
-                    setTimeout(() => {
-                      handleFilterChange('sort', option);
-                      dispatch(
-                        setFilterData({
-                          ...filtersData,
-                          sort_order: option,
-                        }),
-                      );
-                    }, 1000);
-                  }}
-                  className="sorting-selection gap-2.5 whitespace-nowrap placeholder:!text-black text-[16px] lg:text-[14px] 2xl:gap-2 sm:!h-[29px] sm:min-w-[110px] sm:placeholder:text-[14px]"
+                  variant="borderless"
+                  aria-label="Sort"
+                  value={filtersData?.sort_order ?? ''}
+                  options={SORT_OPTIONS}
+                  onChange={changeSort}
+                  popupMatchSelectWidth={false}
+                  className="min-w-[124px] [&_.ant-select-arrow]:text-ink [&_.ant-select-selection-item]:!text-[13px] [&_.ant-select-selection-item]:!font-medium [&_.ant-select-selection-item]:text-ink [&_.ant-select-selector]:!px-0"
                 />
                 {isFasterPopup && isFasterPopupShow && products?.length > 0 && (
-                  <div className="absolute top-[45px] right-0 z-[11] w-[276px]">
-                    <div className="flex items-center relative bg-white gap-2 p-2 py-3 rounded-md shadow-[0px_0px_6px_rgba(0,0,0,0.2)] before:content-[''] before:rotate-45 before:absolute before:-top-[9px] before:right-[65px] before:border-t before:border-l  before:w-[16px] before:h-[16px] before:bg-white before:clip-path-[polygon(100%_0,0_0,100%_100%)]">
-                      <div className="w-1/6 flex items-center justify-center">
-                        <Image src={'/images/delivery.svg'} preview={false} alt="Delivery" />
-                      </div>
-                      <div className="flex flex-col gap-1.5">
-                        <p className="text-[16px]">Need it Faster?</p>
-                        <p className="text-[12px]">
-                          <span
-                            className="underline cursor-pointer"
-                            onClick={() => {
-                              setIsSortLoading(true);
-                              handleFilterChange('sort', 'fastdelivery');
-                              dispatch(
-                                setFilterData({
-                                  ...filtersData,
-                                  sort_order: 'fastdelivery',
-                                }),
-                              );
-                              dispatch(setIsFasterPopup(false));
-                            }}
-                          >
-                            Show me
-                          </span>{' '}
-                          what arrive the soonest.
-                        </p>
-                      </div>
-                      <div className="absolute top-2 right-2 cursor-pointer" onClick={() => dispatch(setIsFasterPopup(false))}>
-                        <RxCross2 />
-                      </div>
-                    </div>
+                  <div className="absolute right-0 top-[calc(100%+12px)] z-[25] grid w-[280px] gap-1 border border-line bg-paper py-4 pl-4 pr-9 shadow-lg shadow-ink/10 sm:w-[min(280px,calc(100vw-32px))]">
+                    <strong className="font-cormorant text-[20px] font-medium leading-[1.1] text-ink">Need it sooner?</strong>
+                    <p className="m-0 text-[12.5px] text-ink-soft">
+                      <button
+                        type="button"
+                        className="text-teal underline underline-offset-[3px]"
+                        onClick={() => {
+                          changeSort('fastdelivery');
+                          dispatch(setIsFasterPopup(false));
+                        }}
+                      >
+                        Show pieces
+                      </button>{' '}
+                      that arrive the soonest.
+                    </p>
+                    <button
+                      type="button"
+                      aria-label="Dismiss"
+                      onClick={() => dispatch(setIsFasterPopup(false))}
+                      className="absolute right-2.5 top-2.5 grid h-[22px] w-[22px] place-items-center text-ink"
+                    >
+                      <RxCross2 />
+                    </button>
                   </div>
                 )}
               </div>
             </div>
           </div>
-          {/* filters sideMenu started */}
-          {isMenuOpen && (
-            <div
-              className={`fixed top-0 left-0 inset-0 bg-gray-800 bg-opacity-75 z-[1052] transition-all duration-500 ease-in-out ${
-                isMenuOpen ? 'translate-y-0' : 'translate-y-full'
-              }`}
-              style={{ width: '100%', height: '100vh' }}
+        </div>
+
+        <div
+          className={`mx-auto grid max-w-[1440px] items-start gap-10 pt-7 lg:grid-cols-1 ${GUTTER} ${
+            showRail ? 'grid-cols-[240px_minmax(0,1fr)]' : 'grid-cols-1'
+          }`}
+        >
+          {/* Filter rail (desktop) */}
+          {showRail && (
+            <aside
+              id="plp-filter-rail"
+              aria-label="Filters"
+              data-lenis-prevent
+              className="sticky top-[72px] max-h-[calc(100vh-88px)] overflow-y-auto pr-1.5 [scrollbar-width:thin] lg:hidden"
             >
-              <div className="relative modal-content bg-white h-full p-5 sm:px-3 overflow-auto">
-                <div className="relative flex w-full flex-col items-start gap-[26px] self-stretch max-h-[94dvh]">
-                  <div className="flex justify-between items-center w-full">
-                    <Text size="text5xl" as="p" className="uppercase !text-[18px]">
-                      Filter By
-                    </Text>
-                    <div>
-                      <RxCross2 className="h-5 w-5" onClick={handleMenuToggle} />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-6 w-full px-2 pb-[85px] overflow-scroll">
-                    <Radio.Group
-                      className="flex gap-4"
-                      onChange={(e: RadioChangeEvent) => {
-                        dispatch(
-                          setFilterData({
-                            ...filtersData,
-                            gender_category: e.target.value,
-                          }),
-                        );
-                      }}
-                      value={filtersData.gender_category}
-                    >
-                      <Radio value={1}>BOTH</Radio>
-                      <Radio value={2}>FOR HIM</Radio>
-                      <Radio value={3}>FOR HER</Radio>
-                    </Radio.Group>
-                    <div className="flex flex-col items-start gap-[16px]">
-                      {/* ITEM */}
-                      <div className="flex flex-col items-start gap-5 self-stretch w-full">
-                        <div className="flex items-center justify-between gap-5 self-stretch" onClick={handleJewelryToggle}>
-                          <Text size="textxl" as="p" className="!text-[14px]">
-                            ITEM
-                          </Text>
-                          {!isItemsOpen ? (
-                            <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={handleJewelryToggle} />
-                          ) : (
-                            <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={handleJewelryToggle} />
-                          )}
-                        </div>
-                        {isItemsOpen && (
-                          <div>
-                            {filters?.jewelry_types && filters?.jewelry_types?.length !== 0 ? (
-                              <div className="flex flex-col gap-3">
-                                {filters?.jewelry_types?.map((item, index) => (
-                                  <Text
-                                    as="p"
-                                    key={index}
-                                    size="textmd"
-                                    className={` font-extralight tracking-[1px]  cursor-pointer ${
-                                      jewelryType == item?.name?.toLowerCase()?.replace(/\s+/g, '-') ? '!font-semibold' : ''
-                                    }`}
-                                    onClick={() => {
-                                      dispatch(setCurrentPage(1));
-                                    }}
-                                  >
-                                    <Link href={`/${item?.name?.toLowerCase().replace(/\s+/g, '-')}`} key={index}>
-                                      {item?.name}
-                                    </Link>
-                                  </Text>
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="flex flex-col gap-2">
-                                <Skeleton.Input active={true} size="small" />
-                                <Skeleton.Input active={true} size="small" />
-                                <Skeleton.Input active={true} size="small" />
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        <div className="h-[1.5px] w-[100%] bg-[#707070]" />
-                      </div>
-                      {/* Special Title */}
-
-                      <div className="flex flex-col items-start gap-6 md:gap-5 self-stretch relative">
-                        <div
-                          className="flex items-center justify-between gap-5 self-stretch"
-                          onClick={() => setSpecialTitleOpen(!isSpecialTitleOpen)}
-                        >
-                          <Text size="textxl" as="p" className="!text-[14px] ">
-                            SPECIAL TITLE
-                          </Text>
-                          {!isSpecialTitleOpen ? (
-                            <HiPlus className="h-[20px] w-[20px] cursor-pointer" onClick={() => setSpecialTitleOpen(!isSpecialTitleOpen)} />
-                          ) : (
-                            <FiMinus className="h-[18px] w-[18px] cursor-pointer" onClick={() => setSpecialTitleOpen(!isSpecialTitleOpen)} />
-                          )}
-                        </div>
-                        {isSpecialTitleOpen && (
-                          <div className="">
-                            <div className="flex flex-col gap-1">
-                              {filters?.special_title && filters.special_title.length > 0 ? (
-                                filters.special_title?.map((item: any, index: number) => {
-                                  const isSelected = filtersData?.specialTitle?.includes(item.id);
-                                  return (
-                                    <Checkbox
-                                      key={index}
-                                      checked={isSelected}
-                                      onClick={() => {
-                                        const updatedSpecialTitles = isSelected
-                                          ? filtersData?.specialTitle?.filter((titleId) => titleId !== item.id)
-                                          : [...(filtersData?.specialTitle || []), item.id];
-
-                                        handleFilterChange('specialTitle', updatedSpecialTitles);
-                                        dispatch(
-                                          setFilterData({
-                                            ...filtersData,
-                                            specialTitle: updatedSpecialTitles,
-                                          }),
-                                        );
-                                      }}
-                                    >
-                                      <Text
-                                        as="p"
-                                        size="textmd"
-                                        className={`font-extralight tracking-[1px] cursor-pointer ${isSelected ? '!font-semibold' : ''}`}
-                                      >
-                                        {item?.title}
-                                      </Text>
-                                    </Checkbox>
-                                  );
-                                })
-                              ) : (
-                                <Text as="p" size="textmd" className="font-extralight tracking-[1px] text-gray-500">
-                                  No special titles available
-                                </Text>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                        <div className="h-[1.5px] w-full bg-[#707070]" />
-                      </div>
-
-                      {/* METAL */}
-                      <div className="flex flex-col items-start gap-6 md:gap-5 self-stretch relative">
-                        <div className="flex items-center justify-between gap-5 self-stretch" onClick={() => setIsMetalOpen(!isMetalOpen)}>
-                          <Text size="textxl" as="p" className="!text-[14px] ">
-                            METAL
-                          </Text>
-                          {!isMetalOpen ? (
-                            <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsMetalOpen(!isMetalOpen)} />
-                          ) : (
-                            <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsMetalOpen(!isMetalOpen)} />
-                          )}
-                        </div>
-                        {isMetalOpen && (
-                          <div className="">
-                            <div className="flex flex-col gap-1">
-                              {productFilter
-                                ?.filter((obj: any) => filters?.metal_color_id?.includes(obj.id))
-                                ?.map((item: any, index: number) => {
-                                  const isSelected = filtersData?.metal?.includes(item.id);
-
-                                  return (
-                                    <Checkbox
-                                      key={index}
-                                      checked={isSelected}
-                                      onClick={() => {
-                                        const updatedMetals = isSelected
-                                          ? filtersData?.metal?.filter((metalId) => metalId !== item.id)
-                                          : [...(filtersData?.metal || []), item.id];
-                                        handleFilterChange('metal', updatedMetals);
-
-                                        dispatch(
-                                          setFilterData({
-                                            ...filtersData,
-                                            metal: updatedMetals,
-                                          }),
-                                        );
-                                      }}
-                                    >
-                                      <Text
-                                        as="p"
-                                        size="textmd"
-                                        className={` font-extralight tracking-[1px]  cursor-pointer ${isSelected ? '!font-semibold' : ''}`}
-                                      >
-                                        {item?.name}
-                                      </Text>
-                                    </Checkbox>
-                                  );
-                                })}
-                            </div>
-                          </div>
-                        )}
-                        <div className="h-[1.5px] w-full bg-[#707070]" />
-                      </div>
-                      {/* DIAMOND COLOR */}
-                      <div className="flex flex-col items-start gap-6 md:gap-5 self-stretch relative">
-                        <div
-                          className="flex items-center justify-between gap-5 self-stretch"
-                          onClick={() => setIsDiamondColorOpen(!isDiamondColorOpen)}
-                        >
-                          <Text size="textxl" as="p" className="!text-[14px]">
-                            DIAMOND COLOR
-                          </Text>
-                          {!isDiamondColorOpen ? (
-                            <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsDiamondColorOpen(!isDiamondColorOpen)} />
-                          ) : (
-                            <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsDiamondColorOpen(!isDiamondColorOpen)} />
-                          )}
-                        </div>
-                        {isDiamondColorOpen && (
-                          <div className="">
-                            <div className="flex flex-col gap-1">
-                              {productFilter
-                                ?.filter((obj: any) => filters?.diamond_color_id?.includes(obj.id))
-                                ?.map((item, index) => {
-                                  const isItemSelected = filtersData?.diamond_color?.includes(item.id);
-
-                                  return (
-                                    <Checkbox
-                                      key={index}
-                                      checked={isItemSelected}
-                                      onClick={() => {
-                                        const updatedColors = isItemSelected
-                                          ? filtersData?.diamond_color?.filter((colorId) => colorId !== item.id)
-                                          : [...(filtersData?.diamond_color || []), item.id];
-                                        handleFilterChange('diamondColor', updatedColors);
-                                        dispatch(
-                                          setFilterData({
-                                            ...filtersData,
-                                            diamond_color: updatedColors,
-                                          }),
-                                        );
-                                      }}
-                                    >
-                                      <Text
-                                        as="p"
-                                        size="textmd"
-                                        className={` font-extralight tracking-[1px]  cursor-pointer ${isItemSelected ? '!font-semibold' : ''}`}
-                                      >
-                                        {item?.name}
-                                      </Text>
-                                    </Checkbox>
-                                  );
-                                })}
-                            </div>
-                          </div>
-                        )}
-                        <div className="h-[1.5px] w-full bg-[#707070]" />
-                      </div>
-                      {/* SHAPE */}
-                      <div className="flex flex-col items-start gap-6 md:gap-5 self-stretch relative">
-                        <div className="flex items-center justify-between gap-5 self-stretch" onClick={() => setIsShapeOpen(!isShapeOpen)}>
-                          <Text size="textxl" as="p" className="!text-[14px]">
-                            SHAPE
-                          </Text>
-                          {!isShapeOpen ? (
-                            <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsShapeOpen(!isShapeOpen)} />
-                          ) : (
-                            <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsShapeOpen(!isShapeOpen)} />
-                          )}
-                        </div>
-                        {isShapeOpen && (
-                          <div className="">
-                            <div className="flex flex-col gap-1">
-                              {productFilter
-                                ?.filter((obj: any) => filters?.shape_id?.includes(obj.id))
-                                ?.map((item, index) => {
-                                  const isItemSelected = filtersData?.shape?.includes(item.id);
-
-                                  return (
-                                    <Checkbox
-                                      key={index}
-                                      checked={isItemSelected}
-                                      onClick={() => {
-                                        const updatedShapes = isItemSelected
-                                          ? filtersData?.shape?.filter((shapeId) => shapeId !== item.id)
-                                          : [...(filtersData?.shape || []), item.id];
-                                        handleFilterChange('shape', updatedShapes);
-                                        dispatch(
-                                          setFilterData({
-                                            ...filtersData,
-                                            shape: updatedShapes,
-                                          }),
-                                        );
-                                      }}
-                                    >
-                                      <Text
-                                        as="p"
-                                        size="textmd"
-                                        className={` font-extralight tracking-[1px]  cursor-pointer ${isItemSelected ? '!font-semibold' : ''}`}
-                                      >
-                                        {item?.name}
-                                      </Text>
-                                    </Checkbox>
-                                  );
-                                })}
-                            </div>
-                          </div>
-                        )}
-                        <div className="h-[1.5px] w-full bg-[#707070]" />
-                      </div>
-                      {/* CARAT WEIGHT */}
-                      <div className="flex flex-col items-start gap-6 md:gap-5 self-stretch relative">
-                        <div
-                          className="flex items-center justify-between gap-5 self-stretch"
-                          onClick={() => setIsCaratWeightOpen(!isCaratWeightOpen)}
-                        >
-                          <Text size="textxl" as="p" className="!text-[14px]">
-                            CARAT WEIGHT
-                          </Text>
-                          {!isCaratWeightOpen ? (
-                            <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsCaratWeightOpen(!isCaratWeightOpen)} />
-                          ) : (
-                            <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsCaratWeightOpen(!isCaratWeightOpen)} />
-                          )}
-                        </div>
-                        {isCaratWeightOpen && (
-                          <div className="w-full px-2 pb-4">
-                            <div className="flex justify-between">
-                              <div className="flex items-center gap-1">
-                                <InputNumber
-                                  size="small"
-                                  min={Math.min(...Object.keys(caratWeight as any).map(Number))}
-                                  max={Math.max(...Object.keys(caratWeight as any).map(Number))}
-                                  style={{ color: 'black' }}
-                                  step={0.01}
-                                  // prefix="$"
-                                  value={selectedFilters?.min_carat ?? Math.min(...Object.keys(caratWeight as any).map(Number))}
-                                  onChange={
-                                    (value: any) => {
-                                      setSelectedFilters((prevFilters: any) => ({
-                                        ...prevFilters,
-                                        min_carat: value ?? 0,
-                                        // max_price: value[1],
-                                      }));
-                                      handleFilterChange('carat', [value ?? 0, selectedFilters?.max_carat]);
-                                      dispatch(
-                                        setFilterData({
-                                          ...filtersData,
-                                          min_price: value ?? 0,
-                                          // max_price: value[1],
-                                        }),
-                                      );
-                                    }
-                                    // console.log(value,"minprice")
-                                  }
-                                />
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <InputNumber
-                                  size="small"
-                                  min={Math.min(...Object.keys(caratWeight as any).map(Number))}
-                                  max={Math.max(...Object.keys(caratWeight as any).map(Number))}
-                                  style={{ color: 'black' }}
-                                  step={0.01}
-                                  // prefix="$"
-                                  // style={{ margin: "0 16px" }}
-                                  value={selectedFilters?.max_carat ?? Math.max(...Object.keys(caratWeight as any).map(Number))}
-                                  onChange={
-                                    (value: any) => {
-                                      setSelectedFilters((prevFilters: any) => ({
-                                        ...prevFilters,
-                                        // min_price: value[0],
-                                        max_carat: value ?? Math.max(...Object.keys(caratWeight as any).map(Number)) ?? 0,
-                                      }));
-                                      handleFilterChange('carat', [
-                                        selectedFilters?.min_carat,
-                                        selectedFilters?.max_carat ?? Math.max(...Object.keys(caratWeight as any).map(Number)),
-                                      ]);
-                                      dispatch(
-                                        setFilterData({
-                                          ...filtersData,
-                                          // min_price: value[0],
-                                          max_price: value ?? Math.max(...Object.keys(caratWeight as any).map(Number)) ?? 0,
-                                        }),
-                                      );
-                                    }
-                                    // console.log(value,"maxprice")
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <div className="w-full">
-                              <Slider
-                                // marks={caratWeight}
-                                // included={true}
-                                range
-                                step={0.01}
-                                defaultValue={[
-                                  Math.min(...Object.keys(caratWeight as any).map(Number)),
-                                  Math.max(...Object.keys(caratWeight as any).map(Number)),
-                                ]}
-                                value={[selectedFilters.min_carat, selectedFilters.max_carat]}
-                                min={Math.min(...Object.keys(caratWeight as any).map(Number))}
-                                max={Math.max(...Object.keys(caratWeight as any).map(Number))}
-                                style={{ color: '#c5ccb4' }}
-                                onChange={(value: any) => {
-                                  setSelectedFilters((prevFilters: any) => ({
-                                    ...prevFilters,
-                                    min_carat: value[0],
-                                    max_carat: value[1],
-                                  }));
-                                }}
-                                onChangeComplete={(value: any) => {
-                                  handleFilterChange('carat', value);
-                                  handleSliderChange(value);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        )}
-                        <div className="h-[1.5px] w-full bg-[#707070]" />
-                      </div>
-                      {/* GEMSTONE */}
-
-                      {/* PRICE */}
-                      <div className="flex flex-col items-start gap-6 md:gap-5 self-stretch relative">
-                        <div className="flex items-center justify-between gap-5 self-stretch" onClick={() => setIsPriceOpen(!isPriceOpen)}>
-                          <Text size="textxl" as="p" className="!text-[14px]">
-                            PRICE
-                          </Text>
-                          {!isPriceOpen ? (
-                            <HiPlus className=" h-[20px] w-[20px] cursor-pointer" onClick={() => setIsPriceOpen(!isPriceOpen)} />
-                          ) : (
-                            <FiMinus className=" h-[18px] w-[18px] cursor-pointer" onClick={() => setIsPriceOpen(!isPriceOpen)} />
-                          )}
-                        </div>
-                        {isPriceOpen && (
-                          <div className="w-full px-2">
-                            <div className="flex justify-between">
-                              <div className="flex items-center gap-1">
-                                <p>{filters?.currency_symbol}</p>
-                                <InputNumber
-                                  size="small"
-                                  min={filters?.price_range?.min_price}
-                                  max={filters?.price_range?.max_price}
-                                  style={{ color: 'black' }}
-                                  // prefix="$"
-                                  inputMode="numeric"
-                                  value={priceDraft.min !== undefined ? priceDraft.min : selectedFilters?.min_price}
-                                  onChange={(value: any) => handlePriceInputChange('min', value)}
-                                  onBlur={() => handlePriceInputCommit('min')}
-                                  onPressEnter={() => handlePriceInputCommit('min')}
-                                />
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <p>{filters?.currency_symbol}</p>
-                                <InputNumber
-                                  size="small"
-                                  min={filters?.price_range?.min_price}
-                                  max={filters?.price_range?.max_price}
-                                  style={{ color: 'black' }}
-                                  // prefix="$"
-                                  // style={{ margin: "0 16px" }}
-                                  inputMode="numeric"
-                                  value={priceDraft.max !== undefined ? priceDraft.max : selectedFilters?.max_price}
-                                  onChange={(value: any) => handlePriceInputChange('max', value)}
-                                  onBlur={() => handlePriceInputCommit('max')}
-                                  onPressEnter={() => handlePriceInputCommit('max')}
-                                />
-                              </div>
-                            </div>
-                            <div className="w-full px-4">
-                              <Slider
-                                range
-                                min={filters?.price_range?.min_price}
-                                max={filters?.price_range?.max_price}
-                                defaultValue={[filters?.price_range?.min_price, filters?.price_range?.max_price]}
-                                onChange={(value: any) => {
-                                  handleFilterChange('price', value);
-                                  dispatch(
-                                    setFilterData({
-                                      ...filtersData,
-                                      min_price: value[0],
-                                      max_price: value[1],
-                                    }),
-                                  );
-                                }}
-                              />
-                            </div>
-                          </div>
-                        )}
-                        <div className="h-[1.5px] w-full bg-[#707070]" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 flex justify-center w-full bg-white ">
-                    <Button variant="solid" className="!min-w-full" onClick={handleMenuToggle}>
-                      Apply
-                    </Button>
-                  </div>
-                </div>
+              <FilterPanel {...panelProps} compact />
+              <div className="mt-[22px] bg-mist p-[18px]">
+                <b className="mb-1 block font-cormorant text-[20px] font-medium">Not sure of the size?</b>
+                <p className="m-0 mb-2.5 text-[13px] text-ink-soft">Get sized or see pieces with a specialist over video.</p>
+                <Link href="/virtual-appointment" className="border-b border-current text-[12px] font-semibold uppercase tracking-[0.08em] text-teal">
+                  Book an appointment
+                </Link>
               </div>
-            </div>
+            </aside>
           )}
-          {/* filters sideMenu ended */}
-          <div className="flex w-[100%] flex-col gap-5 self-center sm:gap-4">
-            <div className="flex flex-col items-start gap-[20px]">
-              <div className="flex flex-col gap-3 self-stretch mt-[20px] sm:mt-[10px]">
-                <div className="relative hidden sm:block w-full">
-                  <div className="w-[85%] mx-auto">
-                    <Swiper
-                      key={`subtype-mob-${String(jewelryType)}-${collectionType ?? ''}`}
-                      modules={[Virtual, Navigation, Pagination]}
-                      onSwiper={(swiper) => {
-                        setSwiperRef(swiper);
-                      }}
-                      onSlideChange={(swiper) => {
-                        // Update states on slide change
-                        setIsBeginning(swiper.isBeginning);
-                        setIsEnd(swiper.isEnd);
-                      }}
-                      slidesPerView={4}
-                      spaceBetween={2}
-                      pagination={{
-                        type: 'fraction',
-                      }}
-                      navigation={{
-                        prevEl: prevRef.current,
-                        nextEl: nextRef.current,
-                      }}
-                      virtual
-                      className="subtype-swiper"
-                    >
-                      {filters?.subTypes?.map((item: any, index: number) => (
-                        <SwiperSlide key={`${item.id}-${index}`} virtualIndex={index}>
-                          <div
-                            className={`flex items-center flex-col justify-center cursor-pointer group`}
-                            onClick={() => {
-                              dispatch(setLoadingFilterId(item?.id));
-                              // Single selection: picking another subtype replaces the current one
-                              const updatedStyles = filtersData.subTypes.includes(item?.id) ? [] : [item.id];
-                              handleFilterChange('subTypes', updatedStyles);
-                              dispatch(
-                                setFilterData({
-                                  ...filtersData,
-                                  subTypes: updatedStyles,
-                                }),
-                              );
-                            }}
-                          >
-                            <div
-                              className={`relative aspect-square min-w-[90%] w-[90%] p-3 lg:p-2 flex items-center justify-center bg-[#f9f9f9] ${loadingFilterId == item.id ? 'border-0' : 'border'} ${
-                                filtersData.subTypes.includes(item?.id) ? 'border-primary' : 'border-transparent'
-                              }`}
-                            >
-                              <Image
-                                preview={false}
-                                className="object-cover !mix-blend-multiply"
-                                style={{ mixBlendMode: 'multiply' }}
-                                fallback="/images/no_images.svg"
-                                src={productFilter.find((el: any) => el.id === item.id)?.image?.[0]}
-                                alt={productFilter.find((el: any) => el.id === item.id)?.name}
-                              />
-                              <div
-                                className={`box absolute top-0 w-full h-full border-0 ${
-                                  loadingFilterId == item.id ? 'border-primary/20 appliedstrips' : 'border-transparent'
-                                } z-[0] !overflow-hidden`}
-                              ></div>
-                            </div>
-                            <span className="lg:text-[12px] text-center line-clamp-2 overflow-hidden px-0.5 pt-1">
-                              {productFilter.find((el: any) => el.id === item.id)?.name}
-                            </span>
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  </div>
-                  {!isLoading && (
-                    <div className="absolute top-[40%] w-full flex justify-between items-center">
-                      <button
-                        ref={prevRef}
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 py-1.5 px-0 ${isBeginning ? 'opacity-30' : ''}`}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="w-6 h-6"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                        </svg>
-                      </button>
-                      <button
-                        ref={nextRef}
-                        className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 py-1.5 px-0 ${isEnd ? 'opacity-30' : ''}`}
-                        // onClick={() => console.log(swiperRef.activeIndex, swiperRef?.visibleSlidesIndexes)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="w-6 h-6"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col items-center gap-[60px]">
-              <div className="flex flex-col gap-6 self-stretch">
-                <div className="flex flex-col items-end gap-10 sm:gap-2">
-                  {(isLoading || isSortLoading) && (
-                    <>
-                      <div className="w-full flex min-h-[75vh] justify-center items-center relative">
-                        <LuLoader className="h-10 w-10 animate-spin absolute top-[30%]" />
-                      </div>
-                    </>
-                  )}
 
-                  {!isLoading && !isSortLoading && products?.length === 0 && (
-                    <div className="ml-8 w-full flex flex-col items-center pt-[10vh] gap-[60px] lg:ml-0 md:ml-0 sm:gap-[1px] min-h-[55vh]">
-                      <p className="text-[15px] text-center">
-                        We found no results that match your search criteria. Please expand your search or
-                        <span
-                          className="inline underline cursor-pointer pl-1 text-nowrap"
-                          onClick={() => {
-                            router.push(`/${jewelryType}`);
-                            dispatch(
-                              setFilterData({
-                                ...filtersData,
-                                metal: [],
-                                shape: [],
-                                diamond_color: [],
-                                subTypes: [],
-                                gender_category: 1,
-                                sort_order: '',
-                                min_price: filters?.price_range?.min_price,
-                                max_price: filters?.price_range?.max_price,
-                                carats: [],
-                                // min_carat: carat ? Number(carat?.split('-')?.[0]) : Math.min(...Object.keys(caratWeight as any).map(Number)),
-                                // max_carat: carat ? Number(carat?.split('-')?.[1]) : Math.max(...Object.keys(caratWeight as any).map(Number)),
-                              }),
-                            );
-                            // handleApiCall({ jewelryType, filtersData, currentPage: 1, pageSize, collectionType });
-                          }}
-                        >
-                          reset your filters
-                        </span>
-                        .
-                      </p>
-                    </div>
+          <div className="min-w-0">
+            {showSkeleton && <PlpGridSkeleton columns={columns} />}
+
+            {!showSkeleton && products?.length === 0 && (
+              <div className="grid justify-items-center gap-3 py-20 text-center">
+                <h3 className="m-0 font-cormorant text-[34px] font-normal text-ink">Nothing matches yet</h3>
+                <p className="m-0 text-ink-soft">Try removing a filter or two to see more pieces.</p>
+                <button type="button" onClick={clearAll} className="text-[13px] text-ink-soft underline underline-offset-4">
+                  Clear all filters
+                </button>
+              </div>
+            )}
+
+            {!showSkeleton && products?.length > 0 && (
+              <>
+                <PlpGrid products={productCards} banners={PromotionalImages ?? []} columns={columns} pageJewelryType={jewelryType as string} />
+                <div className="grid justify-items-center gap-3.5 pb-[72px] pt-12">
+                  {isLoadingMore ? (
+                    <span className="inline-flex items-center gap-2 text-[13px] text-ink-soft">
+                      <LuLoader className="h-4 w-4 animate-spin" /> Loading more pieces
+                    </span>
+                  ) : (
+                    <span className="text-[13px] tabular-nums text-ink-soft">
+                      {shownCount >= totalCount ? `Showing all ${totalCount} pieces` : `Showing ${shownCount} of ${totalCount}`}
+                    </span>
                   )}
-                  {!isLoading && !isSortLoading && products?.length > 0 && (
-                    <div className="w-full min-h-[50vh]">
-                      {chunkedData.map((chunk, index) => (
-                        <ChunkComponent
-                          key={index}
-                          chunk={chunk}
-                          index={index}
-                          bannerData={PromotionalImages || []}
-                          pageJewelryType={jewelryType as string}
-                        />
-                      ))}
-                      {isLoadingMore && (
-                        <div className="w-full flex justify-center items-center py-4">
-                          <LuLoader className="h-8 w-8 animate-spin" />
-                        </div>
-                      )}
+                  {totalCount > 0 && (
+                    <div className="relative h-0.5 w-[220px] bg-line">
+                      <i
+                        className="absolute inset-y-0 left-0 bg-ink transition-[width] duration-500 ease-luxe"
+                        style={{ width: `${Math.min(100, (shownCount / totalCount) * 100)}%` }}
+                      />
                     </div>
                   )}
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </div>
+
+        <FilterDrawer
+          open={drawerOpen}
+          focusSection={drawerFocus}
+          onClose={() => setDrawerOpen(false)}
+          resultCount={totalCount}
+          activeCount={chips.length}
+          onClearAll={clearAll}
+          {...panelProps}
+        />
       </div>
-    </div>
+    </ConfigProvider>
   );
 }

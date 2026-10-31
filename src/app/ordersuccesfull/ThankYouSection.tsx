@@ -3,11 +3,10 @@
 
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 
-import { Image } from 'antd';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { LuLoader } from 'react-icons/lu';
+import { LuCheck, LuLoader } from 'react-icons/lu';
 
 import ProductName from '@/components/CartProductDetails/ProductName';
 import useCookieConsent from '@/hook/useCookieConsent';
@@ -104,12 +103,15 @@ export default function ThankYouSection() {
   }, [orderDetails]);
   useEffect(() => {
     if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_NODE_ENV === 'production' && orderDetails?.order_id) {
-      (window as any).gtag?.('event', 'conversion', {
-        send_to: 'AW-17230998076/MKZ6CIbEuoAcELzUsJhA',
-        value: orderDetails?.after_gst_amount ?? 0,
-        currency: orderDetails?.currency_code ?? 'USD',
-        transaction_id: orderDetails?.order_id ?? '',
-      });
+      // DAZZBLISS TODO: Google Ads conversion label is the old client's; off until NEXT_PUBLIC_GOOGLE_ADS_ID is set.
+      if (process.env.NEXT_PUBLIC_GOOGLE_ADS_ID) {
+        (window as any).gtag?.('event', 'conversion', {
+          send_to: 'AW-17230998076/MKZ6CIbEuoAcELzUsJhA',
+          value: orderDetails?.after_gst_amount ?? 0,
+          currency: orderDetails?.currency_code ?? 'USD',
+          transaction_id: orderDetails?.order_id ?? '',
+        });
+      }
       const contentIds =
         orderDetails?.orderDetails
           ?.map((item: any) => String(item?.skuOrderItems?.id ?? item?.jewelryOrderItems?.id ?? item?.jewelry_id))
@@ -370,11 +372,15 @@ export default function ThankYouSection() {
       {/* thank you section */}
 
       {verifiedUser && status == 'fulfilled' ? (
-        <div className="mb-5 flex flex-col items-center">
-          {orderDetails?.order_id && process.env.NEXT_PUBLIC_NODE_ENV === 'production' && trackingPreferences.marketing && (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: `
+        <div className="mb-5 flex flex-col items-center bg-paper font-libre text-ink">
+          {/* DAZZBLISS TODO: AMP Google Ads tag uses the old client's IDs; off until NEXT_PUBLIC_GOOGLE_ADS_ID is set. */}
+          {orderDetails?.order_id &&
+            process.env.NEXT_PUBLIC_NODE_ENV === 'production' &&
+            process.env.NEXT_PUBLIC_GOOGLE_ADS_ID &&
+            trackingPreferences.marketing && (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: `
               <amp-analytics type="gtag" data-credentials="include">
                 <script type="application/json">
                   {
@@ -404,59 +410,89 @@ export default function ThankYouSection() {
                   }
                 </script>
               </amp-analytics>`,
-              }}
-            />
-          )}
+                }}
+              />
+            )}
 
-          <div className="mx-auto flex w-full max-w-[1600px] 2xl:px-[160px] xl:px-28 lg:px-20 flex-col gap-6 sm:gap-3 sm:px-3 md:px-5">
-            <div className="mx-60 flex flex-col gap-1 md:mx-0 lg:mx-auto">
-              <div className="flex flex-col items-center gap-3 sm:gap-2 md:mx-0">
-                <Image
-                  preview={false}
-                  src="/images/img_group.svg"
-                  alt="Order confirmed"
-                  width={64}
-                  height={64}
-                  wrapperClassName="!h-16 !w-16 sm:!h-12 sm:!w-12"
-                  className="!h-16 !w-16 sm:!h-12 sm:!w-12 object-contain"
-                />
-                <div className="flex flex-col items-center gap-0.5 self-stretch">
-                  <Text
-                    as="p"
-                    size="text5xl"
-                    className="text-[40px] font-normal uppercase tracking-[0.80px] text-black-900 xl:text-[33px] lg:text-[34px] md:text-[34px] sm:!text-[18px]"
-                  >
-                    Thank you!
-                  </Text>
-                  <Text
-                    as="p"
-                    size="text5xl"
-                    className="text-[40px] text-center sm:text-center font-normal uppercase tracking-[0.80px] text-black-900 2xl:text-[34px] xl:text-[30px] lg:text-[34px] md:text-[34px] sm:!text-[18px]"
-                  >
-                    Your Order has been received
-                  </Text>
-                </div>
+          <div className="mx-auto flex w-full max-w-[1600px] 2xl:px-[160px] xl:px-28 lg:px-20 flex-col gap-10 sm:gap-4 sm:px-3 md:px-5">
+            <div className="mx-auto grid w-full max-w-[760px] gap-7 pt-6">
+              <div className="grid justify-items-center gap-3 text-center">
+                <span className="grid h-14 w-14 place-items-center rounded-full border border-gilt text-gilt">
+                  <LuCheck className="h-6 w-6" aria-hidden />
+                </span>
+                {orderDetails?.order_id && (
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-ink-soft tabular-nums">Order {orderDetails.order_id}</span>
+                )}
+                <h1 className="m-0 font-cormorant text-[clamp(44px,5.6vw,80px)] font-normal leading-[0.92] text-ink">
+                  Thank you
+                  {orderDetails?.billingAddressDetails?.first_name ? (
+                    <>
+                      , <em className="italic capitalize text-gilt">{orderDetails.billingAddressDetails.first_name}</em>
+                    </>
+                  ) : null}
+                </h1>
+                <p className="m-0 max-w-[52ch] text-ink-soft">
+                  {orderDetails?.orderUserDetails?.email
+                    ? `A confirmation is on its way to ${orderDetails.orderUserDetails.email}. We will email tracking details as soon as your order ships.`
+                    : 'Your order has been received. We will email tracking details as soon as your order ships.'}
+                </p>
                 {/* Post-purchase confirmation for Google Pay, in the layout Google's brand guidelines show.
                     "Google Pay" stays in the site's own font and case, with no ™, as the guidelines require. */}
                 {orderDetails?.payment_method === 5 && (
-                  <div className="mt-2 flex flex-col items-center gap-1 text-center text-[16px] text-black-900 sm:text-[14px]">
-                    <p>
+                  <div className="grid justify-items-center gap-1 text-center text-[14px] text-ink">
+                    <p className="m-0">
                       Your order was successfully processed using{' '}
                       <span className="font-medium">
                         {googlePayLabel(orderDetails?.google_pay_card_network, orderDetails?.google_pay_card_last4)}
                       </span>
                       .
                     </p>
-                    <p>Check your email for your receipt.</p>
+                    <p className="m-0 text-ink-soft">Check your email for your receipt.</p>
                   </div>
                 )}
               </div>
+              <ol className="m-0 grid list-none grid-cols-3 border border-line p-0 sm:grid-cols-1">
+                {[
+                  {
+                    label: 'Order placed',
+                    text:
+                      orderDetails?.created_at || orderDetails?.createdAt
+                        ? dayjs(orderDetails?.created_at || orderDetails?.createdAt).format('ddd D MMM')
+                        : 'Today',
+                    state: 'done',
+                  },
+                  { label: 'Being prepared', text: 'Checked, cleaned and packed by our atelier.', state: 'now' },
+                  {
+                    label: 'Arrives',
+                    text: arrivesWindow ? `${arrivesWindow.start.format('ddd D MMM')} – ${arrivesWindow.end.format('ddd D MMM')}` : '—',
+                    state: '',
+                  },
+                ].map((step) => (
+                  <li
+                    key={step.label}
+                    className={`relative grid content-start gap-1.5 border-r border-line px-4 py-[18px] text-[12.5px] text-ink-soft last:border-r-0 sm:border-b sm:border-r-0 sm:last:border-b-0 ${
+                      step.state === 'now' ? 'bg-stone/45' : ''
+                    } before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:content-[''] ${
+                      step.state === 'done'
+                        ? 'before:bg-gilt'
+                        : step.state === 'now'
+                          ? 'before:bg-gradient-to-r before:from-gilt before:from-50% before:to-line before:to-50%'
+                          : ''
+                    }`}
+                  >
+                    <b
+                      className={`text-[10.5px] font-semibold uppercase tracking-[0.16em] ${step.state === 'done' ? 'text-gilt' : step.state === 'now' ? 'text-ink' : ''}`}
+                    >
+                      {step.label}
+                    </b>
+                    <span>{step.text}</span>
+                  </li>
+                ))}
+              </ol>
             </div>
             <div className="flex items-start gap-8 sm:flex-col ">
               <div className="flex flex-1 sm:flex-none flex-col items-start gap-10 md:gap-[10px] sm:w-full">
-                <Text as="p" size="textxl" className="text-[22px] font-normal uppercase md:mt-4 tracking-[0.44px] text-black-900 lg:text-[20px]">
-                  Products
-                </Text>
+                <h2 className="m-0 font-cormorant text-[28px] font-normal leading-none text-ink">Your pieces</h2>
 
                 <div className="flex flex-col gap-[22px] self-stretch">
                   <Suspense fallback={<div>Loading feed...</div>}>
@@ -468,17 +504,11 @@ export default function ThankYouSection() {
                   </Suspense>
                 </div>
               </div>
-              <div className="flex w-[38%] lg:w-[47%] md:w-[50%] flex-col gap-2 self-start sm:w-full">
-                <div className="flex flex-col items-center gap-[38px] md:gap-[10px] bg-gray-50 p-[30px] lg:p-5 md:p-4 sm:p-4 sm:px-3">
-                  <Text
-                    as="p"
-                    size="textxl"
-                    className="text-[22px] font-normal uppercase tracking-[0.44px] text-black-900 md:text-[20px] lg:text-[18px]"
-                  >
-                    order information
-                  </Text>
-                  <div className="flex flex-col gap-5 self-stretch sm:gap-3">
-                    <div className="flex flex-col gap-2.5 md:gap-2 sm:gap-2">
+              <div className="flex w-[38%] lg:w-[47%] md:w-[50%] flex-col gap-6 self-center sm:w-full">
+                <div className="flex flex-col items-center gap-[38px] md:gap-[10px] border border-line bg-paper p-[30px] lg:p-5 md:p-4 sm:p-4 sm:px-3">
+                  <h2 className="m-0 self-start font-cormorant text-[28px] font-normal leading-none text-ink">Order summary</h2>
+                  <div className="flex flex-col gap-[34px] self-stretch sm:gap-4">
+                    <div className="flex flex-col md:gap-[16px] gap-5 sm:gap-3">
                       {groupPriceNew?.map((category: any, index: number) => (
                         <div
                           key={`price_${index}`}
@@ -488,7 +518,7 @@ export default function ThankYouSection() {
                             <div className="col-span-2 flex items-center gap-2">
                               <ProductName productName={category?.name} count={category?.count} />
                               {category?.is_free_gift && (
-                                <span className="shrink-0 bg-secondary px-1.5 py-[1px] font-sans text-[9px] uppercase tracking-[1px] text-text_w">
+                                <span className="shrink-0 border border-gilt px-1.5 py-[1px] text-[9.5px] uppercase tracking-[0.16em] text-gilt">
                                   Free Gift
                                 </span>
                               )}
@@ -500,7 +530,7 @@ export default function ThankYouSection() {
                                     <Text
                                       as="p"
                                       size="textlg"
-                                      className="!font-castoro font-normal tracking-[0.20px] !text-gray-400 line-through !text-[12px] text-nowrap"
+                                      className="!font-cormorant font-normal tracking-[0.20px] !text-gray-400 line-through !text-[12px] text-nowrap"
                                     >
                                       {formatCurrency(Math.ceil(Number(category.gift_retail_price)))}
                                     </Text>
@@ -508,7 +538,7 @@ export default function ThankYouSection() {
                                   <Text
                                     as="p"
                                     size="textlg"
-                                    className="!font-sans !text-[13px] font-semibold uppercase tracking-[1px] !text-secondary text-nowrap sm:!text-[12px]"
+                                    className="!text-[11px] font-semibold uppercase tracking-[0.16em] !text-gilt text-nowrap"
                                   >
                                     Free
                                   </Text>
@@ -517,7 +547,7 @@ export default function ThankYouSection() {
                                 <Text
                                   as="p"
                                   size="textlg"
-                                  className={`!font-castoro font-normal tracking-[0.20px] text-gray-800 lg:text-[17px] text-nowrap ${
+                                  className={`!font-cormorant font-normal tracking-[0.20px] text-ink lg:text-[17px] text-nowrap ${
                                     category?.discounted_price && category?.discounted_price !== category?.price
                                       ? 'line-through !text-gray-400 !text-[12px] sm:!text-[12px]'
                                       : 'sm:!text-[14px]'
@@ -530,7 +560,7 @@ export default function ThankYouSection() {
                                 <Text
                                   as="p"
                                   size="textlg"
-                                  className="!font-castoro font-normal tracking-[0.20px] text-gray-800 lg:text-[17px] md:text-[16px] text-nowrap sm:!text-[14px]"
+                                  className="!font-cormorant font-normal tracking-[0.20px] text-ink lg:text-[17px] md:text-[16px] text-nowrap sm:!text-[14px]"
                                 >
                                   {formatCurrency(Math.ceil(category?.discounted_price * category?.count))}
                                 </Text>
@@ -546,7 +576,7 @@ export default function ThankYouSection() {
                                 <Text
                                   as="p"
                                   size="textlg"
-                                  className={`!font-castoro text-[18px] text-right font-normal tracking-[0.20px] text-gray-800 lg:text-[17px] md:text-[16px]  'sm:!text-[14px]'
+                                  className={`!font-cormorant text-[18px] text-right font-normal tracking-[0.20px] text-ink lg:text-[17px] md:text-[16px]  'sm:!text-[14px]'
                             }`}
                                 >
                                   {formatCurrency(Math.ceil(category?.appraisal_amount * (category?.count ?? 1)))}
@@ -563,7 +593,7 @@ export default function ThankYouSection() {
                                 <Text
                                   as="p"
                                   size="textlg"
-                                  className={`!font-castoro text-[18px] text-right font-normal tracking-[0.20px] text-gray-800 lg:text-[17px] md:text-[16px]  'sm:!text-[14px]'
+                                  className={`!font-cormorant text-[18px] text-right font-normal tracking-[0.20px] text-ink lg:text-[17px] md:text-[16px]  'sm:!text-[14px]'
                             }`}
                                 >
                                   {formatCurrency(Math.ceil((category?.warranty_amount ?? 0) * (category?.count ?? 1)))}
@@ -580,7 +610,7 @@ export default function ThankYouSection() {
                                 <Text
                                   as="p"
                                   size="textlg"
-                                  className={`!font-castoro text-[18px] text-right font-normal tracking-[0.20px] text-gray-800 lg:text-[17px] md:text-[16px]  'sm:!text-[14px]'
+                                  className={`!font-cormorant text-[18px] text-right font-normal tracking-[0.20px] text-ink lg:text-[17px] md:text-[16px]  'sm:!text-[14px]'
                             }`}
                                 >
                                   {formatCurrency(Math.ceil((category?.engraving_price ?? 0) * (category?.count ?? 1)))}
@@ -598,7 +628,7 @@ export default function ThankYouSection() {
                                   <Text
                                     as="p"
                                     size="textlg"
-                                    className="!font-castoro font-normal tracking-[0.20px] text-gray-800 lg:text-[17px] md:text-[16px] text-nowrap sm:!text-[14px]"
+                                    className="!font-cormorant font-normal tracking-[0.20px] text-ink lg:text-[17px] md:text-[16px] text-nowrap sm:!text-[14px]"
                                   >
                                     {formatCurrency(category?.diamondData?.price)}
                                   </Text>
@@ -611,51 +641,31 @@ export default function ThankYouSection() {
 
                       {orderDetails?.gst_percentage > 0 && (
                         <div className="flex flex-wrap  border-gray-400  justify-between gap-5">
-                          <Text
-                            as="p"
-                            size="textlg"
-                            className="font-normal tracking-[0.40px] text-gray-800 lg:text-[17px] md:text-[16px] sm:!text-[13px]"
-                          >
+                          <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px] md:text-[16px] sm:!text-[13px]">
                             Tax
                           </Text>
-                          <Text
-                            as="p"
-                            size="textlg"
-                            className="font-normal tracking-[0.40px] text-gray-800 lg:text-[17px] md:text-[16px] sm:!text-[14px]"
-                          >
+                          <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px] md:text-[16px] sm:!text-[14px]">
                             {`${orderDetails?.gst_percentage}%`}
                           </Text>
                         </div>
                       )}
                       <div className="flex flex-wrap  border-gray-400  justify-between gap-5">
-                        <Text
-                          as="p"
-                          size="textlg"
-                          className="font-normal tracking-[0.40px] text-gray-800 lg:text-[17px] md:text-[16px] sm:!text-[13px]"
-                        >
+                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px] md:text-[16px] sm:!text-[13px]">
                           Shipping Charge
                         </Text>
-                        <Text
-                          as="p"
-                          size="textlg"
-                          className="font-normal tracking-[0.40px] text-gray-800 lg:text-[17px] md:text-[16px] sm:!text-[14px]"
-                        >
+                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px] md:text-[16px] sm:!text-[14px]">
                           Free
                         </Text>
                       </div>
                       {orderDetails?.total_coupon_price && (
-                        <div className="flex flex-wrap border-t border-gray-400 pt-2.5 justify-between gap-5">
-                          <Text
-                            as="p"
-                            size="textlg"
-                            className="font-normal tracking-[0.20px] text-gray-800 lg:text-[17px] md:text-[16px] sm:!text-[13px]"
-                          >
+                        <div className="flex flex-wrap border-t border-gray-400  pt-5 justify-between gap-5">
+                          <Text as="p" size="textlg" className="font-normal tracking-[0.20px] text-ink lg:text-[17px] md:text-[16px] sm:!text-[13px]">
                             Applied Promocode
                           </Text>
                           <Text
                             as="p"
                             size="textlg"
-                            className="!font-castoro font-normal tracking-[0.20px] text-gray-800 lg:text-[17px] md:text-[16px] sm:!text-[13px]"
+                            className="!font-cormorant font-normal tracking-[0.20px] text-ink lg:text-[17px] md:text-[16px] sm:!text-[13px]"
                           >
                             {'- '}
                             {formatCurrency(
@@ -667,14 +677,14 @@ export default function ThankYouSection() {
                       )}
                     </div>
                     <div className="flex flex-wrap justify-between gap-5">
-                      <Text as="p" size="textlg" className="text-[20px] !font-medium tracking-[0.20px] text-gray-800 lg:text-[17px] md:text-[16px]">
+                      <Heading as="h6" size="headingxs" className="text-[20px] font-medium uppercase tracking-[0.48px] !text-ink lg:text-[16px]">
                         Total Price
-                      </Text>
+                      </Heading>
                       <div className="flex h-fit items-center gap-2">
                         <Heading
                           as="h6"
                           size="headingxs"
-                          className={`!font-castoro text-[20px] font-medium tracking-[0.48px] !text-black lg:text-[16px] ${
+                          className={`!font-cormorant text-[20px] font-medium tracking-[0.48px] !text-ink lg:text-[16px] ${
                             orderDetails?.total_coupon_price || orderDetails?.total_discount_price
                               ? 'line-through !text-gray-400 !text-[16px] md:!text-[14px]'
                               : ''
@@ -693,7 +703,7 @@ export default function ThankYouSection() {
                           <Heading
                             as="h6"
                             size="headingxs"
-                            className="!font-castoro text-[20px] font-medium tracking-[0.48px] !text-black md:text-[16px] lg:text-[16px]"
+                            className="!font-cormorant text-[20px] font-medium tracking-[0.48px] !text-ink md:text-[16px] lg:text-[16px]"
                           >
                             {orderDetails?.total_coupon_price
                               ? formatCurrency(orderDetails?.after_gst_amount ? orderDetails?.after_gst_amount : orderDetails?.total_coupon_price)
@@ -706,55 +716,43 @@ export default function ThankYouSection() {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col items-start gap-3 bg-gray-50 md:px-4 px-[30px] py-3.5 sm:px-4">
-                  <Text
-                    as="p"
-                    size="textmd"
-                    className="text-[18px] font-medium uppercase tracking-[0.36px] text-black-900 lg:text-[16px] md:text-[16px]"
-                  >
+                <div className="flex flex-col items-start gap-3 border border-line bg-paper md:px-4 px-[30px] py-3.5 sm:px-4">
+                  <Text as="p" size="textmd" className="!text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
                     Arrives
                   </Text>
-                  <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-800 lg:text-[17px] md:text-[16px]">
+                  <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px] md:text-[16px]">
                     {arrivesWindow ? `${arrivesWindow.start.format('MMMM DD, YYYY')}  -  ${arrivesWindow.end.format('MMMM DD, YYYY')}` : ''}
                   </Text>
                 </div>
-                <div className="flex flex-col gap-[22px] md:gap-[14px] bg-gray-50 p-[30px] md:p-4 sm:p-4">
+                <div className="flex flex-col gap-[22px] md:gap-[14px] border border-line bg-paper p-[30px] md:p-4 sm:p-4">
                   <div className="flex flex-col items-start gap-6 md:gap-[14px]">
-                    <Text
-                      as="p"
-                      size="textmd"
-                      className="text-[18px] font-medium uppercase tracking-[0.36px] text-black-900 lg:text-[15px]  md:text-[16px]"
-                    >
+                    <Text as="p" size="textmd" className="!text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
                       contact details
                     </Text>
                     <div className="flex flex-col items-start gap-2 self-stretch">
-                      <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-800 lg:text-[17px]  md:!text-[14px]">
+                      <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px]  md:!text-[14px]">
                         Email : {orderDetails?.orderUserDetails?.email}
                       </Text>
-                      <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-800 lg:text-[17px]  md:!text-[14px]">
+                      <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px]  md:!text-[14px]">
                         Phone : {orderDetails?.billingAddressDetails?.mobile ?? '---'}
                       </Text>
                     </div>
                   </div>
-                  <div className="h-[1px] bg-gray-400" />
+                  <div className="h-[1px] bg-line" />
 
                   <div className="flex flex-col items-start gap-[22px] md:gap-[14px]">
-                    <Text
-                      as="p"
-                      size="textmd"
-                      className="text-[18px] font-medium uppercase tracking-[0.36px] text-black-900 lg:text-[15px]  md:!text-[16px]"
-                    >
+                    <Text as="p" size="textmd" className="!text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
                       Delivery address
                     </Text>
                     <div className="mr-[22px] flex flex-col items-start gap-1.5 self-stretch md:mr-0">
-                      <Text as="p" size="textlg" className="font-medium tracking-[0.40px] text-gray-600 lg:text-[17px] capitalize md:!text-[14px]">
+                      <Text as="p" size="textlg" className="font-medium tracking-[0.40px] text-ink-soft lg:text-[17px] capitalize md:!text-[14px]">
                         {orderDetails?.deliveryAddressDetails?.first_name} {orderDetails?.deliveryAddressDetails?.last_name}
                       </Text>
                       <div className="flex flex-col items-start justify-center gap-0.5 self-stretch">
-                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-600 lg:text-[17px] md:!text-[14px]">
+                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink-soft lg:text-[17px] md:!text-[14px]">
                           {orderDetails?.deliveryAddressDetails?.email}
                         </Text>
-                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-600 lg:text-[17px] capitalize md:!text-[14px]">
+                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink-soft lg:text-[17px] capitalize md:!text-[14px]">
                           {orderDetails?.deliveryAddressDetails?.address1}
                           <br />
                           {(() => {
@@ -773,30 +771,26 @@ export default function ThankYouSection() {
                             );
                           })()}
                         </Text>
-                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-600 lg:text-[17px] md:!text-[14px]">
+                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink-soft lg:text-[17px] md:!text-[14px]">
                           {orderDetails?.deliveryAddressDetails?.mobile}
                         </Text>
                       </div>
                     </div>
                   </div>
-                  <div className="h-[1px] bg-gray-400" />
+                  <div className="h-[1px] bg-line" />
                   <div className="flex flex-col items-start gap-[22px] md:gap-[14px]">
-                    <Text
-                      as="p"
-                      size="textmd"
-                      className="text-[18px] font-medium uppercase tracking-[0.36px] text-black-900 lg:text-[15px]  md:!text-[16px]"
-                    >
+                    <Text as="p" size="textmd" className="!text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
                       billing address
                     </Text>
                     <div className="mr-[22px] flex flex-col items-start gap-1.5 self-stretch md:mr-0">
-                      <Text as="p" size="textlg" className="font-medium tracking-[0.40px] text-gray-600 lg:text-[17px] capitalize md:!text-[14px]">
+                      <Text as="p" size="textlg" className="font-medium tracking-[0.40px] text-ink-soft lg:text-[17px] capitalize md:!text-[14px]">
                         {orderDetails?.billingAddressDetails?.first_name} {orderDetails?.billingAddressDetails?.last_name}
                       </Text>
                       <div className="flex flex-col items-start justify-center gap-0.5 self-stretch">
-                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-600 lg:text-[17px] md:!text-[14px]">
+                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink-soft lg:text-[17px] md:!text-[14px]">
                           {orderDetails?.billingAddressDetails?.email}
                         </Text>
-                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-600 lg:text-[17px] capitalize md:!text-[14px]">
+                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink-soft lg:text-[17px] capitalize md:!text-[14px]">
                           {orderDetails?.billingAddressDetails?.address1}
                           <br />
                           {(() => {
@@ -815,19 +809,19 @@ export default function ThankYouSection() {
                             );
                           })()}
                         </Text>
-                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-600 lg:text-[17px] md:!text-[14px]">
+                        <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink-soft lg:text-[17px] md:!text-[14px]">
                           {orderDetails?.billingAddressDetails?.mobile}
                         </Text>
                       </div>
                     </div>
                   </div>
-                  <div className="h-[1px] bg-gray-400" />
+                  <div className="h-[1px] bg-line" />
                   <div className="flex flex-col items-start gap-6 md:gap-[10px]">
-                    <Text as="p" size="textlg" className="font-medium uppercase tracking-[0.36px] text-black-900 lg:text-[15px] md:!text-[16px]">
+                    <Text as="p" size="textlg" className="!text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
                       payment details
                     </Text>
                     <div className="flex items-center gap-6 md:gap-[10px] self-stretch">
-                      <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-gray-800 lg:text-[17px] md:!text-[16px]">
+                      <Text as="p" size="textlg" className="font-normal tracking-[0.40px] text-ink lg:text-[17px] md:!text-[16px]">
                         Payment Method:{' '}
                       </Text>
                       {orderDetails?.payment_method === 2 ? (
@@ -836,7 +830,7 @@ export default function ThankYouSection() {
                         <span>
                           PayPal
                           {orderDetails?.paypal_payer_email && (
-                            <span className="text-[13px] text-gray-600 ml-2">({orderDetails.paypal_payer_email})</span>
+                            <span className="text-[13px] text-ink-soft ml-2">({orderDetails.paypal_payer_email})</span>
                           )}
                         </span>
                       ) : orderDetails?.payment_method === 4 ? (
@@ -845,7 +839,7 @@ export default function ThankYouSection() {
                         <span className="font-medium">
                           Google Pay
                           {orderDetails?.google_pay_card_network && (
-                            <span className="text-[13px] text-gray-600 ml-2">
+                            <span className="text-[13px] text-ink-soft ml-2">
                               ({CARD_NETWORK_NAMES[`${orderDetails.google_pay_card_network}`.toUpperCase()] || orderDetails.google_pay_card_network}
                               {orderDetails?.google_pay_card_last4 ? ` •••• ${orderDetails.google_pay_card_last4}` : ''})
                             </span>
@@ -864,19 +858,21 @@ export default function ThankYouSection() {
           </div>
         </div>
       ) : !loading && status == 'fulfilled' ? (
-        <div className="w-full flex justify-center items-center min-h-[80vh]">You dont have permission for this order.</div>
+        <div className="w-full flex justify-center items-center min-h-[80vh] bg-paper px-4 text-center text-ink">
+          This order belongs to a different account. Sign in with the email used to place it.
+        </div>
       ) : !loading && status == '' ? (
-        <div className="w-full flex justify-center items-center min-h-[80vh]">
+        <div className="w-full flex justify-center items-center min-h-[80vh] bg-paper px-4 text-center text-ink">
           Order details are available after logging in. Please&nbsp;
           <Link href="/login">
-            <span className="underline hover:italic cursor-pointer">{`sign in`}</span>
+            <span className="cursor-pointer underline underline-offset-[3px]">sign in</span>
           </Link>
           &nbsp; to continue.
         </div>
       ) : (
-        <div className="w-full flex justify-center items-center min-h-[80vh]">
+        <div className="w-full flex justify-center items-center min-h-[80vh] bg-paper px-4 text-center text-ink">
           <div className="w-full flex justify-center items-center">
-            <LuLoader className="h-10 w-10 animate-spin" />
+            <LuLoader className="h-10 w-10 animate-spin text-ink" />
           </div>
         </div>
       )}

@@ -8,6 +8,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 
+import { FORM_LABELS, PRIMARY_BTN, SECONDARY_BTN } from '@/app/checkout/checkoutTheme';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { fetchCountries } from '@/store/slices/Address/addressSlice';
 import { updateProfile } from '@/store/slices/auth/authSlice';
@@ -20,7 +21,7 @@ dayjs.extend(customParseFormat);
 dayjs.tz.setDefault('Asia/Kolkata');
 const { Option } = Select;
 
-const ProfileForm = ({ setProfile }: { setProfile: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const ProfileForm = ({ setProfile }: { setProfile?: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth.auth);
@@ -120,7 +121,7 @@ const ProfileForm = ({ setProfile }: { setProfile: React.Dispatch<React.SetState
       // Dispatch the updateProfile action
       const response: any = await dispatch(updateProfile(data));
 
-      setProfile(false);
+      setProfile?.(false);
       notification.success({
         message: response?.payload?.message ?? 'Profile updated successfully!',
       });
@@ -133,7 +134,7 @@ const ProfileForm = ({ setProfile }: { setProfile: React.Dispatch<React.SetState
   };
 
   return (
-    <div className="profile-form-container">
+    <div className={`profile-form-container ${FORM_LABELS}`}>
       <Form
         form={form}
         name="profileForm"
@@ -298,25 +299,15 @@ const ProfileForm = ({ setProfile }: { setProfile: React.Dispatch<React.SetState
             />
           </Form.Item>
         </div>
-        <div className="grid grid-cols-2 gap-4 sm:gap-2">
-          <Form.Item className="col-span-1">
-            <Button
-              type="default"
-              htmlType="submit"
-              className="!text-text_w !bg-secondary w-full !h-[45px] tracking-[1.50px] 2xl:text-[16px] xl:text-[16px] lg:text-[14px] lg:!h-[37px] uppercase"
-            >
-              Submit
-            </Button>
-          </Form.Item>
-          <Form.Item className="col-span-1">
-            <Button
-              type="default"
-              onClick={() => setProfile(false)}
-              className="w-full !h-[45px] tracking-[1.50px] 2xl:text-[16px] xl:text-[16px] lg:text-[14px] lg:!h-[37px] uppercase"
-            >
+        <div className="flex flex-wrap gap-3">
+          <Button htmlType="submit" className={PRIMARY_BTN}>
+            Save details
+          </Button>
+          {setProfile && (
+            <Button onClick={() => setProfile(false)} className={SECONDARY_BTN}>
               Cancel
             </Button>
-          </Form.Item>
+          )}
         </div>
       </Form>
     </div>

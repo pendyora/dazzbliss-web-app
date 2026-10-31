@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CloseCircleFilled } from '@ant-design/icons';
 import { AutoComplete, Button, Checkbox, Form, Input, Select } from 'antd';
 
-import { Text } from '@/components';
 import { varifyEmailApi } from '@/services/cartService';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { fetchAddBillingAddress, fetchCities, fetchCountries, fetchEditBillingAddress, fetchStates } from '@/store/slices/Address/addressSlice';
@@ -14,6 +13,8 @@ import { findExactOptionByName, formatAddressDisplayLine } from '@/utils/common'
 import { formatMobile, getMobileRule, unmaskMobile } from '@/utils/mobileValidation';
 
 import AddressDetalis from './AddressDetalis';
+import { PRIMARY_BTN, SECONDARY_BTN } from './checkoutTheme';
+import SectionTitle from './SectionTitle';
 
 const NO_STATES: any[] = [];
 
@@ -308,7 +309,7 @@ const BillingAddress = ({
     onContinue?.();
   };
   return (
-    <div className=" flex flex-col items-start gap-[28px] sm:gap-[29px]">
+    <div className="flex w-full flex-col items-stretch gap-6">
       {!isActive && !isEditOpen ? (
         billingAddress ? (
           <AddressDetalis
@@ -328,9 +329,7 @@ const BillingAddress = ({
             onEditClick={handleEditBilling}
           />
         ) : (
-          <Text as="p" size="text5xl" className="text-black-900_7f font-normal uppercase opacity-30 lg:text-[34px] md:!text-[20px]">
-            billing address
-          </Text>
+          <SectionTitle muted>Billing address</SectionTitle>
         )
       ) : billingAddress && !isEditOpen ? (
         <AddressDetalis
@@ -351,32 +350,34 @@ const BillingAddress = ({
         />
       ) : (
         <>
-          <Text as="p" size="text5xl" className="text-black-900_7f font-normal uppercase md:-mb-3 lg:text-[22px] md:!text-[20px] sm:text-[32px]">
-            Billing Address
-          </Text>
+          <SectionTitle>Billing address</SectionTitle>
           <Form form={form} layout="vertical" onFinish={handleFinish} className="flex flex-col self-stretch">
-            <div className="grid gap-8 grid-cols-2 md:gap-4 sm:grid-cols-1 sm:gap-0">
+            <div className="grid grid-cols-2 gap-x-4 sm:grid-cols-1">
               <Form.Item name="firstName" label="First name" rules={[{ required: true, message: 'Please enter your first name!' }]}>
-                <Input placeholder="First Name Enter" />
+                <Input />
               </Form.Item>
               <Form.Item name="lastName" label="Last name" rules={[{ required: true, message: 'Please enter your last name!' }]}>
-                <Input placeholder="Last Name Enter" />
+                <Input />
               </Form.Item>
             </div>
             <Form.Item
               name="address1"
-              label="Address 1"
+              label="Address"
               rules={[
                 { required: true, message: 'Please enter your address!' },
-                { max: 60, message: 'Address 1 cannot be more than 60 characters!' },
+                { max: 60, message: 'Address cannot be more than 60 characters!' },
               ]}
             >
-              <Input placeholder="Address 1 Enter" />
+              <Input placeholder="Street and house number" />
             </Form.Item>
-            <Form.Item name="address2" label="Address 2" rules={[{ max: 60, message: 'Address 2 cannot be more than 60 characters!' }]}>
-              <Input placeholder="Address 2 Enter" />
+            <Form.Item
+              name="address2"
+              label="Apartment, suite, building (optional)"
+              rules={[{ max: 60, message: 'Address 2 cannot be more than 60 characters!' }]}
+            >
+              <Input />
             </Form.Item>
-            <div className="grid gap-8 grid-cols-2 md:gap-4 sm:grid-cols-1 sm:gap-0">
+            <div className="grid grid-cols-2 gap-x-4 sm:grid-cols-1">
               <Form.Item name="country" label="Country" rules={[{ required: true, message: 'Please select your country!' }]}>
                 <Select
                   showSearch
@@ -398,10 +399,10 @@ const BillingAddress = ({
                       handleCountryChange(match.id);
                     }
                   }}
-                  placeholder="Select Country"
+                  placeholder="Select"
                 />
               </Form.Item>
-              <Form.Item name="state" label="State/Territory" rules={[{ required: true, message: 'Please select your state!' }]}>
+              <Form.Item name="state" label="State / region" rules={[{ required: true, message: 'Please select your state!' }]}>
                 <Select
                   showSearch
                   // Nothing is pre-highlighted, so Tab/Enter on partial text ("Califor") cannot commit
@@ -412,7 +413,7 @@ const BillingAddress = ({
                     value: option.id,
                   }))}
                   filterOption={(input, option: any) => option?.label?.toLowerCase()?.includes(input.toLowerCase())}
-                  placeholder="Select State"
+                  placeholder="Select"
                   onChange={handleStateChange}
                   onSearch={(text) => {
                     const match = findExactOptionByName(countryStates, text);
@@ -426,7 +427,7 @@ const BillingAddress = ({
                 />
               </Form.Item>
             </div>
-            <div className="grid gap-8 grid-cols-2 md:gap-4 sm:grid-cols-1 sm:gap-0 ">
+            <div className="grid grid-cols-2 gap-x-4 sm:grid-cols-1">
               <Form.Item
                 name="city"
                 label="City"
@@ -450,9 +451,8 @@ const BillingAddress = ({
                   onClear={() => form.setFieldsValue({ city: '' })}
                 />
               </Form.Item>
-              <Form.Item name="zipCode" label="Zip Code" rules={[{ required: true, message: 'Please enter your zip code!' }]}>
+              <Form.Item name="zipCode" label="ZIP / postal code" rules={[{ required: true, message: 'Please enter your zip code!' }]}>
                 <Input
-                  placeholder="ZipCode Enter"
                   inputMode="numeric"
                   onKeyPress={(event) => {
                     if (!/[0-9]/.test(event.key)) {
@@ -463,7 +463,7 @@ const BillingAddress = ({
                 />
               </Form.Item>
             </div>
-            <div className="grid gap-8 grid-cols-2 md:gap-4 sm:grid-cols-1 sm:gap-0">
+            <div className="grid grid-cols-2 gap-x-4 sm:grid-cols-1">
               <Form.Item
                 name="email"
                 label="Email"
@@ -475,11 +475,11 @@ const BillingAddress = ({
                   },
                 ]}
               >
-                <Input placeholder="Email Enter" />
+                <Input />
               </Form.Item>
-              <Form.Item label="Mobile Number" required className="!mb-0">
+              <Form.Item label="Phone" required className="!mb-0">
                 <div className="flex gap-2 items-stretch">
-                  <div className="flex items-center gap-1 border border-gray-300 rounded-md px-0 bg-white w-[72px] !h-[40px] shrink-0 overflow-hidden">
+                  <div className="flex items-center gap-1 border border-line px-0 bg-paper w-[88px] !h-12 shrink-0 overflow-hidden">
                     {selectedCountry?.flag && (
                       <img src={selectedCountry.flag} alt={selectedCountry.name} className="w-4 h-3 object-cover rounded-sm" />
                     )}
@@ -491,7 +491,7 @@ const BillingAddress = ({
                           const digitsOnly = e.target.value.replace(/\D/g, '');
                           form.setFieldsValue({ countryCode: digitsOnly });
                         }}
-                        prefix={selectedCountry ? <span className="text-black/70 text-xs leading-none">+</span> : null}
+                        prefix={selectedCountry ? <span className="text-ink-soft text-xs leading-none">+</span> : null}
                         className="!border-none !shadow-none !text-xs !h-full !px-2"
                       />
                     </Form.Item>
@@ -530,10 +530,10 @@ const BillingAddress = ({
                     }}
                   >
                     <Input
-                      placeholder="Enter Mobile Number"
+                      placeholder="Phone number"
                       type="text"
                       inputMode="numeric"
-                      className="!h-[40px]"
+                      className="!h-12"
                       maxLength={getMobileRule(form.getFieldValue('countryCode'))?.maxLength}
                     />
                   </Form.Item>
@@ -577,19 +577,17 @@ const BillingAddress = ({
                       }
                     }}
                   >
-                    <Text as="span" size="textlg" className="text-black-900 text-[16px] font-normal sm:text-[14px]">
-                      I want to create an account
-                    </Text>
+                    <span className="text-[13.5px] text-ink">Create an account to track this order</span>
                   </Checkbox>
                 </Form.Item>
                 {existingAccountNotice && (
-                  <div className="w-full flex flex-col gap-2 rounded-sm border border-amber-200 bg-amber-50 px-4 py-3">
+                  <div className="w-full flex flex-col gap-2 border border-gilt-soft bg-stone/60 px-4 py-3">
                     <div className="flex items-start gap-3">
-                      <div className="mt-[2px] flex h-[18px] w-[18px] items-center justify-center rounded-full bg-amber-200 text-[12px] font-sans text-amber-700">
+                      <div className="mt-[2px] flex h-[18px] w-[18px] items-center justify-center rounded-full bg-gilt-soft text-[12px] font-sans text-ink">
                         i
                       </div>
                       <div className="flex flex-col gap-1">
-                        <p className="font-sans text-[13px] leading-[18px] text-[#5b5b5b]">{existingAccountNotice}</p>
+                        <p className="font-sans text-[13px] leading-[18px] text-ink">{existingAccountNotice}</p>
                       </div>
                     </div>
                   </div>
@@ -645,7 +643,7 @@ const BillingAddress = ({
                     setIsEditOpen(false);
                     onBillingEditCancel?.();
                   }}
-                  className="min-w-[130px] max-w-[360px] w-full px-6 md:!h-[35px] flex flex-row items-center justify-center text-center uppercase tracking-[2.00px] sm:w-full sm:min-w-0 sm:mx-auto"
+                  className={`${SECONDARY_BTN} min-w-[130px] max-w-[360px] w-full sm:max-w-none`}
                 >
                   {' Cancel '}
                 </Button>
@@ -653,7 +651,7 @@ const BillingAddress = ({
                   type="default"
                   loading={loading}
                   htmlType="submit"
-                  className="!text-text_w !bg-secondary min-w-[130px] max-w-[360px] w-full px-6 md:!h-[35px] flex flex-row items-center justify-center text-center uppercase tracking-[2.00px] sm:w-full sm:min-w-0 sm:mx-auto"
+                  className={`${PRIMARY_BTN} min-w-[130px] max-w-[360px] w-full sm:max-w-none`}
                 >
                   {' Continue '}
                 </Button>

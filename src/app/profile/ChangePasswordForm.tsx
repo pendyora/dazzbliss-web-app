@@ -3,13 +3,14 @@ import React from 'react';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Form, Input, Button, notification } from 'antd';
 
+import { FORM_LABELS, PRIMARY_BTN, SECONDARY_BTN } from '@/app/checkout/checkoutTheme';
 import { apiUpdatePassword } from '@/services/profileService';
 
-const ChangePasswordForm = ({ setProfile }: { setProfile: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const ChangePasswordForm = ({ setProfile }: { setProfile?: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const [form] = Form.useForm();
   const passwordRules = [
     { required: true, message: 'Please input your password!' },
-    { min: 6, message: 'Password must be at least 8 characters!' },
+    { min: 8, message: 'Use at least 8 characters' },
   ];
   const onFinish = async (values: any) => {
     try {
@@ -19,7 +20,8 @@ const ChangePasswordForm = ({ setProfile }: { setProfile: React.Dispatch<React.S
       };
 
       const response: any = await apiUpdatePassword(data);
-      setProfile(false);
+      setProfile?.(false);
+      form.resetFields();
 
       notification.success({ message: response?.data?.message ?? 'Password updated successfully!' });
     } catch (error) {
@@ -34,7 +36,7 @@ const ChangePasswordForm = ({ setProfile }: { setProfile: React.Dispatch<React.S
   // };
 
   return (
-    <div className="change-password-form">
+    <div className={`change-password-form ${FORM_LABELS}`}>
       <Form form={form} name="changePassword" layout="vertical" onFinish={onFinish}>
         <Form.Item name="old_password" label="Current Password" rules={[{ required: true, message: 'Please enter your current password!' }]}>
           <Input.Password placeholder="Current Password" iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
@@ -63,26 +65,15 @@ const ChangePasswordForm = ({ setProfile }: { setProfile: React.Dispatch<React.S
         >
           <Input.Password placeholder="Confirm New Password" iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
         </Form.Item>
-        <div className="grid grid-cols-2 gap-4">
-          <Form.Item className="col-span-1">
-            <Button
-              type="default"
-              htmlType="submit"
-              className="w-full !text-text_w !bg-secondary !h-[45px] tracking-[1.50px] 2xl:text-[16px] xl:text-[16px] lg:text-[14px] lg:!h-[37px] uppercase"
-            >
-              Change Password
-            </Button>
-          </Form.Item>
-          <Form.Item className="col-span-1">
-            <Button
-              type="default"
-              htmlType="button"
-              className="w-full  !h-[45px] tracking-[1.50px] 2xl:text-[16px] xl:text-[16px] lg:text-[14px] lg:!h-[37px] uppercase"
-              onClick={() => setProfile(false)}
-            >
+        <div className="flex flex-wrap gap-3">
+          <Button htmlType="submit" className={PRIMARY_BTN}>
+            Update password
+          </Button>
+          {setProfile && (
+            <Button onClick={() => setProfile(false)} className={SECONDARY_BTN}>
               Cancel
             </Button>
-          </Form.Item>
+          )}
         </div>
       </Form>
     </div>

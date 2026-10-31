@@ -8,9 +8,8 @@ import '../../styles/tailwind.css';
 import '../../styles/index.css';
 
 export const metadata: Metadata = {
-  title: 'Sign In to Your Cart - Ashclair Jewelry Store',
-  description:
-    'Access your cart to continue with your Ashclair jewelry purchase. Use code MAJESCAFREE for free shipping. Secure payment, worldwide shipping, and a selection of rings, diamonds, and couple collections await.',
+  title: 'Secure Checkout | Pendyora',
+  description: 'Complete your Pendyora order. Secure payment and worldwide shipping available.',
   // ogTitle:'...'
 };
 

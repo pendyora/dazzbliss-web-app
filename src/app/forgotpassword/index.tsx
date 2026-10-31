@@ -4,7 +4,7 @@ import ForgotPassword from './ForgotPassword';
 
 export default function LOGINPage() {
   return (
-    <div className="w-full bg-[#ffffff]">
+    <div className="w-full bg-paper">
       <ForgotPassword />
     </div>
   );

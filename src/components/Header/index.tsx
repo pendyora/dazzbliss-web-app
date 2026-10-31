@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -21,11 +21,9 @@ import {
   otherPriceData,
 } from '@/store/slices/Master/masterSlice';
 
-import HeaderViewDynamic from './components/HeaderViewDynamic';
 import OfferModel from './components/OfferModel';
-import PromotionalStrip from './components/promotionalStrip';
-import HeaderMobileView from './HeaderMobileView';
-import HeaderTopPart from './HeaderTopPart';
+import AnnouncementBar from './mega/AnnouncementBar';
+import SiteHeader from './mega/SiteHeader';
 
 let timeout: ReturnType<typeof setTimeout> | null;
 let currentValue: string;
@@ -37,8 +35,8 @@ const SEARCH_DEBOUNCE_MS = 500;
 const Header: React.FC<HeaderProps> = ({ className, headerMetaData, promoStripData }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const headerRef = useRef<HTMLElement>(null);
   const { user } = useAppSelector((state) => state.auth.auth);
-  const [isFocused, setIsFocused] = useState(false);
   const [currency, setCurrency] = useState<any>('');
   const [refresh, setRefresh] = useState<any>(false);
   const [currencyOption, setCurrencyOption] = useState<any>([]);
@@ -127,6 +125,20 @@ const Header: React.FC<HeaderProps> = ({ className, headerMetaData, promoStripDa
   };
 
   useEffect(() => {
+    const el = headerRef.current;
+    if (!el) {
+      return;
+    }
+    const updateHeight = () => {
+      document.documentElement.style.setProperty('--header-height', `${el.offsetHeight}px`);
+    };
+    updateHeight();
+    const ro = new ResizeObserver(updateHeight);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
     dispatch(fetchMasterData());
     dispatch(fetchCurrencyCountry());
     dispatch(getFastDeliveryDay('1'));
@@ -144,8 +156,6 @@ const Header: React.FC<HeaderProps> = ({ className, headerMetaData, promoStripDa
     }
     handleOfferModel();
   }, []);
-
-  const headerClass = 'tracking-[2.00px]  font-sans text-center font-thin xl:text-base lg:text-sm md:text-[12px] leading-normal pb-[14px] sm:pb-0';
 
   const [data, setData] = useState<any>([]);
   const [value, setValue] = useState<string>('');
@@ -192,69 +202,21 @@ const Header: React.FC<HeaderProps> = ({ className, headerMetaData, promoStripDa
     dispatch(clearSelectedProduct());
     dispatch(setSelectedSettingStore(null));
   };
-  const handleFocus = () => {
-    setIsFocused(true); // Show search input on focus
-  };
-
   const handleBlur = () => {
     setValue('');
     setData([]);
     setSearchLoading(false);
-    setIsFocused(false); // Hide search input when focus is lost
   };
 
-  return (
-    <header className={`${className} flex flex-col shadow z-[51]`}>
-      <PromotionalStrip data={promoStripData} />
+  const currencyProps = { currency, currencyOption, setCurrency, setRefresh, tone: 'dark' as const };
 
-      {/* The Yotpo badge in HeaderTopPart is positioned against this wrapper (hence
-          `relative`), floating in the gutter to the right of both rows. Below 770px
-          the rows' own padding drops to 20px, which is narrower than the badge, so
-          each row reserves `pr-[52px]` to keep its content clear of it — sized to the
-          badge's scaled-down footprint (47px). Landscape only: portrait tablets follow
-          the mobile treatment and drop the badge from the header entirely (see
-          HeaderTopPart), so there is nothing to reserve and the nav row keeps the room.
-          Above 769px the existing `lg:px-20` gutter is already wide enough. */}
-      <div className="relative flex flex-col items-center gap-2 lg:gap-0 self-stretch sm:hidden">
-        <div className="container-xs 2xl:px-[160px] xl:px-28 lg:px-20 md:px-5 [@media(min-width:551px)_and_(max-width:769px)_and_(orientation:landscape)]:pr-[52px]">
-          <HeaderTopPart
-            isFocused={isFocused}
-            handleFocus={handleFocus}
-            handleSearch={handleSearch}
-            handleChange={handleChange}
-            currencyOption={currencyOption}
-            currency={currency}
-            setCurrency={setCurrency}
-            handleBlur={handleBlur}
-            data={data}
-            value={value}
-            setRefresh={setRefresh}
-            searchLoading={searchLoading}
-          />
-        </div>
-        {/* 770-999px: with `lg:px-20` here and `lg:px-6` on every link (HeaderViewDynamic), the nav
-            needs 826px but only gets 610-760px, so EDUCATION was cut off at 800 landscape and
-            820/834 portrait. Tighter padding in that band brings it to ~626px; from 1000px up the
-            original padding already fits. 48px still clears the landscape review badge (53px). */}
-        <div className="flex justify-center self-stretch bg-text_w pt-[14px] border-b 2xl:px-[80px] xl:px-28 lg:px-20 md:px-5 [@media(min-width:551px)_and_(max-width:769px)_and_(orientation:landscape)]:pr-[52px] [@media(min-width:770px)_and_(max-width:999px)]:px-12 [@media(min-width:551px)_and_(max-width:719px)]:px-3">
-          <div className="container-xs flex justify-center">
-            <HeaderViewDynamic headerData={headerMetaData} />
-          </div>
-        </div>
-      </div>
-      <HeaderMobileView
-        header={headerClass}
-        currency={currency}
-        value={value}
-        currencyOption={currencyOption}
-        setCurrency={setCurrency}
-        setRefresh={setRefresh}
-        jewelryData={data}
-        handleSearch={handleSearch}
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        megaHeader={headerMetaData}
-        searchLoading={searchLoading}
+  return (
+    <header ref={headerRef} className={`${className} z-[51] flex flex-col overflow-x-clip overflow-y-visible`}>
+      <AnnouncementBar promoStripData={promoStripData} currencyProps={currencyProps} />
+      <SiteHeader
+        headerMetaData={headerMetaData}
+        currencyProps={currencyProps}
+        search={{ value, results: data, loading: searchLoading, onSearch: handleSearch, onPick: handleChange, onReset: handleBlur }}
       />
       {OfferModelOpen == 'false' && <OfferModel />}
     </header>

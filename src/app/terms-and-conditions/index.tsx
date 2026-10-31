@@ -1,84 +1,110 @@
 'use client';
 import React from 'react';
 
-import { Collapse, Typography } from 'antd';
+import CareLayout from '@/components/ClientCare/CareLayout';
+import PolicyDoc, { Callout, CareContact, PolicySection, StepList } from '@/components/ClientCare/PolicyDoc';
 
-const { Title, Paragraph } = Typography;
-// const { Panel } = Collapse;
+const SECTIONS: PolicySection[] = [
+  {
+    id: 'using-this-site',
+    title: 'Using this site',
+    body: (
+      <p>
+        We reserve the right to update or modify these terms and conditions at any time without prior notice. Your use of the Pendyora website
+        following any such change constitutes your agreement to follow and be bound by the terms and conditions as changed. For this reason, we
+        encourage you to review these terms and conditions each time you use this website.
+      </p>
+    ),
+  },
+  {
+    id: 'pricing-errors',
+    title: 'Prices & pricing errors',
+    body: (
+      <>
+        <p>
+          Pricing errors may occur on the Pendyora site from time to time. Pendyora attempts to correct all pricing errors as soon as they are
+          discovered, or as soon as we receive notice of an error.
+        </p>
+        <Callout>
+          Pendyora reserves the right to cancel any order containing a pricing error, with no further obligation to you, even after you have received
+          an order confirmation. Any payment you made for an order cancelled because of a pricing error will be refunded.
+        </Callout>
+      </>
+    ),
+  },
+  {
+    id: 'imports-duties',
+    title: 'Imports, duties & taxes',
+    body: (
+      <p>
+        Goods are imported on behalf of the consignee (the buyer). The consignee authorises Pendyora to import the goods on their behalf, and agrees
+        that Pendyora may delegate this to a subcontractor such as a customs broker. The consignee pays taxes and duties in addition to the purchase
+        price of the goods.
+      </p>
+    ),
+  },
+  {
+    id: 'custom-orders',
+    title: 'Custom orders',
+    body: (
+      <p>
+        Customised and custom-made items cannot be returned. These are orders the customer has modified, including upgraded stones, modifications and
+        new designs.
+      </p>
+    ),
+  },
+  {
+    id: 'layaway',
+    title: 'Layaway',
+    body: (
+      <>
+        <p>
+          Our interest-free layaway plan runs from <strong>3 to 24 months</strong> from the date of your deposit. Make a deposit and we keep your
+          piece aside until it is paid in full, then ship it to you. If the price of the piece goes up in the meantime, your price stays locked at the
+          original purchase price.
+        </p>
+        <h3>How layaway works</h3>
+        <StepList
+          steps={[
+            { title: 'Choose your piece', text: 'Layaway is available on items of $200 or more.' },
+            { title: 'Pick a plan', text: 'Choose between 3 and 24 months; the full amount is split into equal monthly payments.' },
+            { title: 'We set it aside', text: 'As soon as your first payment is made, we put your piece aside until it is paid in full.' },
+            {
+              title: 'We ship it',
+              text: 'Once paid in full, we ship within 7–12 business days (expedited shipping available for an additional fee).',
+            },
+          ]}
+        />
+        <h3>Good to know</h3>
+        <ul>
+          <li>Until it is paid in full, the piece remains the property of Pendyora.</li>
+          <li>
+            If a layaway is not paid in full or is cancelled, a restocking fee of 20% of the total is kept, because the piece is made after the order
+            is placed.
+          </li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    id: 'contact',
+    title: 'Questions',
+    body: (
+      <p>
+        Questions about these terms or layaway? <CareContact /> and our client care team will help.
+      </p>
+    ),
+  },
+];
 
-const TermsAndConditions = () => {
+export default function TermsAndConditions() {
   return (
-    <div className="max-w-7xl mx-auto p-5 mt-5 bg-white shadow-lg rounded-2xl">
-      <Title level={2} className="text-center">
-        Terms and Conditions
-      </Title>
-
-      <Paragraph>
-        We reserve the right to update or modify these terms and conditions at any time without prior notice. Your use of Ashclair Web site following
-        any such change constitutes your agreement to follow and be bound by the terms and conditions as changed. For this reason, we encourage you to
-        review these terms and conditions each time you use this Web site.
-      </Paragraph>
-      <Paragraph>
-        Pricing errors may occur on the Ashclair Site from time to time. Ashclair attempts to correct all pricing errors as soon as they are
-        discovered, or as soon as Ashclair receives notice of an error. Ashclair reserves the right to cancel any orders containing pricing errors,
-        with no further obligations to you, even after your receipt of an order confirmation. Any payments you make to Ashclair for orders that are
-        cancelled due to pricing errors will be refunded.
-      </Paragraph>
-      <Paragraph>
-        The goods will be imported on behalf of the consignee/buyer. The consignee authorizes Ashclair to import the goods on his behalf. Further, the
-        consignee/buyer agrees Ashclair may delegate the obligation to import the goods on his behalf to a subcontractor (e.g. customs broker). The
-        consignee will pay the taxes & duties in addition with the purchase price of the goods.
-      </Paragraph>
-
-      <Title level={4}>Custom Orders</Title>
-
-      <Paragraph>
-        Customized and Custom Made items cannot be returned. These are orders by which the customer had modified including Upgraded Stones,
-        Modifications and New Designs.
-      </Paragraph>
-      <Title level={4}>Layaway</Title>
-
-      <Paragraph>
-        Try our convenient layaway plan! We have an interest-free layaway plan that runs from 3-24 month from the initial date of deposit. Simply make
-        a deposit on your item and we will keep your jewelry aside for you until it is paid in full. Once you have paid for your purchase in full, we
-        will ship your item directly to you. The advantage of our jewelry layaway program is that if the price of a jewelry item increases over time,
-        your price will still remain unchanged. It will be locked in at your original purchase price. This also affords you the flexibility of paying
-        for your jewelry over time.
-      </Paragraph>
-
-      <Title level={4}>How does layaway works?</Title>
-      <ul className="list-disc pl-6 text-gray-700">
-        <li>
-          <Paragraph>Select an item from our collection (Item must be $200 minimum)</Paragraph>
-        </li>
-        <li>
-          <Paragraph>Select amount of months for the Layaway Plan that best suits you</Paragraph>
-        </li>
-        <li>
-          <Paragraph>
-            Full amount of item will be split in 3 to 24 months of equal amounts to be paid off in the 3-24 months depending on plan you have chosen
-          </Paragraph>
-        </li>
-        <li>
-          <Paragraph>As soon as first payment is made we will then put aside your item till it is paid in full</Paragraph>
-        </li>
-        <li>
-          <Paragraph>
-            As soon as the item is paid for in full, we will ship item to you within 7-12 business days (Expedited Shipping Additional Fee)
-          </Paragraph>
-        </li>
-      </ul>
-      <Title level={4}>Notes</Title>
-      <Paragraph>
-        Until item is paid in full it will remain <a href="ashclair.com">ashclair.com</a> property. In the event an item is not paid in full or
-        canceled, a restocking fee of 20% of the total will be kept due to the item being made after the order is placed
-      </Paragraph>
-      <Paragraph>
-        If you have any further questions please feel free to contact <a href="ashclair.com">ashclair.com</a> Sales Department at{' '}
-        <span className="font-semibold">(213) 622-3264</span> or email at <a href="mailto:service@ashclair.com">service@ashclair.com</a>
-      </Paragraph>
-    </div>
+    <CareLayout
+      title="Terms & conditions"
+      crumb="Terms"
+      intro="The terms that apply when you use the Pendyora website and buy from us, including pricing, imports, custom orders and layaway."
+    >
+      <PolicyDoc sections={SECTIONS} help={{ title: 'Have a question?', text: 'Our client care team is happy to help.' }} />
+    </CareLayout>
   );
-};
-
-export default TermsAndConditions;
+}

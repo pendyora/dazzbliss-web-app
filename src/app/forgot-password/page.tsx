@@ -5,9 +5,8 @@ import { Metadata } from 'next';
 import Page from '.';
 
 export const metadata: Metadata = {
-  title: 'Ashclair - Gems & Jewelry',
-  description:
-    'Ashclair offers handcrafted fine jewelry and premium gemstones—custom-designed with expert craftsmanship, direct from a family-run diamond house.',
+  title: 'Set a New Password | Pendyora',
+  description: 'Choose a new password for your Pendyora account.',
   // ogTitle:'...'
 };
 

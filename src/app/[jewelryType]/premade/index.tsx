@@ -1,22 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
-import Faqs from '@/app/faqs/Faqs';
-import OurCollabrations from '@/app/homepage/OurCollabrations';
-import WhyAllorya from '@/components/WhyAllorya';
 import { YotpoReviewsRefresh } from '@/hook/useYotpo';
-import { YouMayAlsoLike } from '@/page';
-import InspiredByCommunityClient from '@/page/InspiredByCommunity/InspiredByCommunityClient';
-import { apiGetCmsContent } from '@/services/masterService';
 import { useAppSelector } from '@/store';
 
-import Faqwithvideo from './Components/Faqwithvideo';
 import PDPPage from './PDPPage';
-import YotpoReiew from './yotpoReiew';
 
 export default function ProductPageSpecificProductPage({ selectionRoute }: { selectionRoute?: any }) {
-  const [faqs, setFaqs] = useState<any[]>([]);
   // The Yotpo widget's product-id is keyed off the selected product's `code`.
   const productCode = useAppSelector((state) => state.products?.selectedProduct?.product_details?.code);
   // useEffect(() => {
@@ -88,54 +79,10 @@ export default function ProductPageSpecificProductPage({ selectionRoute }: { sel
     YotpoReviewsRefresh();
   }, [productCode]);
 
-  useEffect(() => {
-    let isMounted = true;
-    const loadFaqs = async () => {
-      try {
-        // CMS type 2 = FAQs (same source as the /faqs page).
-        const response: any = await apiGetCmsContent(2);
-        const cms = response?.data?.data;
-        const parsed = cms?.content ? JSON.parse(cms.content) : [];
-        if (isMounted && Array.isArray(parsed)) {
-          setFaqs(parsed.filter((item: any) => item?.question));
-        }
-      } catch (error) {
-        console.error('Error fetching FAQs:', error);
-      }
-    };
-    loadFaqs();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  // Reviews, suggestions and details are sections of PDPPage, so its sticky section bar spans them all.
   return (
-    <div className="w-full bg-[#ffffff]">
-      <div className=" flex flex-col  items-center  lg:mt-[10px] md:mt-0 lg:gap-[60px] md:gap-[58px] sm:gap-0 sm:mt-0">
-        <PDPPage selectionRoute={selectionRoute} />
-        <div className="flex flex-col mt-0 gap-[55px] self-stretch lg:gap-[76px] md:gap-[57px] sm:gap-3">
-          <YotpoReiew />
-
-          <YouMayAlsoLike />
-
-          {/* <OurCollabrations /> */}
-
-          {/* The live feed ends with its own bottom padding; the static gallery it falls back to
-              has none, so it gets the same padding here before the FAQ band. */}
-          <InspiredByCommunityClient borderColorClass="border-[#E5E9DB]" fallbackClassName="pb-10 md:pb-8 sm:pb-0" showTopBorder={false} />
-
-          {/* The Instagram section above already ends with its own bottom padding, so the parent
-              stack gap is cancelled on desktop/tablet to avoid a tall white band before the FAQs. */}
-          <div className="-mt-[55px] lg:-mt-[76px] md:-mt-[57px] sm:mt-0">
-            <Faqwithvideo />
-          </div>
-
-          {/* {faqs.length > 0 && (
-            <div className="-mb-[60px] md:-mb-[45px] sm:mb-0">
-              <Faqs content={faqs} variant="pdp" />
-            </div>
-          )} */}
-        </div>
-      </div>
+    <div className="w-full bg-paper">
+      <PDPPage selectionRoute={selectionRoute} />
     </div>
   );
 }

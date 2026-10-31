@@ -5,8 +5,8 @@ import { Metadata } from 'next';
 import Page from '.';
 
 export const metadata: Metadata = {
-  title: 'Ashclair - FAQs',
-  description: 'Ashclair - FAQs',
+  title: 'FAQs | Pendyora',
+  description: 'Answers to common questions about Pendyora orders, sizing, diamonds, returns and care.',
   // ogTitle:'...'
 };
 

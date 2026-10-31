@@ -84,6 +84,9 @@ async function RootLayout({ children }: { children: ReactNode }) {
             tracking runs regardless of the banner choice. When enforced, every
             optional type starts 'denied' (only functionality and security are
             granted) and the provider replays a 'consent' 'update' on opt-in. */}
+        {/* DAZZBLISS: disabled — old client's ID, enable with Dazzbliss's own.
+            Ashclair moved Microsoft Clarity, Google Ads (gtag AW-…), Meta Pixel and the AMP
+            <amp-analytics> tag into `@/components/CookieConsent/Trackers`, gated on cookie consent. */}
         <script
           type="text/javascript"
           dangerouslySetInnerHTML={{
@@ -103,8 +106,9 @@ async function RootLayout({ children }: { children: ReactNode }) {
           }}
         ></script>
 
-        {/* eslint-disable-next-line react/no-unknown-property */}
+        {/* AMP Analytics runtime — disabled (DAZZBLISS: disabled — old client's ID, enable with Dazzbliss's own)
         <script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
+        */}
       </head>
 
       <body>
@@ -116,9 +120,9 @@ async function RootLayout({ children }: { children: ReactNode }) {
         {/* The site-wide <amp-analytics> Google Ads tag that used to sit here is a
             marketing tag, so it moved into `@/components/CookieConsent/Trackers`
             where it renders only with marketing consent. The AMP runtime loader
-            above stays unconditional: it sets no cookies and is inert without an
-            <amp-analytics> element to process. */}
+            above is disabled for Dazzbliss along with it. */}
 
+        {/* OnWebChat — disabled
         <script
           type="text/javascript"
           dangerouslySetInnerHTML={{
@@ -126,12 +130,13 @@ async function RootLayout({ children }: { children: ReactNode }) {
               var onWebChat={ar:[], set: function(a,b){if (typeof onWebChat_==='undefined'){this.ar.
               push([a,b]);}else{onWebChat_.set(a,b);}},get:function(a){return(onWebChat_.get(a));},
               w:(function(){ var ga=document.createElement('script'); ga.type = 'text/javascript';
-              ga.async=1;ga.src=('https:'==document.location.protocol?'https:':'http:') + 
+              ga.async=1;ga.src=('https:'==document.location.protocol?'https:':'http:') +
               '//www.onwebchat.com/clientchat/f5879e3080f533c29068efd87f699142';var s=
               document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})()}
               `,
           }}
         ></script>
+        */}
       </body>
     </html>
   );

@@ -8,9 +8,8 @@ import '../../styles/tailwind.css';
 import '../../styles/index.css';
 
 export const metadata: Metadata = {
-  title: 'My Profile - Manage Your Account and Details | Ashclair Jewelry',
-  description:
-    'Access your Ashclair Jewelry profile to manage purchases, personal details, and billing information. Use code MAJESCAFREE for free shipping on your next order.',
+  title: 'Your account | Pendyora',
+  description: 'Manage your Pendyora orders, wishlist, addresses and details.',
   // ogTitle:'...'
 };
 

@@ -27,10 +27,12 @@ import Script from 'next/script';
 import useCookieConsent from '@/hook/useCookieConsent';
 import { isKlaviyoEnabled } from '@/lib/klaviyo';
 
-const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID || 'G-MB1EBYGV3G';
-const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || 'AW-17230998076';
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '714491101467345';
-const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID || 'qwosyewy41';
+// DAZZBLISS: no fallback IDs. The old client's IDs were hardcoded here; each tracker now loads
+// only when its env var is set with Dazzbliss's own ID.
+const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID || '';
+const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || '';
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '';
+const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID || '';
 /** Optional — no GTM container is configured today; set the env var to enable it. */
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || '';
 const KLAVIYO_PUBLIC_KEY = process.env.NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY || '';
@@ -92,7 +94,10 @@ export default function Trackers(): JSX.Element | null {
     return null;
   }
 
-  const { analytics, marketing } = trackingPreferences;
+  const { analytics: analyticsConsent, marketing: marketingConsent } = trackingPreferences;
+  // A tag group runs only with consent AND a configured ID.
+  const analytics = analyticsConsent && Boolean(GA4_ID);
+  const marketing = marketingConsent && Boolean(GOOGLE_ADS_ID);
   const needsGtag = analytics || marketing;
 
   return (
@@ -122,7 +127,7 @@ export default function Trackers(): JSX.Element | null {
       )}
 
       {/* Google Tag Manager — analytics. Only when a container ID is configured. */}
-      {analytics && GTM_ID && (
+      {analyticsConsent && GTM_ID && (
         <Script
           id="gtm"
           strategy="afterInteractive"
@@ -139,11 +144,11 @@ export default function Trackers(): JSX.Element | null {
       )}
 
       {/* Microsoft Clarity — analytics. */}
-      {analytics && <MicrosoftClarity projectId={CLARITY_ID} />}
+      {analyticsConsent && CLARITY_ID && <MicrosoftClarity projectId={CLARITY_ID} />}
 
       {/* Meta Pixel — marketing. The init fires its own PageView, which is why
           AppProvider only reports subsequent route changes. */}
-      {marketing && (
+      {marketingConsent && META_PIXEL_ID && (
         <Script
           id="meta-pixel"
           strategy="afterInteractive"
@@ -167,7 +172,7 @@ export default function Trackers(): JSX.Element | null {
       {/* Klaviyo onsite — marketing. Powers `Viewed Product` / Browse Abandonment.
           `_learnq` is stubbed before the script so events fired by a PDP that renders
           ahead of this afterInteractive script are queued rather than dropped. */}
-      {marketing && isKlaviyoEnabled() && (
+      {marketingConsent && isKlaviyoEnabled() && (
         <>
           <Script id="klaviyo-queue" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: 'window._learnq = window._learnq || [];' }} />
           <Script id="klaviyo-onsite" strategy="afterInteractive" src={`https://static.klaviyo.com/onsite/js/${KLAVIYO_PUBLIC_KEY}/klaviyo.js`} />
@@ -184,7 +189,7 @@ export default function Trackers(): JSX.Element | null {
                 <script type="application/json">
                   {
                     "vars": {
-                      "gtag_id": "AW-172306",
+                      "gtag_id": "${GOOGLE_ADS_ID}",
                       "config": {
                         "${GOOGLE_ADS_ID}": {
                           "groups": "default"

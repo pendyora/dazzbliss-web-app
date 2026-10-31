@@ -5,7 +5,7 @@ import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { Button, Form, Input, Modal } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LuCheck, LuEye, LuEyeOff, LuPencil } from 'react-icons/lu';
+import { LuEye, LuEyeOff, LuPencil } from 'react-icons/lu';
 
 import { CheckBox, Text } from '@/components';
 import CloudflareTurnstile, { CloudflareTurnstileHandle } from '@/components/common/CloudflareTurnstile';
@@ -16,6 +16,9 @@ import { setBillingAddress, setDeliveryAddress } from '@/store/slices/Address/ad
 import { loginUser } from '@/store/slices/auth/authSlice';
 import { AddWishListProducts, fetchCartProducts, fetchLocalCartProductsList, setGuestDetails } from '@/store/slices/Cart/cartSlice';
 import { isDisposableDomain, isValidEmailFormat } from '@/utils/emailValidation';
+
+import { PRIMARY_BTN } from './checkoutTheme';
+import SectionTitle from './SectionTitle';
 
 const VERIFY_USER_EXISTING_ACCOUNT_MESSAGE =
   'An account already exists with this email. You can login to the account or can place an order as guest user.';
@@ -51,8 +54,8 @@ const EmailInputControl = forwardRef<any, EmailInputControlProps>(function Email
               e.stopPropagation();
               onEditClick();
             }}
-            className={`absolute right-2 top-1/2 z-[2] flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
-              highlighted ? 'scale-110 animate-pulse text-[#6f7a56] shadow-[0_0_0_2px_rgba(111,122,86,0.55)]' : 'text-[#6f7a56] hover:text-[#4e5840]'
+            className={`absolute right-2 top-1/2 z-[2] flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-paper transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
+              highlighted ? 'scale-110 animate-pulse text-gilt shadow-[0_0_0_2px_theme(colors.gilt.soft)]' : 'text-gilt hover:text-ink'
             }`}
           >
             <LuPencil className="h-[14px] w-[14px]" />
@@ -80,21 +83,12 @@ type Props = {
 
 function SmsConsentField({ checked, onChange, disabled }: { checked?: boolean; onChange?: (v: boolean) => void; disabled?: boolean }) {
   return (
-    <div className="flex items-start gap-[14px] text-left 2xl:text-[13px] text-[14px] !font-sans font-extralight leading-[22px] tracking-[0.16px] text-[#757575] sm:!text-[11px]">
-      <CheckBox
-        id="contact-sms-consent"
-        label=""
-        size="xs"
-        checked={checked}
-        onChange={onChange}
-        disabled={disabled}
-        className="!flex-shrink-0 gap-[14px] text-left 2xl:text-[13px] text-[14px] !font-sans font-extralight leading-[22px] tracking-[0.16px] text-[#757575] sm:!text-[11px]"
-      />
+    <div className="flex items-start gap-3 text-left text-[12px] leading-[1.5] text-ink-soft">
+      <CheckBox id="contact-sms-consent" label="" size="xs" checked={checked} onChange={onChange} disabled={disabled} className="!flex-shrink-0" />
       <label htmlFor="contact-sms-consent" className="cursor-pointer pl-0">
-        By checking this box, you agree to receive automated personalized text messages (e.g. cart reminders, shipping updates, and tracking info)
-        from ASHCLAIR. Reply HELP for help and STOP to cancel.{' '}
+        Text me order and delivery updates from Pendyora. Optional. Message rates may apply; reply HELP for help and STOP to cancel.{' '}
         <Link href="/terms-and-conditions" className="underline !cursor-pointer">
-          Terms & Privacy
+          Terms &amp; Privacy
         </Link>
         .
       </label>
@@ -417,48 +411,34 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
   }, [user]);
 
   return (
-    <div className="flex flex-col items-end gap-5 self-stretch sm:gap-4">
-      <div className="mb-2 flex flex-row flex-wrap justify-between items-start gap-x-6 gap-y-3 self-stretch sm:mb-1 sm:flex-col sm:items-start sm:gap-y-2">
-        <div className="flex flex-row items-center gap-2 sm:gap-1">
-          <Text as="p" size="text5xl" className="text-black font-normal uppercase lg:text-[22px] sm:text-[20px] md:!text-[20px]">
-            contact information
-          </Text>
-          {(isContactConfirmed || isExistingUser) && (
-            <span
-              aria-label="Completed"
-              className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#6f7a56] text-white md:h-[18px] md:w-[18px]"
-            >
-              <LuCheck className="h-[13px] w-[13px]" strokeWidth={3} />
-            </span>
-          )}
-        </div>
-        {!isExistingUser && !isContactConfirmed ? (
-          <div className="flex flex-wrap items-baseline justify-end gap-x-1.5 gap-y-1 text-right md:mt-1 sm:justify-start sm:text-left">
-            <span className="font-sans text-[15px] font-extralight leading-snug tracking-[0.02em] text-[#757575] sm:text-[14px] md:text-[16px]">
-              Already have an account?
-            </span>
-            <button
-              type="button"
-              onClick={() => setLoginModalOpen(true)}
-              className="inline border-0 bg-transparent p-0 font-sans text-[15px] font-normal leading-snug tracking-[0.02em] text-[#757575] underline underline-offset-[3px] decoration-[#757575] decoration-1 transition-opacity hover:opacity-80 sm:text-[14px] md:text-[16px]"
-            >
-              Log In
-            </button>
-          </div>
-        ) : null}
-      </div>
+    <div className="flex flex-col items-stretch gap-6 self-stretch">
+      <SectionTitle
+        done={isContactConfirmed || isExistingUser}
+        action={
+          !isExistingUser && !isContactConfirmed ? (
+            <p className="m-0 text-[12.5px] text-ink-soft">
+              Already have an account?{' '}
+              <button type="button" onClick={() => setLoginModalOpen(true)} className="text-ink underline underline-offset-[3px]">
+                Sign in
+              </button>
+            </p>
+          ) : null
+        }
+      >
+        Contact
+      </SectionTitle>
 
       {isExistingUser ? (
         <div className="flex w-full flex-col self-stretch">
           {/* Matches the `Email` label antd renders on the editable branch below — without it a
               signed-in shopper sees an unlabelled grey box. */}
-          <label htmlFor="checkout-contact-email" className="mb-1 font-sans text-[14px] font-normal leading-[22px] text-black">
-            Email <span className="text-red-500">*</span>
+          <label htmlFor="checkout-contact-email" className="mb-1.5 text-[10.5px] uppercase tracking-[0.16em] text-ink-soft">
+            Email
           </label>
           <div
             id="checkout-contact-email"
             role="status"
-            className="flex min-h-[40px] w-full items-center border border-gray-200 bg-gray-100 px-3 py-2.5 font-sans text-[15px] font-normal leading-normal text-[#a3a3a3] antialiased sm:min-h-[39px] sm:text-[14px]"
+            className="flex min-h-12 w-full items-center border border-line bg-stone px-3.5 text-[14px] text-ink-soft"
           >
             {user?.email || ''}
           </div>
@@ -476,11 +456,7 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
           <Form.Item
             name="email"
             validateTrigger="onChange"
-            label={
-              <span className="font-sans font-normal text-black">
-                Email <span className="text-red-500">*</span>
-              </span>
-            }
+            label={<span>Email</span>}
             rules={[
               { required: true, message: 'Please enter your email!' },
               {
@@ -519,44 +495,44 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
                 // ✅ API call (debounced)
                 handleEmailTyping(value);
               }}
-              className="!h-11 !rounded-none !border-[#3b3b3b] !shadow-none disabled:!bg-[#f3f4f6] disabled:!text-[#4b5563] disabled:!opacity-100 [&.ant-input-disabled]:!bg-[#f3f4f6] [&.ant-input-disabled]:!text-[#4b5563] [&.ant-input-disabled]:!cursor-not-allowed"
+              className="disabled:!opacity-100 [&.ant-input-disabled]:!cursor-not-allowed [&.ant-input-disabled]:!bg-stone [&.ant-input-disabled]:!text-ink-soft"
             />
           </Form.Item>
 
           {existingAccountNotice && normalizeEmail(form.getFieldValue('email')) === normalizeEmail(existingAccountEmail) ? (
-            <div className="w-full flex flex-col gap-2 rounded-sm border border-amber-200 bg-amber-50 px-4 py-3 mb-2">
+            <div className="w-full flex flex-col gap-2 border border-gilt-soft bg-stone/60 px-4 py-3 mb-2">
               <div className="flex items-start gap-3">
-                <div className="mt-[2px] flex h-[18px] min-w-[18px] w-[18px] items-center justify-center rounded-full bg-amber-200 text-[12px] font-sans text-amber-700 shrink-0">
+                <div className="mt-[2px] flex h-[18px] min-w-[18px] w-[18px] items-center justify-center rounded-full bg-gilt-soft text-[12px] font-sans text-ink shrink-0">
                   i
                 </div>
                 <div className="flex flex-col gap-1">
-                  <p className="font-sans text-[13px] leading-[18px] text-[#5b5b5b] break-words">{existingAccountNotice}</p>
+                  <p className="font-sans text-[13px] leading-[18px] text-ink break-words">{existingAccountNotice}</p>
                 </div>
               </div>
             </div>
           ) : null}
 
           {emailApiError ? (
-            <div className="w-full flex flex-col gap-2 rounded-sm border border-red-300 bg-red-50 px-4 py-3 mb-2">
+            <div className="w-full flex flex-col gap-2 border border-danger bg-paper px-4 py-3 mb-2">
               <div className="flex items-start gap-3">
-                <div className="mt-[2px] flex h-[18px] min-w-[18px] w-[18px] items-center justify-center rounded-full bg-red-500 text-[12px] font-sans text-white shrink-0">
+                <div className="mt-[2px] flex h-[18px] min-w-[18px] w-[18px] items-center justify-center rounded-full bg-danger text-[12px] font-sans text-paper shrink-0">
                   !
                 </div>
                 <div className="flex flex-col gap-1">
-                  <p className="font-sans text-[13px] leading-[18px] text-red-600 break-words">{emailApiError}</p>
+                  <p className="font-sans text-[13px] leading-[18px] text-danger break-words">{emailApiError}</p>
                 </div>
               </div>
             </div>
           ) : null}
 
           {savedCartCount > 0 && normalizeEmail(form.getFieldValue('email')) === normalizeEmail(existingAccountEmail) ? (
-            <div className="w-full flex flex-col gap-2 rounded-sm border border-blue-200 bg-blue-50 px-4 py-3 mb-2">
+            <div className="w-full flex flex-col gap-2 border border-line bg-stone/60 px-4 py-3 mb-2">
               <div className="flex items-start gap-2">
-                <div className="mt-[2px] flex h-[18px] min-w-[18px] w-[18px] items-center justify-center rounded-full bg-blue-200 text-[12px] font-sans text-blue-700 shrink-0">
+                <div className="mt-[2px] flex h-[18px] min-w-[18px] w-[18px] items-center justify-center rounded-full bg-gilt-soft text-[12px] font-sans text-ink shrink-0">
                   i
                 </div>
                 <div className="flex-1">
-                  <p className="font-sans text-[13px] leading-[18px] text-[#5b5b5b]">
+                  <p className="font-sans text-[13px] leading-[18px] text-ink">
                     You have {savedCartCount} item(s) saved in your cart from a previous visit.
                   </p>
                   <div className="flex gap-3 mt-3">
@@ -564,14 +540,14 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
                       type="button"
                       onClick={handleAddSavedCartItems}
                       disabled={isMergingCart}
-                      className="bg-secondary text-white border-0 h-[34px] px-4 text-[12px] uppercase tracking-[1.5px] font-sans disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="bg-ink text-paper border-0 h-[34px] px-4 text-[11px] uppercase tracking-[0.16em] disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       {isMergingCart ? 'Adding...' : 'Add to order'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setSavedCartCount(0)}
-                      className="bg-transparent text-[#5b5b5b] border border-[#ccc] h-[34px] px-4 text-[12px] uppercase tracking-[1.5px] font-sans"
+                      className="bg-transparent text-ink border border-line h-[34px] px-4 text-[11px] uppercase tracking-[0.16em]"
                     >
                       No thanks
                     </button>
@@ -582,26 +558,14 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
           ) : null}
 
           {cartMergeSuccess ? (
-            <div className="w-full rounded-sm border border-green-200 bg-green-50 px-4 py-2 mb-2">
-              <p className="font-sans text-[13px] leading-[18px] text-green-700">{cartMergeSuccess}</p>
+            <div className="w-full border border-gilt-soft bg-stone/60 px-4 py-2 mb-2">
+              <p className="font-sans text-[13px] leading-[18px] text-gilt">{cartMergeSuccess}</p>
             </div>
           ) : null}
 
           {!isContactConfirmed ? (
             <>
-              <Form.Item
-                name="smsConsent"
-                valuePropName="checked"
-                getValueFromEvent={(v) => v}
-                validateTrigger={['onSubmit', 'onChange']}
-                rules={[
-                  {
-                    validator: (_, v) =>
-                      v === true ? Promise.resolve() : Promise.reject(new Error('Please confirm the messaging terms to continue.')),
-                  },
-                ]}
-                className="!mt-2"
-              >
+              <Form.Item name="smsConsent" valuePropName="checked" getValueFromEvent={(v) => v} className="!mt-2">
                 <SmsConsentField />
               </Form.Item>
 
@@ -612,7 +576,7 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
                     htmlType="submit"
                     loading={loading}
                     disabled={Boolean(emailApiError) || loading}
-                    className="!text-text_w !bg-secondary w-full md:!h-[35px] !h-[39px] flex flex-row items-center justify-center text-center uppercase tracking-[2.00px] sm:px-4 disabled:!cursor-not-allowed disabled:!bg-[#bcc2b0] disabled:!text-white"
+                    className={`${PRIMARY_BTN} w-full`}
                   >
                     Continue
                   </Button>
@@ -639,8 +603,8 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
       >
         <div className="flex w-full flex-col gap-6">
           <div className="flex flex-col items-center gap-3 px-1 text-center">
-            <p className="!font-castoro text-primary text-[28px] font-normal leading-tight sm:text-[24px]">Login</p>
-            <p className="max-w-[420px] text-[13px] font-sans font-extralight leading-[1.5] text-[#757575] sm:text-[12px]">
+            <p className="m-0 font-cormorant text-[30px] font-normal leading-tight text-ink">Sign in</p>
+            <p className="max-w-[420px] text-[13px] font-sans font-extralight leading-[1.5] text-ink-soft sm:text-[12px]">
               Log in below to track this order in your account. We do not save any payment information.
             </p>
           </div>
@@ -653,16 +617,12 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
             colon={false}
             requiredMark={false}
             initialValues={{ email: '', password: '' }}
-            className="[&_.ant-form-item-label>label]:!h-auto [&_.ant-form-item-label>label]:!w-full"
+            className="[&_.ant-form-item-label>label]:!h-auto [&_.ant-form-item-label>label]:!w-full [&_.ant-form-item-label>label]:!text-[10.5px] [&_.ant-form-item-label>label]:uppercase [&_.ant-form-item-label>label]:tracking-[0.16em] [&_.ant-form-item-label>label]:text-ink-soft"
           >
             <Form.Item
               name="email"
               validateTrigger="onChange"
-              label={
-                <span className="font-sans font-normal text-black">
-                  Email <span className="text-red-500">*</span>
-                </span>
-              }
+              label={<span>Email</span>}
               rules={[
                 {
                   validator: async (_, value) => {
@@ -682,19 +642,17 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
               ]}
               className="[&_.ant-form-item-label>label]:!font-normal [&_.ant-form-item-label>label]:font-sans"
             >
-              <Input placeholder="Email" className="!h-11 !rounded-none !border-[#3b3b3b] !shadow-none" />
+              <Input placeholder="Email" />
             </Form.Item>
 
             <Form.Item
               name="password"
               label={
                 <div className="flex w-full flex-row flex-wrap items-center justify-between gap-x-2 gap-y-1 pr-0">
-                  <span className="font-sans font-normal text-black">
-                    Password <span className="text-red-500">*</span>
-                  </span>
+                  <span>Password</span>
                   <Link
                     href="/forgot-password"
-                    className="shrink-0 font-sans text-[13px] font-normal text-black underline underline-offset-2 sm:text-[12px]"
+                    className="shrink-0 text-[12px] normal-case tracking-normal text-ink underline underline-offset-2"
                     onClick={() => setLoginModalOpen(false)}
                   >
                     Forgot Password?
@@ -718,7 +676,6 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
             >
               <Input.Password
                 placeholder="Password"
-                className="!h-11 !rounded-none !border-[#3b3b3b] !shadow-none"
                 iconRender={(visible) => (visible ? <LuEye /> : <LuEyeOff />)}
                 visibilityToggle={{
                   visible: showPassword,
@@ -728,7 +685,7 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
             </Form.Item>
 
             {loginErrorMessage && (
-              <Text as="p" size="textlg" className="-mt-1 mb-1 text-red-500 font-sans">
+              <Text as="p" size="textlg" className="-mt-1 mb-1 text-danger font-sans">
                 {loginErrorMessage}
               </Text>
             )}
@@ -742,19 +699,14 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
             />
 
             <Form.Item className="!mb-0 !mt-2">
-              <Button
-                type="default"
-                htmlType="submit"
-                loading={authLoading}
-                className="!h-12 !w-full !border-0 !bg-[#6f7a56] !text-text_w !font-sans uppercase tracking-[2px] hover:!bg-[#818D64] sm:!text-[12px]"
-              >
-                {authLoading ? 'Processing...' : 'Login & Continue'}
+              <Button type="default" htmlType="submit" loading={authLoading} className={`${PRIMARY_BTN} !w-full`}>
+                {authLoading ? 'Signing in…' : 'Sign in & continue'}
               </Button>
             </Form.Item>
           </Form>
 
           <button type="button" onClick={openGuestFromLogin} className="w-full border-0 bg-transparent p-0 text-center underline underline-offset-2">
-            <span className="font-sans text-[15px] font-extralight text-[#757575] sm:text-[14px] md:text-[16px]">Continue as Guest</span>
+            <span className="font-sans text-[15px] font-extralight text-ink-soft sm:text-[14px] md:text-[16px]">Continue as Guest</span>
           </button>
         </div>
       </Modal>

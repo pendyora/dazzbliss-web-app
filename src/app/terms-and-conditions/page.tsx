@@ -5,8 +5,8 @@ import { Metadata } from 'next';
 import Page from '.';
 
 export const metadata: Metadata = {
-  title: 'Ashclair - Terms And Conditions',
-  description: 'Ashclair - Terms and conditions',
+  title: 'Terms & Conditions | Pendyora',
+  description: 'The terms that apply when you use the Pendyora website and buy from us.',
   // ogTitle:'...'
 };
 

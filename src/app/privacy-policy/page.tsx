@@ -5,8 +5,8 @@ import { Metadata } from 'next';
 import Page from '.';
 
 export const metadata: Metadata = {
-  title: 'Ashclair - Privacy Policy',
-  description: 'Ashclair - Privacy Policy',
+  title: 'Privacy Policy | Pendyora',
+  description: 'How Pendyora collects, uses and protects your personal information.',
   // ogTitle:'...'
 };
 

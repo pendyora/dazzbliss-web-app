@@ -3,10 +3,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Button, Input } from 'antd';
+import { LuTag } from 'react-icons/lu';
 
-import { Text } from '@/components';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { clearCouponData, verifyCoupon } from '@/store/slices/Cart/cartSlice';
+
+import { PRIMARY_BTN } from './checkoutTheme';
 
 type Props = {
   guestCartProducts: any[];
@@ -54,7 +56,7 @@ export default function CheckoutPromoCode({ guestCartProducts }: Props) {
 
   const handleApplyCoupon = async () => {
     if (!promoCode.trim()) {
-      setErrorMessage('Promo code cannot be empty.');
+      setErrorMessage('Enter a code to apply it.');
       return;
     }
 
@@ -83,38 +85,40 @@ export default function CheckoutPromoCode({ guestCartProducts }: Props) {
     }
   };
 
+  const applied = Boolean(promoCode && promoCode === couponData?.coupon_code);
   return (
-    <div className="flex w-full flex-col gap-3 self-stretch">
-      <Text as="p" size="textxl" className="text-black font-normal uppercase md:!text-[16px] lg:text-[18px] sm:text-[16px]">
-        Have a promocode?
-      </Text>
-
-      <div className="flex flex-row flex-nowrap items-stretch gap-[18px] sm:gap-3">
+    <div className="grid w-full gap-2">
+      <label htmlFor="checkout-promo-code" className="text-[10.5px] uppercase tracking-[0.16em] text-ink-soft">
+        Promo code
+      </label>
+      <div className="flex">
         <Input
+          id="checkout-promo-code"
           name="checkout-promo-code"
-          placeholder="Enter Promo Code"
+          placeholder="Enter a promo code"
           value={promoCode}
           onChange={(e) => setPromoCode(e.target.value)}
           type="text"
-          className="!min-h-[40px] min-w-0 flex-1 !rounded-none border border-gray-300 bg-white !font-sans !shadow-none sm:!min-h-[39px]"
+          status={errorMessage ? 'error' : undefined}
+          className="min-w-0 flex-1 !border-r-0 uppercase tracking-[0.12em] placeholder:normal-case placeholder:tracking-normal"
         />
-        <Button
-          type="default"
-          onClick={handleApplyCoupon}
-          className="!h-[40px] !w-[140px] shrink-0 !border-0 !bg-secondary !text-text_w uppercase tracking-[1.5px] sm:!h-[39px] sm:!w-[110px]"
-        >
+        <Button type="default" onClick={handleApplyCoupon} className={`${PRIMARY_BTN} !px-6`}>
           Apply
         </Button>
       </div>
-
-      {promoCode && promoCode === couponData?.coupon_code && (
-        <div className="font-sans text-sm text-green-600">
+      {applied && (
+        <p className="m-0 flex items-center gap-2 text-[12.5px] text-gilt">
+          <LuTag className="h-3.5 w-3.5" aria-hidden />
           {couponData?.coupon_description
             ? couponData?.coupon_description
-            : `You Saved ${couponData?.discount_type == 2 ? `${couponData?.discount_value}%` : `$${couponData?.discount_value} `}!`}
-        </div>
+            : `${couponData?.coupon_code} applied. You save ${couponData?.discount_type == 2 ? `${couponData?.discount_value}%` : `$${couponData?.discount_value}`}.`}
+        </p>
       )}
-      {errorMessage ? <div className="font-sans text-sm text-red-600">{errorMessage}</div> : null}
+      {errorMessage ? (
+        <p role="alert" className="m-0 text-[12.5px] text-danger">
+          {errorMessage}
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -1,156 +1,141 @@
 'use client';
 import React from 'react';
 
-import { Typography, Divider } from 'antd';
+import { CARE } from '@/components/ClientCare/careInfo';
+import CareLayout from '@/components/ClientCare/CareLayout';
+import PolicyDoc, { PolicySection } from '@/components/ClientCare/PolicyDoc';
 
-const { Title, Paragraph } = Typography;
+const mail = <a href={`mailto:${CARE.email}`}>{CARE.email}</a>;
 
-const PrivacyPolicy = () => {
-  return (
-    <div className="max-w-7xl my-5 mx-auto p-6 bg-white shadow-md rounded-lg">
-      <Title level={2} className="text-center mb-6">
-        Privacy Policy
-      </Title>
-
-      <div className="mb-6">
-        <Title level={3}>Introduction</Title>
-
-        <Paragraph>
-          Welcome to <span className="font-semibold">Ashclair</span>. We are an online retailer and wholesaler of diamond jewelry. Choosing an
-          engagement ring doesn't have to be complicated. Diamonds can be simple to understand. Making the right choice can be easy, whether you're in
-          search of something classic, contemporary. <span className="font-semibold">Ashclair</span> is your source of beautifully designed jewelry
-          for every occasion. This Privacy Policy will inform you as to the information we gather, as well as how we use and protect it. By visiting
-          our site you are agreeing with our Privacy Policy. If you do not agree, please do not access the site.
-        </Paragraph>
-      </div>
-      <Divider />
-
-      <div className="mb-6">
-        <Title level={3}>1. What We Do with Your Information?</Title>
-        <Paragraph>
-          When you purchase something from our store, as part of the buying and selling process, we collect the personal information you give us such
-          as your name, address and email address. We do not save any of your card info as a safety measure against fraud.
-        </Paragraph>
-        <Paragraph>
-          When you browse our store, we also automatically receive your computer's internet protocol (IP) address in order to provide us with
-          information that helps us learn about your browser and operating system.
-        </Paragraph>
-        <Paragraph>Email: With your permission, we will send you emails about your orders and ship dates and once it has been shipped.</Paragraph>
-      </div>
-      <Divider />
-
-      {/* Section 2: Consent */}
-      <div className="mb-6">
-        <Title level={3}>2. Consent</Title>
-        <Paragraph>
-          <strong>How do you get my consent?</strong>
-          <br />
-          When you provide us with personal information to complete a transaction, verify your credit card, place an order, arrange for a delivery or
-          return a purchase, we imply that you consent to our collecting it and using it for that specific reason only.
-        </Paragraph>
-        <Paragraph>
-          <strong>How can I withdraw my consent?</strong>
-          <br />
-          If after you opt-in, you change your mind, you may withdraw your consent for us to contact you, for the continued collection, use or
-          disclosure of your information, at anytime, by contacting us at
-          <a href="mailto:service@ashclair.com" className="text-blue-500">
-            service@ashclair.com
-          </a>
-        </Paragraph>
-      </div>
-      <Divider />
-
-      {/* Section 3: Disclosure */}
-      <div className="mb-6">
-        <Title level={3}>3. Disclosure</Title>
-        <Paragraph>We may disclose your personal information if we are required by law to do so or if you violate our Terms of Service.</Paragraph>
-      </div>
-      <Divider />
-
-      {/* Section 4: Third-Party Services */}
-      <div className="mb-6">
-        <Title level={3}>4. Third-Party Services</Title>
-
-        <Paragraph>
-          The third-party providers used by us will only collect, use and disclose your information to the extent necessary to allow them to perform
-          the services they provide to us.
-        </Paragraph>
-        <Paragraph>
-          In particular, remember that certain providers may be located in or have facilities that are located a different jurisdiction than either
-          you or us. So if you elect to proceed with a transaction that involves the services of a third-party service provider, then your information
-          may become subject to the laws of the jurisdiction.
-        </Paragraph>
-        <Paragraph>
-          As an example, if you are located in Canada and your transaction is processed by a payment gateway located in the United States, your
-          personal information used in completing the transaction may be subject to disclosure under United States legislation, including the Patriot
+const SECTIONS: PolicySection[] = [
+  {
+    id: 'introduction',
+    title: 'Introduction',
+    body: (
+      <p>
+        Welcome to Pendyora, an online retailer of fine diamond jewelry. This policy explains the information we collect, and how we use and protect
+        it. By visiting our site you agree to this Privacy Policy. If you do not agree, please do not use the site.
+      </p>
+    ),
+  },
+  {
+    id: 'your-information',
+    title: 'What we do with your information',
+    body: (
+      <>
+        <p>
+          When you buy from us, we collect the personal information you give us as part of the order, such as your name, address and email address.{' '}
+          <strong>We do not save your card details</strong>, as a safety measure against fraud.
+        </p>
+        <p>
+          When you browse our store, we also automatically receive your computer&apos;s internet protocol (IP) address, which tells us about your
+          browser and operating system.
+        </p>
+        <p>With your permission, we email you about your orders, their ship dates and when they have shipped.</p>
+      </>
+    ),
+  },
+  {
+    id: 'consent',
+    title: 'Consent',
+    body: (
+      <>
+        <h3>How do you get my consent?</h3>
+        <p>
+          When you give us personal information to complete a transaction, verify your card, place an order, arrange a delivery or return a purchase,
+          you consent to us collecting and using it for that specific reason only.
+        </p>
+        <h3>How can I withdraw my consent?</h3>
+        <p>
+          If you change your mind after opting in, you can withdraw your consent for us to contact you, or to keep collecting, using or disclosing
+          your information, at any time by emailing {mail}.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'disclosure',
+    title: 'Disclosure',
+    body: <p>We may disclose your personal information if we are required by law to do so, or if you violate our Terms of Service.</p>,
+  },
+  {
+    id: 'third-party',
+    title: 'Third-party services',
+    body: (
+      <>
+        <p>
+          Our third-party providers only collect, use and disclose your information as far as they need to perform the services they provide to us.
+        </p>
+        <p>
+          Some providers may be located in, or have facilities in, a different jurisdiction from you or us. If you go ahead with a transaction that
+          uses one of them, your information may become subject to the laws of that jurisdiction. For example, if you are in Canada and your payment
+          is processed by a gateway in the United States, your information may be subject to disclosure under United States law, including the Patriot
           Act.
-        </Paragraph>
-        <Paragraph>
-          Once you leave our store's website or are redirected to a third-party website or application, you are no longer governed by this Privacy
-          Policy or our website's Terms of Service.
-        </Paragraph>
-      </div>
-      <Divider />
+        </p>
+        <p>
+          Once you leave our website or are redirected to a third-party website or app, you are no longer covered by this Privacy Policy or our Terms
+          of Service.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'security',
+    title: 'Security',
+    body: (
+      <p>
+        To protect your personal information, we take reasonable precautions and follow industry best practice to make sure it is not inappropriately
+        misused, accessed, disclosed, altered or destroyed.
+      </p>
+    ),
+  },
+  {
+    id: 'cookies',
+    title: 'Cookies',
+    body: (
+      <p>
+        A cookie is a small piece of information a website stores on your computer, which your browser sends back each time you return. We use cookies
+        to identify and track visitors, usage patterns and preferences. You can set your browser to refuse cookies, but some features of the site may
+        not work properly without them.
+      </p>
+    ),
+  },
+  {
+    id: 'age-of-consent',
+    title: 'Age of consent',
+    body: (
+      <p>
+        By using this site, you confirm that you are at least the age of majority in your state or province of residence, or that you are the age of
+        majority and have given us your consent to allow any of your minor dependents to use this site.
+      </p>
+    ),
+  },
+  {
+    id: 'changes',
+    title: 'Changes to this policy',
+    body: (
+      <p>
+        We may change this privacy policy at any time, so please review it regularly. Changes take effect as soon as they are posted on the website.
+        If we make material changes, we will say so here, so you know what information we collect, how we use it, and when, if ever, we use or
+        disclose it.
+      </p>
+    ),
+  },
+  {
+    id: 'contact',
+    title: 'Questions & contact',
+    body: <p>If you have any questions about this policy, please contact us at {mail}.</p>,
+  },
+];
 
-      {/* Section 5: Security */}
-      <div className="mb-6">
-        <Title level={3}>5. Security</Title>
-        <Paragraph>
-          To protect your personal information, we take reasonable precautions and follow industry best practices to make sure it is not
-          inappropriately misused, accessed, disclosed, altered or destroyed.
-        </Paragraph>
-      </div>
-      <Divider />
-
-      {/* Section 6: Cookies */}
-      <div className="mb-6">
-        <Title level={3}>6. Cookies</Title>
-        <Paragraph>
-          A cookie is a string of information that a website stores on a user's computer, and that the user's browser provides to the website each
-          time the user returns. The Site uses cookies to help identify and track users, patterns of usage and access preferences. If you do not want
-          to have cookies placed on your computer you can set your browser to refuse cookies before using the Site, with a drawback that certain
-          features of the Site may not function properly without the aid of cookies.
-        </Paragraph>
-      </div>
-      <Divider />
-
-      {/* Section 7: Age of Consent */}
-      <div className="mb-6">
-        <Title level={3}>7. Age of Consent</Title>
-
-        <Paragraph>
-          By using this site, you represent that you are at least the age of majority in your state or province of residence, or that you are the age
-          of majority in your state or province of residence and you have given us your consent to allow any of your minor dependents to use this
-          site.
-        </Paragraph>
-      </div>
-      <Divider />
-
-      {/* Section 8: Changes to the Policy */}
-      <div className="mb-6">
-        <Title level={3}>8. Changes to the Privacy Policy</Title>
-
-        <Paragraph>
-          We reserve the right to modify this privacy policy at any time, so please review it frequently. Changes and clarifications will take effect
-          immediately upon their posting on the website. If we make material changes to this policy, we will notify you here that it has been updated,
-          so that you are aware of what information we collect, how we use it, and under what circumstances, if any, we use and/or disclose it.
-        </Paragraph>
-      </div>
-      <Divider />
-
-      {/* Contact Information */}
-      <div className="mb-6">
-        <Title level={3}>Questions & Contact Information</Title>
-
-        <Paragraph>
-          If you have any questions about this policy, please contact us at:{' '}
-          <a href="mailto:service@ashclair.com" className="text-blue-500">
-            service@ashclair.com
-          </a>
-        </Paragraph>
-      </div>
-    </div>
+export default function PrivacyPolicy() {
+  return (
+    <CareLayout
+      title="Privacy policy"
+      crumb="Privacy"
+      intro="What we collect, why we collect it, and the choices you have. We never store your card details."
+    >
+      <PolicyDoc sections={SECTIONS} help={{ title: 'Privacy questions?', text: 'Email our team and we will help.' }} />
+    </CareLayout>
   );
-};
-
-export default PrivacyPolicy;
+}
