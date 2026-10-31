@@ -79,7 +79,7 @@ export function Overview() {
                   <StatusPill status={Number(latest.order_status ?? 0)} />
                 </span>
               </div>
-              <OrderTracker status={Number(latest.order_status ?? 0)} placedAt={latest.createdAt} />
+              <OrderTracker status={Number(latest.order_status ?? 0)} placedAt={latest.created_at} />
             </>
           ) : (
             <p className="m-0 text-ink-soft">

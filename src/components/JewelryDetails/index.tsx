@@ -84,8 +84,8 @@ export default function JewelryDetails({
                   symmetry: '',
                 };
                 const engravingDetail = {
-                  fontFamily: productDetails?.engravingText?.fontFamily,
-                  text: productDetails?.engravingText?.Text,
+                  fontFamily: productDetails?.engraving_text?.fontFamily,
+                  text: productDetails?.engraving_text?.Text,
                 };
                 dispatch(setSelectedAppraisal(appraisalDetail));
                 dispatch(setSelectedWarranty(warrantyDetail));
@@ -107,7 +107,7 @@ export default function JewelryDetails({
                     `${Math.ceil(
                       productDetails?.jewelry_discount_price +
                         (productDetails?.ring_size_rate ?? 0) +
-                        (productDetails?.engravingText?.Text ? (productDetails?.engraving_price ?? 0) : 0) +
+                        (productDetails?.engraving_text?.Text ? (productDetails?.engraving_price ?? 0) : 0) +
                         (productDetails?.is_appraisal ? (productDetails?.appraisal_amount ?? 0) : 0) +
                         (productDetails?.selectedYearValue
                           ? (productDetails?.selectedYearValue?.price ?? 0)
@@ -122,7 +122,7 @@ export default function JewelryDetails({
                     `${Math.ceil(
                       productDetails?.jewelry_price +
                         (productDetails?.ring_size_rate ?? 0) +
-                        (productDetails?.engravingText?.Text ? (productDetails?.engraving_price ?? 0) : 0) +
+                        (productDetails?.engraving_text?.Text ? (productDetails?.engraving_price ?? 0) : 0) +
                         (productDetails?.is_appraisal ? (productDetails?.appraisal_amount ?? 0) : 0) +
                         (productDetails?.selectedYearValue
                           ? (productDetails?.selectedYearValue?.price ?? 0)
@@ -136,7 +136,7 @@ export default function JewelryDetails({
                     `${Math.ceil(
                       productDetails?.jewelry_price +
                         (productDetails?.ring_size_rate ?? 0) +
-                        (productDetails?.engravingText?.Text ? (productDetails?.engraving_price ?? 0) : 0) +
+                        (productDetails?.engraving_text?.Text ? (productDetails?.engraving_price ?? 0) : 0) +
                         (productDetails?.is_appraisal ? (productDetails?.appraisal_amount ?? 0) : 0) +
                         (productDetails?.selectedYearValue
                           ? (productDetails?.selectedYearValue?.price ?? 0)
@@ -176,19 +176,19 @@ export default function JewelryDetails({
             ) : null}
           </div>
 
-          {(productDetails?.engravingText?.Text ||
+          {(productDetails?.engraving_text?.Text ||
             productDetails?.is_appraisal ||
             productDetails?.selectedYearValue ||
             productDetails?.is_warranty) && (
             <div className="grid border-t border-line">
-              {productDetails?.engravingText?.Text ? (
+              {productDetails?.engraving_text?.Text ? (
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3.5 border-b border-dashed border-line py-2.5 text-[13px] last:border-b-0">
                   <span>
                     Engraving{' '}
-                    <q className="font-cormorant text-[16px] italic text-ink" style={{ fontFamily: productDetails?.engravingText?.fontFamily }}>
-                      {productDetails?.engravingText?.Text}
+                    <q className="font-cormorant text-[16px] italic text-ink" style={{ fontFamily: productDetails?.engraving_text?.fontFamily }}>
+                      {productDetails?.engraving_text?.Text}
                     </q>
-                    <span className="block text-[12px] text-ink-soft">Font: {productDetails?.engravingText?.fontFamily}</span>
+                    <span className="block text-[12px] text-ink-soft">Font: {productDetails?.engraving_text?.fontFamily}</span>
                   </span>
                   <span className="text-[12.5px] tabular-nums text-ink-soft">+{formatCurrency(productDetails?.engraving_price ?? 0)}</span>
                 </div>

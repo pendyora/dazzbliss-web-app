@@ -1,3 +1,4 @@
+import { normalizeCartLines } from '@/utils/cartLine';
 import { resolveCloudflareTurnstileToken } from '@/utils/cloudflareTurnstile';
 import { encrypt } from '@/utils/enc-decy';
 
@@ -7,7 +8,7 @@ export async function apiAddToCart(data: any) {
   return ApiService.fetchData<any>({
     url: `/cart`,
     method: 'post',
-    data: encrypt(data),
+    data: encrypt(normalizeCartLines(data)),
   });
 }
 
@@ -15,7 +16,7 @@ export async function apiAddToCheckout(data: any) {
   return ApiService.fetchData<any>({
     url: `cart/checkout`,
     method: 'post',
-    data: encrypt(data),
+    data: encrypt(normalizeCartLines(data)),
   });
 }
 
@@ -29,7 +30,7 @@ export async function apiGetLoalCartList(data: any) {
   return ApiService.fetchData<any>({
     url: `/cart/products/`,
     method: 'post',
-    data: encrypt(data),
+    data: encrypt(normalizeCartLines(data)),
   });
 }
 
@@ -44,7 +45,7 @@ export async function apiUpdateCountCartProduct(data: any) {
   return ApiService.fetchData<any>({
     url: `/cart/update-cart`,
     method: 'put',
-    data: encrypt(data),
+    data: encrypt(normalizeCartLines(data)),
   });
 }
 

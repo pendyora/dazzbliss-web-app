@@ -41,6 +41,7 @@ import {
   setSelectedShapesData,
 } from '@/store/slices/customProducts/customProductSlice';
 import themeColors from '@/styles/theme-colors';
+import { normalizeCartLines } from '@/utils/cartLine';
 import { formatCurrency } from '@/utils/common';
 import { trackAddToCart } from '@/utils/metaPixel';
 
@@ -363,7 +364,7 @@ export default function CustomJewelryCompletePage({
         count: count,
         sku_master: selectedSettingType?.id,
         is_appraisal: selectedAppraisal !== null,
-        engravingText: { Text: selectedEngraving?.text ?? '', fontFamily: selectedEngraving?.fontFamily ?? '' },
+        engraving_text: { Text: selectedEngraving?.text ?? '', fontFamily: selectedEngraving?.fontFamily ?? '' },
         selectedYearValue: selectedWarranty?.yearPrice?.year,
         ring_size_id: masterRingSizePrice?.find(
           (item: any) => item.ring_size_id == selectedRingSizeId && item.metal_type_id == selectedSettingSkuData?.metal_type_id,
@@ -377,9 +378,9 @@ export default function CustomJewelryCompletePage({
         sku_master: string;
         ring_size_id?: string;
         is_appraisal: boolean;
-        engravingText: any;
+        engraving_text: any;
         selectedYearValue: any;
-      }[] = cartData ? JSON.parse(cartData) : [];
+      }[] = cartData ? normalizeCartLines(JSON.parse(cartData)) : [];
 
       const price =
         (Number(selectedSettingType?.discounted_price ?? selectedSettingType?.selling_price ?? 0) + Number(selectedDiamondStore?.price ?? 0)) * count;

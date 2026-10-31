@@ -119,7 +119,7 @@ const Payment = ({
       const diamondPrice = item?.diamondDetails?.price ?? 0;
       const appraisalPrice = item?.is_appraisal ? appraisalData?.price || 0 : 0;
       const warrantyPrice = item?.selectedYearValue?.price ? item?.selectedYearValue?.price : item?.warranty_amount ? item?.warranty_amount : 0;
-      const engravingPrice = item?.engravingText && item?.engravingText?.Text != '' ? engraving?.data?.engraving_price || 0 : 0;
+      const engravingPrice = item?.engraving_text && item?.engraving_text?.Text != '' ? engraving?.data?.engraving_price || 0 : 0;
       const count = item?.count ?? 1;
       total +=
         (Number(basePrice) + Number(ringPrice) + Number(appraisalPrice) + Number(warrantyPrice) + Number(engravingPrice)) * count +

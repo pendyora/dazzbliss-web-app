@@ -43,7 +43,7 @@ export function useOrderTotals(cartProducts: any[], promoCode?: string) {
       const ringPrice = item?.ringSizePricingDetails?.rate ?? 0;
       const couponItem = couponData?.items?.find((el: any) => el?.sku_details?.id === item?.sku_master_id);
       const diamondPrice = item?.diamondDetails ? Number(item?.diamondDetails?.price) || 0 : 0;
-      const engravingPrice = item?.engravingText && item?.engravingText.Text != '' ? engraving?.data?.engraving_price || 0 : 0;
+      const engravingPrice = item?.engraving_text && item?.engraving_text.Text != '' ? engraving?.data?.engraving_price || 0 : 0;
       const itemCount = getItemCount(item);
 
       const basePrice = couponActive

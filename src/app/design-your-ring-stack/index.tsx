@@ -61,6 +61,7 @@ import {
   useAppSelector,
 } from '@/store';
 import { addCartProductCounts, fetchCartProducts, fetchWishListProducts, setWishlistProducts } from '@/store/slices/Cart/cartSlice';
+import { normalizeCartLines } from '@/utils/cartLine';
 import { formatCurrency } from '@/utils/common';
 import { trackAddToCart, trackAddToWishlist } from '@/utils/metaPixel';
 import { isObjectEmpty } from '@/utils/objectUtils';
@@ -373,7 +374,7 @@ export default function DesignYourRingStackPage() {
         sku_master: string;
         ring_size_id?: string;
         is_appraisal: boolean;
-        engravingText: any;
+        engraving_text: any;
         selectedYearValue: any;
       }[] = uniqueArray?.map((product: any) => {
         return {
@@ -381,7 +382,7 @@ export default function DesignYourRingStackPage() {
           count: product?.count,
           sku_master: product?.sku_master_id,
           is_appraisal: false,
-          engravingText: {
+          engraving_text: {
             Text: '',
             fontFamily: '',
           },
@@ -399,9 +400,9 @@ export default function DesignYourRingStackPage() {
         sku_master: string;
         ring_size_id?: string;
         is_appraisal: boolean;
-        engravingText: any;
+        engraving_text: any;
         selectedYearValue: any;
-      }[] = cartData ? JSON.parse(cartData) : [];
+      }[] = cartData ? normalizeCartLines(JSON.parse(cartData)) : [];
 
       const isMatchingProduct = (a: any, b: any): boolean => {
         if (a.ring_size_id) {

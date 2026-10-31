@@ -299,7 +299,7 @@ const SignIn = ({ isDeliveryAddress, setIsDeliveryAddress, setCurrentStep, onCon
               ring_size_id: item.ring_size_id,
               is_appraisal: item.is_appraisal,
               selectedYearValue: item.selectedYearValue,
-              engravingText: item.engravingText,
+              engraving_text: item.engraving_text,
             });
           }
         });

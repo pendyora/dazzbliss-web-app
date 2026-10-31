@@ -305,10 +305,10 @@ export default function ThankYouSection() {
       const new_price = item?.is_free_gift ? 0 : item?.jewelry_price;
       const new_discounted_price =
         !item?.is_free_gift && item?.jewelry_discount_price && item?.jewelry_discount_price != 0 ? item?.jewelry_discount_price : null;
-      // + appraisalPrice + warrantyPrice + (item.engravingText != '' ? item?.engraving_price : 0)
+      // + appraisalPrice + warrantyPrice + (item.engraving_text != '' ? item?.engraving_price : 0)
       // + appraisalPrice + warrantyPrice
-      // + appraisalPrice + warrantyPrice + (item.engravingText != '' ? item?.engraving_price : 0)
-      // + appraisalPrice + warrantyPrice + (item.engravingText != '' ? item?.engraving_price : 0)
+      // + appraisalPrice + warrantyPrice + (item.engraving_text != '' ? item?.engraving_price : 0)
+      // + appraisalPrice + warrantyPrice + (item.engraving_text != '' ? item?.engraving_price : 0)
       return {
         ...item,
         name: item?.jewelryOrderItems?.title ?? item?.title,
@@ -456,10 +456,7 @@ export default function ThankYouSection() {
                 {[
                   {
                     label: 'Order placed',
-                    text:
-                      orderDetails?.created_at || orderDetails?.createdAt
-                        ? dayjs(orderDetails?.created_at || orderDetails?.createdAt).format('ddd D MMM')
-                        : 'Today',
+                    text: orderDetails?.created_at ? dayjs(orderDetails?.created_at).format('ddd D MMM') : 'Today',
                     state: 'done',
                   },
                   { label: 'Being prepared', text: 'Checked, cleaned and packed by our atelier.', state: 'now' },
@@ -602,7 +599,7 @@ export default function ThankYouSection() {
                               </div>
                             </div>
                           )}
-                          {category?.engravingText?.Text && (
+                          {category?.engraving_text?.Text && (
                             <div className="grid grid-cols-3 gap-5">
                               <div className="col-span-2 flex items-center">
                                 <ProductName productName={'Engraving'} count={category?.count} />

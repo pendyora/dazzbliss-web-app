@@ -24,7 +24,7 @@ const EditEngraving: React.FC<EditEngravingProps> = ({ productDetails, onSave })
   const { engraving }: any = useAppSelector((state) => state?.master);
   const engravingPrice = engraving?.data?.engraving_price ?? 0;
 
-  const existing = productDetails?.engravingText;
+  const existing = productDetails?.engraving_text;
   const hasEngraving = Boolean(existing?.Text && existing?.Text !== '');
 
   const [open, setOpen] = useState(false);

@@ -259,7 +259,7 @@ const RequestCard: React.FC<RequestCardProps> = ({ request, onChanged }) => {
                 )}
               </p>
             )}
-            <p className="m-0 mt-0.5 text-[12px] text-ink-faint">Submitted {formatDate(request.createdAt)}</p>
+            <p className="m-0 mt-0.5 text-[12px] text-ink-faint">Submitted {formatDate(request.created_at)}</p>
           </div>
           <div className="flex gap-2">
             {canWithdraw && (

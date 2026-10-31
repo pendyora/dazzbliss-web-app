@@ -141,8 +141,8 @@ export default function CartProductDetails({
 
                       const appraisalDetail = productDetails?.is_appraisal ? { ...appraisalData } : null;
                       const engravingDetail = {
-                        fontFamily: productDetails?.engravingText?.fontFamily,
-                        text: productDetails?.engravingText?.Text,
+                        fontFamily: productDetails?.engraving_text?.fontFamily,
+                        text: productDetails?.engraving_text?.Text,
                       };
                       dispatch(setSelectedAppraisal(appraisalDetail));
                       dispatch(setSelectedWarranty(warrantyDetail));
@@ -171,7 +171,7 @@ export default function CartProductDetails({
                               : productDetails?.warranty_amount
                                 ? productDetails?.warranty_amount
                                 : 0) +
-                            (productDetails?.engravingText && productDetails?.engravingText.Text != '' ? engraving?.data?.engraving_price : 0),
+                            (productDetails?.engraving_text && productDetails?.engraving_text.Text != '' ? engraving?.data?.engraving_price : 0),
                         ),
                       )}
                     </Heading>
@@ -191,7 +191,7 @@ export default function CartProductDetails({
                                 : productDetails?.warranty_amount
                                   ? productDetails?.warranty_amount
                                   : 0) +
-                              (productDetails?.engravingText && productDetails?.engravingText.Text != '' ? engraving?.data?.engraving_price : 0),
+                              (productDetails?.engraving_text && productDetails?.engraving_text.Text != '' ? engraving?.data?.engraving_price : 0),
                           ),
                         )}
                       </Heading>
@@ -231,14 +231,14 @@ export default function CartProductDetails({
                       Band Width - mm : {master.find((item: any) => item.id === productDetails?.jewelry_sku?.band_width_ids)?.name}
                     </Text>
                   )}
-                  {!canEditEngraving && productDetails?.engravingText && productDetails?.engravingText.Text != '' && (
+                  {!canEditEngraving && productDetails?.engraving_text && productDetails?.engraving_text.Text != '' && (
                     <>
                       <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
                         Engraving Text:{' '}
-                        <span style={{ fontFamily: productDetails?.engravingText.fontFamily }}>{productDetails?.engravingText.Text}</span>
+                        <span style={{ fontFamily: productDetails?.engraving_text.fontFamily }}>{productDetails?.engraving_text.Text}</span>
                       </Text>
                       <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
-                        Engraving Font Family: {productDetails?.engravingText.fontFamily}
+                        Engraving Font Family: {productDetails?.engraving_text.fontFamily}
                       </Text>
                       <Text as="p" size="textlg" className="text-[12px] tracking-[0.20px] text-slate-400">
                         Engraving Price:<span className="!font-bold">{formatCurrency(engraving?.data?.engraving_price ?? 0)}</span>

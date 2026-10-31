@@ -232,7 +232,7 @@ export function mapOrderItemsToGA4(orderDetails: any): { items: GA4Item[]; items
         toNumber(item?.appraisal_amount) +
         toNumber(item?.warranty_amount) +
         // `engraving_price` is stored on lines without an engraving too; it is only charged with text.
-        (item?.engravingText?.Text ? toNumber(item?.engraving_price) : 0);
+        (item?.engraving_text?.Text ? toNumber(item?.engraving_price) : 0);
     const quantity = toNumber(item?.count ?? 1) || 1;
     itemsValue += unit * quantity;
     return {

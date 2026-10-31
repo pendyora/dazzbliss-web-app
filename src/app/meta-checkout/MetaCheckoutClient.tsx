@@ -105,7 +105,7 @@ export default function MetaCheckoutClient() {
           sku_master: item.sku_master,
           count: item.count,
           is_appraisal: false,
-          engravingText: null,
+          engraving_text: null,
           selectedYearValue: null,
         }));
 

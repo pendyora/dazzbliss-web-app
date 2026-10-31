@@ -199,7 +199,7 @@ function OrderDetail({ id }: { id: string }) {
         action={<StatusPill status={status} />}
       />
       {openRequestLabel(o) && <p className="m-0 -mt-3 mb-4 text-[13px] text-ink-soft">{openRequestLabel(o)}</p>}
-      <OrderTracker status={status} placedAt={o.createdAt} />
+      <OrderTracker status={status} placedAt={o.created_at} />
 
       {/* Status 5 (cancelled) and 6 (rejected) both read as "Cancelled" to the buyer. The reason is shown
           only for a real cancellation: a rejection reason is for the operations team and is not sent here. */}
@@ -228,7 +228,7 @@ function OrderDetail({ id }: { id: string }) {
           {items.map((item, i) => {
             const sku = item?.skuOrderItems ?? {};
             const isRing = ['WEDDING_BANDS', 'ENGAGEMENT_RINGS'].includes(item?.jewelryOrderItems?.jewelrySubType?.parent_code);
-            const engraving = item?.engravingText?.Text?.trim();
+            const engraving = item?.engraving_text?.Text?.trim();
             const stones = [
               ['Centre stone', sku.centerDiamondDetails, null],
               ['Accent stones', sku.accentDiamondDetails, sku.accent_diamond_count],
@@ -256,14 +256,14 @@ function OrderDetail({ id }: { id: string }) {
                     {sku.bracelet_length_ids && <Spec label="Length">{nameOf(sku.bracelet_length_ids)} in</Spec>}
                     {sku.band_width_ids && <Spec label="Band width">{nameOf(sku.band_width_ids)} mm</Spec>}
                     <Spec label="Quantity">{item?.count ?? 1}</Spec>
-                    {(item?.ashclair_sku || sku.sku_code) && (
+                    {(item?.website_sku || sku.sku_code) && (
                       <Spec label="SKU">
-                        <span className="break-all">{item?.ashclair_sku || sku.sku_code}</span>
+                        <span className="break-all">{item?.website_sku || sku.sku_code}</span>
                       </Spec>
                     )}
                     {engraving && (
                       <Spec label="Engraving">
-                        <span style={{ fontFamily: item?.engravingText?.fontFamily }}>“{engraving}”</span>
+                        <span style={{ fontFamily: item?.engraving_text?.fontFamily }}>“{engraving}”</span>
                         {item?.engraving_price ? <span className="text-ink-faint"> · {formatCurrency(item.engraving_price)}</span> : null}
                       </Spec>
                     )}
@@ -289,7 +289,7 @@ function OrderDetail({ id }: { id: string }) {
 
                   {item?.diamondDetails && (
                     <div className="mt-3.5 grid grid-cols-[56px_1fr] gap-3 bg-haze p-3">
-                      <img src={item.diamondDetails.imageFile || FALLBACK} alt="" className="h-14 w-14 bg-paper object-contain" />
+                      <img src={item.diamondDetails.image_file || FALLBACK} alt="" className="h-14 w-14 bg-paper object-contain" />
                       <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5 text-[12.5px]">
                         <Spec label="Diamond">
                           {[
@@ -304,8 +304,8 @@ function OrderDetail({ id }: { id: string }) {
                         <Spec label="Stone no.">{item.diamondDetails.stock_no || '—'}</Spec>
                         {item.diamondDetails.report_no && (
                           <Spec label="Certificate">
-                            {item.diamondDetails.certificateFile ? (
-                              <a href={item.diamondDetails.certificateFile} target="_blank" rel="noreferrer" className={boxLink}>
+                            {item.diamondDetails.certificate_file ? (
+                              <a href={item.diamondDetails.certificate_file} target="_blank" rel="noreferrer" className={boxLink}>
                                 {item.diamondDetails.report_no}
                               </a>
                             ) : (

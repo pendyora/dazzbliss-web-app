@@ -44,6 +44,7 @@ import {
   setSelectedShapesData,
 } from '@/store/slices/customProducts/customProductSlice';
 import { carryForwardFilterCrumb } from '@/utils/breadcrumbFilterParams';
+import { normalizeCartLines } from '@/utils/cartLine';
 import { formatCurrency } from '@/utils/common';
 import { metalToneFor } from '@/utils/metalTone';
 import { trackAddToCart, trackAddToWishlist, trackViewContent } from '@/utils/metaPixel';
@@ -565,7 +566,7 @@ const PDPPage = ({ selectionRoute }: { selectionRoute?: any }) => {
       count: count,
       sku_master: jewelryMetadata?.id,
       is_appraisal: is_appraisal,
-      engravingText: { Text: engravingText?.Text, fontFamily: engravingText?.fontFamily },
+      engraving_text: { Text: engravingText?.Text, fontFamily: engravingText?.fontFamily },
       selectedYearValue: selectedYearValue?.year,
       ring_size_id: masterRingSizePrice?.find(
         (item: any) => item.ring_size_id == selectedRingSizeId && item.metal_type_id == jewelryMetadata?.metal_type_id,
@@ -656,9 +657,9 @@ const PDPPage = ({ selectionRoute }: { selectionRoute?: any }) => {
         sku_master: string;
         ring_size_id?: string;
         is_appraisal: boolean;
-        engravingText: any;
+        engraving_text: any;
         selectedYearValue: any;
-      }[] = cartData ? JSON.parse(cartData) : [];
+      }[] = cartData ? normalizeCartLines(JSON.parse(cartData)) : [];
 
       if (user) {
         const cartItems = cartProducts.some((p: any) => {
@@ -724,7 +725,7 @@ const PDPPage = ({ selectionRoute }: { selectionRoute?: any }) => {
           };
           existingCart[productIndex].is_appraisal = is_appraisal;
           existingCart[productIndex].selectedYearValue = selectedYearValue?.year;
-          existingCart[productIndex].engravingText = { Text: engravingText?.Text, fontFamily: engravingText?.fontFamily };
+          existingCart[productIndex].engraving_text = { Text: engravingText?.Text, fontFamily: engravingText?.fontFamily };
         } else {
           existingCart.push(payload);
           const price = selectedProductObject?.discounted_price ?? selectedProductObject?.selling_price ?? 0;

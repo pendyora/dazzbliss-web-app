@@ -67,12 +67,12 @@ type TimelineStep = { key: string; title: string; field: string };
 export const timelineSteps = (type: number): TimelineStep[] =>
   type === ORDER_REQUEST_TYPE.CANCEL
     ? [
-        { key: 'submitted', title: 'Submitted', field: 'createdAt' },
+        { key: 'submitted', title: 'Submitted', field: 'created_at' },
         { key: 'review', title: 'Reviewed', field: 'approved_at' },
         { key: 'refunded', title: 'Refunded', field: 'completed_at' },
       ]
     : [
-        { key: 'submitted', title: 'Submitted', field: 'createdAt' },
+        { key: 'submitted', title: 'Submitted', field: 'created_at' },
         { key: 'approved', title: 'Approved', field: 'approved_at' },
         { key: 'received', title: 'Received', field: 'received_at' },
         { key: 'refunded', title: 'Refunded', field: 'completed_at' },

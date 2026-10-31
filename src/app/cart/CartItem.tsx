@@ -62,14 +62,14 @@ export default function CartItem({
         yearPrice: { year: item?.warranty_year, price: item?.warranty_amount },
       }),
     );
-    dispatch(setSelectedEngraving({ fontFamily: item?.engravingText?.fontFamily, text: item?.engravingText?.Text }));
+    dispatch(setSelectedEngraving({ fontFamily: item?.engraving_text?.fontFamily, text: item?.engraving_text?.Text }));
   };
 
   // Prices
   const ringRate = item?.ringSizePricingDetails?.rate ?? 0;
   const appraisalPrice = item?.is_appraisal ? appraisalData?.price || 0 : 0;
   const warrantyPrice = item?.selectedYearValue?.price ?? item?.warranty_amount ?? 0;
-  const hasEngraving = Boolean(item?.engravingText && item?.engravingText.Text != '');
+  const hasEngraving = Boolean(item?.engraving_text && item?.engraving_text.Text != '');
   const engravingPrice = hasEngraving ? engraving?.data?.engraving_price || 0 : 0;
   const extras = ringRate + appraisalPrice + warrantyPrice + engravingPrice;
   const unit = Math.ceil((sku?.selling_price ?? 0) + extras);
@@ -95,8 +95,8 @@ export default function CartItem({
           label: 'Engraving',
           // The editable chip below already shows the engraved text.
           note: canEditEngraving ? null : (
-            <q className="font-cormorant text-[16px] italic text-ink" style={{ fontFamily: item?.engravingText?.fontFamily }}>
-              {item?.engravingText?.Text}
+            <q className="font-cormorant text-[16px] italic text-ink" style={{ fontFamily: item?.engraving_text?.fontFamily }}>
+              {item?.engraving_text?.Text}
             </q>
           ),
           price: engravingPrice,

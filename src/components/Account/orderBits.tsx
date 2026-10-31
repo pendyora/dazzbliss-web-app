@@ -11,7 +11,7 @@ export const isCancelledStatus = (status: number) => Number(status) >= 5;
 export const statusLabel = (status: number) => (isCancelledStatus(status) ? 'Cancelled' : (STATUS_LABEL[status] ?? 'Processing'));
 const STEPS = ['Confirmed', 'Manufacturing', 'Out for delivery', 'Delivered'];
 
-export const orderDate = (o: any, fmt = 'D MMM YYYY') => (o?.createdAt ? dayjs(o.createdAt).format(fmt) : '');
+export const orderDate = (o: any, fmt = 'D MMM YYYY') => (o?.created_at ? dayjs(o.created_at).format(fmt) : '');
 
 export function StatusPill({ status }: { status: number }) {
   const done = status === 4;

@@ -287,7 +287,7 @@ export default function CheckOutPage() {
       return {
         ...product,
         is_appraisal: match?.is_appraisal ?? product?.is_appraisal,
-        engravingText: match?.engravingText ?? product?.engravingText,
+        engraving_text: match?.engraving_text ?? match?.engravingText ?? product?.engraving_text,
         is_warranty: match?.selectedYearValue ? true : false,
         selectedYearValue: match?.selectedYearValue ? match?.selectedYearValue : null,
       };
@@ -439,7 +439,7 @@ export default function CheckOutPage() {
           return {
             ...product,
             is_appraisal: match?.is_appraisal ?? product?.is_appraisal,
-            engravingText: match?.engravingText ?? product?.engravingText,
+            engraving_text: match?.engraving_text ?? match?.engravingText ?? product?.engraving_text,
             is_warranty: match?.selectedYearValue ? true : false,
             selectedYearValue: match?.selectedYearValue ? match?.selectedYearValue : null,
           };

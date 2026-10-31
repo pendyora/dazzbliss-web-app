@@ -25,6 +25,7 @@ import {
   verifyCoupon,
 } from '@/store/slices/Cart/cartSlice';
 import { clearFreeGift, evaluateFreeGift, forgetGiftDecline } from '@/store/slices/Cart/freeGiftSlice';
+import { normalizeCartLine } from '@/utils/cartLine';
 import { formatCurrency } from '@/utils/common';
 
 import CartItem from './CartItem';
@@ -92,7 +93,7 @@ const Cart = () => {
       return {
         ...product,
         is_appraisal: match?.is_appraisal ?? product?.is_appraisal,
-        engravingText: match?.engravingText ?? product?.engravingText,
+        engraving_text: match?.engraving_text ?? match?.engravingText ?? product?.engraving_text,
         is_warranty: product?.is_warranty,
         selectedYearValue: product?.is_warranty ? { year: product?.warranty_year, price: product?.warranty_amount } : null,
       };
@@ -346,7 +347,7 @@ const Cart = () => {
         fontFamily: engravingText?.fontFamily || 'Arial',
       };
       if (user) {
-        const response: any = await apiUpdateCartItem({ id: item?.id, engravingText: cleaned });
+        const response: any = await apiUpdateCartItem({ id: item?.id, engraving_text: cleaned });
         if (response?.data?.status === 200 || response?.status === 200) {
           dispatch(fetchCartProductsList());
         }
@@ -359,7 +360,7 @@ const Cart = () => {
           return currentRingKey ? skuMatch && String(getRingSizeKey(el)) === String(currentRingKey) : skuMatch;
         });
         if (idx > -1) {
-          cartList[idx] = { ...cartList[idx], engravingText: cleaned };
+          cartList[idx] = { ...normalizeCartLine(cartList[idx]), engraving_text: cleaned };
           localStorage.setItem('cartItems', JSON.stringify(cartList));
           setCartListFromLocalStorage(cartList);
           dispatch(fetchLocalCartProductsList({ data: cartList }));
