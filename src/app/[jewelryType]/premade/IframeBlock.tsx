@@ -28,7 +28,6 @@ function IframeBlock() {
         }}
         // src={iframeSrc ?? ''}
         src={iframeSrc ?? ''}
-        // src="https://d2xnejqesyh20p.cloudfront.net/product_images/11105/CV11105/Y-1.jpg"
       />
     </>
   );

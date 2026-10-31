@@ -10,7 +10,6 @@ import { LuCheck, LuLoader } from 'react-icons/lu';
 
 import ProductName from '@/components/CartProductDetails/ProductName';
 import { BRAND } from '@/config/brand';
-import useCookieConsent from '@/hook/useCookieConsent';
 import * as ga4 from '@/lib/analytics';
 import * as klaviyo from '@/lib/klaviyo';
 import { hasConsent } from '@/services/cookieConsent';
@@ -51,7 +50,6 @@ export default function ThankYouSection() {
   const router = useRouter();
   // The AMP purchase tag below is a Google Ads conversion — a marketing tag, so it
   // follows the effective marketing tracking switch (always on while consent is not enforced).
-  const { trackingPreferences } = useCookieConsent();
 
   const orderIdMatches = Boolean(
     id &&
@@ -104,15 +102,11 @@ export default function ThankYouSection() {
   }, [orderDetails]);
   useEffect(() => {
     if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_NODE_ENV === 'production' && orderDetails?.order_id) {
-      // DAZZBLISS TODO: Google Ads conversion label is the old client's; off until NEXT_PUBLIC_GOOGLE_ADS_ID is set.
-      if (process.env.NEXT_PUBLIC_GOOGLE_ADS_ID) {
-        (window as any).gtag?.('event', 'conversion', {
-          send_to: 'AW-17230998076/MKZ6CIbEuoAcELzUsJhA',
-          value: orderDetails?.after_gst_amount ?? 0,
-          currency: orderDetails?.currency_code ?? 'USD',
-          transaction_id: orderDetails?.order_id ?? '',
-        });
-      }
+      ga4.trackGoogleAdsConversion('purchase', {
+        value: orderDetails?.after_gst_amount ?? 0,
+        currency: orderDetails?.currency_code ?? 'USD',
+        transaction_id: orderDetails?.order_id ?? '',
+      });
       const contentIds =
         orderDetails?.orderDetails
           ?.map((item: any) => String(item?.skuOrderItems?.id ?? item?.jewelryOrderItems?.id ?? item?.jewelry_id))
@@ -374,47 +368,6 @@ export default function ThankYouSection() {
 
       {verifiedUser && status == 'fulfilled' ? (
         <div className="mb-5 flex flex-col items-center bg-paper font-libre text-ink">
-          {/* DAZZBLISS TODO: AMP Google Ads tag uses the old client's IDs; off until NEXT_PUBLIC_GOOGLE_ADS_ID is set. */}
-          {orderDetails?.order_id &&
-            process.env.NEXT_PUBLIC_NODE_ENV === 'production' &&
-            process.env.NEXT_PUBLIC_GOOGLE_ADS_ID &&
-            trackingPreferences.marketing && (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: `
-              <amp-analytics type="gtag" data-credentials="include">
-                <script type="application/json">
-                  {
-                    "vars": {
-                      "gtag_id": "AW-172306",
-                      "config": {
-                        "AW-17230998076": {
-                          "groups": "default"
-                        }
-                      }
-                    },
-
-                    { "on": "visible", "vars": { "event_name": "conversion", "value": 1.0, "currency": "USD", "transaction_id": "", "send_to": ["AW-17230998076/8ggHCNmxs-IaELzUsJhA"] }
-                    "triggers": {
-                      "trackPageview":{
-                        "on":"visible",
-                        "request":"pageview"
-                        "vars":{
-                          "event_name":"conversion",
-                          "value":"${orderDetails?.after_gst_amount}",
-                          "currency":"${orderDetails?.currency_code} USD",
-                          "transaction_id":"${orderDetails?.order_id}",
-                          "send_to":["AW-17230998076/8ggHCNmxs-IaELzUsJhA"]
-                        }
-                      }
-                    }
-                  }
-                </script>
-              </amp-analytics>`,
-                }}
-              />
-            )}
-
           <div className="mx-auto flex w-full max-w-[1600px] 2xl:px-[160px] xl:px-28 lg:px-20 flex-col gap-10 sm:gap-4 sm:px-3 md:px-5">
             <div className="mx-auto grid w-full max-w-[760px] gap-7 pt-6">
               <div className="grid justify-items-center gap-3 text-center">

@@ -6,8 +6,8 @@
  * so importing/calling these functions can never break a server render or a page
  * where analytics is disabled.
  *
- * The Measurement ID is hardcoded below and must be kept in sync with the gtag.js
- * snippet in `@/components/CookieConsent/Trackers`.
+ * The Measurement ID comes from NEXT_PUBLIC_GA4_ID, the same variable the gtag.js loader in
+ * `@/components/CookieConsent/Trackers` uses. Empty = GA4 off.
  *
  * Every helper is additionally gated on the visitor's ANALYTICS cookie consent, so
  * no GA4 event can be reported before consent is granted. The gate matters because
@@ -19,11 +19,33 @@
 import { hasConsent } from '@/services/cookieConsent';
 
 /**
- * GA4 Measurement ID, e.g. `G-XXXXXXXXXX`.
- * Replace the placeholder with the real ID — keep it identical to the value used in
- * the gtag.js `<script>` tags in `src/app/layout.tsx`.
+ * GA4 Measurement ID, e.g. `G-XXXXXXXXXX`, from NEXT_PUBLIC_GA4_ID.
+ * DAZZBLISS: was hardcoded to the old client's property; empty until Dazzbliss's own ID is set.
  */
-export const GA_MEASUREMENT_ID = 'G-MB1EBYGV3G';
+export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA4_ID || '';
+
+/**
+ * Google Ads conversions. Account (`AW-…`) and one conversion label per event come from env; an event
+ * is sent only on production, with marketing consent, when both the account and that label are set.
+ * DAZZBLISS: the old client's account and labels were hardcoded in the cart, checkout and thank-you page.
+ */
+const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || '';
+const GOOGLE_ADS_LABELS = {
+  cart: process.env.NEXT_PUBLIC_GOOGLE_ADS_LABEL_CART || '',
+  checkout: process.env.NEXT_PUBLIC_GOOGLE_ADS_LABEL_CHECKOUT || '',
+  purchase: process.env.NEXT_PUBLIC_GOOGLE_ADS_LABEL_PURCHASE || '',
+};
+
+export const trackGoogleAdsConversion = (event: keyof typeof GOOGLE_ADS_LABELS, params: Record<string, unknown>): void => {
+  const label = GOOGLE_ADS_LABELS[event];
+  if (!GOOGLE_ADS_ID || !label || typeof window === 'undefined' || process.env.NEXT_PUBLIC_NODE_ENV !== 'production') {
+    return;
+  }
+  if (!hasConsent('marketing')) {
+    return;
+  }
+  window.gtag?.('event', 'conversion', { send_to: `${GOOGLE_ADS_ID}/${label}`, ...params });
+};
 
 /** Default currency for all monetary values in this store. */
 export const DEFAULT_CURRENCY = 'USD';

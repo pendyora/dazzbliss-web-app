@@ -112,14 +112,7 @@ const Cart = () => {
         const count = item?.count ?? 1;
         return sum + (Number(price) + Number(ringPrice)) * count;
       }, 0);
-      // DAZZBLISS TODO: conversion label below is the old client's; replace with Dazzbliss's. Off until NEXT_PUBLIC_GOOGLE_ADS_ID is set.
-      if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GOOGLE_ADS_ID) {
-        (window as any).gtag?.('event', 'conversion', {
-          send_to: 'AW-17230998076/188qCKWFqYAcELzUsJhA',
-          value: value,
-          currency: 'USD',
-        });
-      }
+      ga4.trackGoogleAdsConversion('cart', { value, currency: 'USD' });
       // GA4 view_cart
       const ga4Cart = ga4.mapCartItemsToGA4(cartProducts);
       ga4.viewCart(ga4Cart);

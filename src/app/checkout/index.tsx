@@ -350,14 +350,7 @@ export default function CheckOutPage() {
       checkoutTracked.current = true;
       trackInitiateCheckout({ value, currency: 'USD', num_items: numItems });
       // Google Ads Begin Checkout conversion event
-      // DAZZBLISS TODO: conversion label below is the old client's; replace with Dazzbliss's. Off until NEXT_PUBLIC_GOOGLE_ADS_ID is set.
-      if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GOOGLE_ADS_ID) {
-        (window as any).gtag?.('event', 'conversion', {
-          send_to: 'AW-17230998076/243LCOmSu4AcELzUsJhA',
-          value: value,
-          currency: 'USD',
-        });
-      }
+      ga4.trackGoogleAdsConversion('checkout', { value, currency: 'USD' });
       // GA4 begin_checkout
       ga4.beginCheckout(ga4.mapCartItemsToGA4(productsToDisplay));
 
