@@ -268,7 +268,7 @@ const CustomJewelryDiamondListTable = ({
       price: diamond.price.toFixed(2),
       name: diamond.fullTitle,
       code: diamond.shape_code,
-      image: diamond.imageFile ?? diamond.videoFile,
+      image: diamond.image_file ?? diamond.video_file,
     }));
     setData(tempData);
   }, [diamondList, diamondPageSize]);

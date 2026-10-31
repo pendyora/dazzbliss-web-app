@@ -314,14 +314,14 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
               ? carat?.split('-')?.[0]
               : selectedCaratsData
                 ? Number(data?.find((item: any) => item.id === selectedCaratsData?.[0])?.name)
-                : diamondFilters?.minCarat,
+                : diamondFilters?.min_carat,
             maxCarat: carat
               ? carat?.split('-')?.[1]
               : selectedCaratsData
                 ? Number(data?.find((item: any) => item.id === selectedCaratsData?.[1])?.name)
-                : diamondFilters?.maxCarat,
-            minAmount: minPrice ? Number(minPrice) : diamondFilters?.minAmount,
-            maxAmount: maxPrice ? Number(maxPrice) : diamondFilters?.maxAmount,
+                : diamondFilters?.max_carat,
+            minAmount: minPrice ? Number(minPrice) : diamondFilters?.min_amount,
+            maxAmount: maxPrice ? Number(maxPrice) : diamondFilters?.max_amount,
             shapes: shapes
               ? shapes?.split(',')
               : selectedShapesData
@@ -341,14 +341,14 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                 ? carat?.split('-')?.[0]
                 : selectedCaratsData
                   ? Number(data?.find((item: any) => item.id === selectedCaratsData?.[0])?.name)
-                  : diamondFilters?.minCarat,
+                  : diamondFilters?.min_carat,
               maxCarat: carat
                 ? carat?.split('-')?.[1]
                 : selectedCaratsData
                   ? Number(data?.find((item: any) => item.id === selectedCaratsData?.[1])?.name)
-                  : diamondFilters?.maxCarat,
-              minAmount: minPrice ? Number(minPrice) : diamondFilters?.minAmount,
-              maxAmount: maxPrice ? Number(maxPrice) : diamondFilters?.maxAmount,
+                  : diamondFilters?.max_carat,
+              minAmount: minPrice ? Number(minPrice) : diamondFilters?.min_amount,
+              maxAmount: maxPrice ? Number(maxPrice) : diamondFilters?.max_amount,
               shapes: shapes
                 ? shapes?.split(',')
                 : selectedShapesData
@@ -432,7 +432,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                           <InputNumber
                             size="small"
                             className={NUMBER_BOX}
-                            min={diamondFilters?.minAmount}
+                            min={diamondFilters?.min_amount}
                             max={selectedDiamondFilters?.maxAmount}
                             style={{ color: 'black' }}
                             // prefix="$"
@@ -448,7 +448,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                   minAmount: value,
                                 }),
                               );
-                              handleFilterChange('price', [value ?? diamondFilters?.minAmount ?? 0, selectedDiamondFilters?.maxAmount]);
+                              handleFilterChange('price', [value ?? diamondFilters?.min_amount ?? 0, selectedDiamondFilters?.maxAmount]);
                             }}
                           />
                         </div>
@@ -459,7 +459,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                             size="small"
                             className={NUMBER_BOX}
                             min={selectedDiamondFilters?.minAmount}
-                            max={diamondFilters?.maxAmount}
+                            max={diamondFilters?.max_amount}
                             style={{ color: 'black' }}
                             // prefix="$"
                             value={selectedDiamondFilters?.maxAmount}
@@ -474,7 +474,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                   maxAmount: value,
                                 }),
                               );
-                              handleFilterChange('price', [selectedDiamondFilters?.minAmount, value ?? diamondFilters?.maxAmount ?? 0]);
+                              handleFilterChange('price', [selectedDiamondFilters?.minAmount, value ?? diamondFilters?.max_amount ?? 0]);
                             }}
                           />
                         </div>
@@ -482,7 +482,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                       {Object.keys(selectedDiamondFilters).length !== 0 && (
                         <Slider
                           range
-                          defaultValue={[diamondFilters?.minAmount, diamondFilters?.maxAmount]}
+                          defaultValue={[diamondFilters?.min_amount, diamondFilters?.max_amount]}
                           value={[selectedDiamondFilters.minAmount, selectedDiamondFilters.maxAmount]}
                           onChange={(value: any) => {
                             // setSelectedFilters((prevFilters: any) => ({
@@ -497,8 +497,8 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                               }),
                             );
                           }}
-                          min={diamondFilters?.minAmount || 0}
-                          max={diamondFilters?.maxAmount || 0}
+                          min={diamondFilters?.min_amount || 0}
+                          max={diamondFilters?.max_amount || 0}
                           onChangeComplete={(value: any) => handleFilterChange('price', value)}
                         />
                       )}
@@ -683,7 +683,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                 <InputNumber
                                   size="small"
                                   className={NUMBER_BOX}
-                                  min={diamondFilters?.minAmount}
+                                  min={diamondFilters?.min_amount}
                                   max={selectedDiamondFilters?.maxAmount}
                                   style={{ color: 'black' }}
                                   // prefix="$"
@@ -700,7 +700,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                         minAmount: value,
                                       }),
                                     );
-                                    handleFilterChange('price', [value ?? diamondFilters?.minAmount ?? 0, selectedDiamondFilters?.maxAmount]);
+                                    handleFilterChange('price', [value ?? diamondFilters?.min_amount ?? 0, selectedDiamondFilters?.maxAmount]);
                                   }}
                                 />
                               </div>
@@ -711,7 +711,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                   size="small"
                                   className={NUMBER_BOX}
                                   min={selectedDiamondFilters?.minAmount}
-                                  max={diamondFilters?.maxAmount}
+                                  max={diamondFilters?.max_amount}
                                   style={{ color: 'black' }}
                                   // prefix="$"
                                   inputMode="numeric"
@@ -728,7 +728,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                       }),
                                     );
 
-                                    handleFilterChange('price', [selectedDiamondFilters?.minAmount, value ?? diamondFilters?.maxAmount ?? 0]);
+                                    handleFilterChange('price', [selectedDiamondFilters?.minAmount, value ?? diamondFilters?.max_amount ?? 0]);
                                   }}
                                 />
                               </div>
@@ -736,7 +736,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                             {Object.keys(selectedDiamondFilters).length !== 0 && (
                               <Slider
                                 range
-                                defaultValue={[diamondFilters?.minAmount, diamondFilters?.maxAmount]}
+                                defaultValue={[diamondFilters?.min_amount, diamondFilters?.max_amount]}
                                 value={[selectedDiamondFilters.minAmount, selectedDiamondFilters.maxAmount]}
                                 onChange={(value: any) => {
                                   // setSelectedFilters((prevFilters: any) => ({
@@ -751,8 +751,8 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                     }),
                                   );
                                 }}
-                                min={diamondFilters?.minAmount || 0}
-                                max={diamondFilters?.maxAmount || 0}
+                                min={diamondFilters?.min_amount || 0}
+                                max={diamondFilters?.max_amount || 0}
                                 onChangeComplete={(value: any) => handleFilterChange('price', value)}
                               />
                             )}
@@ -766,7 +766,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                 <InputNumber
                                   size="small"
                                   className={NUMBER_BOX}
-                                  min={diamondFilters?.minCarat}
+                                  min={diamondFilters?.min_carat}
                                   max={selectedDiamondFilters?.maxCarat}
                                   style={{ color: 'black' }}
                                   step={0.05}
@@ -786,7 +786,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                       }),
                                     );
 
-                                    handleFilterChange('carat', [value ?? diamondFilters?.minCarat ?? 0, selectedDiamondFilters?.maxCarat]);
+                                    handleFilterChange('carat', [value ?? diamondFilters?.min_carat ?? 0, selectedDiamondFilters?.maxCarat]);
                                   }}
                                 />
                               </div>
@@ -795,7 +795,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                   size="small"
                                   className={NUMBER_BOX}
                                   min={selectedDiamondFilters?.minCarat}
-                                  max={diamondFilters?.maxCarat}
+                                  max={diamondFilters?.max_carat}
                                   style={{ color: 'black' }}
                                   // prefix="$"
                                   step={0.05}
@@ -815,7 +815,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                       }),
                                     );
 
-                                    handleFilterChange('carat', [selectedDiamondFilters?.minCarat, value ?? diamondFilters?.maxCarat ?? 0]);
+                                    handleFilterChange('carat', [selectedDiamondFilters?.minCarat, value ?? diamondFilters?.max_carat ?? 0]);
                                   }}
                                 />
                               </div>
@@ -823,7 +823,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                             <Slider
                               // included={false}
                               range
-                              defaultValue={[diamondFilters?.minCarat, diamondFilters?.maxCarat]}
+                              defaultValue={[diamondFilters?.min_carat, diamondFilters?.max_carat]}
                               value={[selectedDiamondFilters.minCarat, selectedDiamondFilters.maxCarat]}
                               onChange={(value: any) => {
                                 // setSelectedFilters((prevFilters: any) => ({
@@ -839,8 +839,8 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                 );
                               }}
                               step={0.01}
-                              min={diamondFilters?.minCarat || 0}
-                              max={diamondFilters?.maxCarat || 0}
+                              min={diamondFilters?.min_carat || 0}
+                              max={diamondFilters?.max_carat || 0}
                               onChangeComplete={(value: any) => handleFilterChange('carat', value)}
                             />
                           </div>
@@ -983,10 +983,10 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                               //   clarity: diamondFilters?.clarity,
                               //   colors: diamondFilters?.colors,
                               //   cut: diamondFilters?.cut,
-                              //   minCarat: diamondFilters?.minCarat,
-                              //   maxCarat: diamondFilters?.maxCarat,
-                              //   minAmount: diamondFilters?.minAmount,
-                              //   maxAmount: diamondFilters?.maxAmount,
+                              //   minCarat: diamondFilters?.min_carat,
+                              //   maxCarat: diamondFilters?.max_carat,
+                              //   minAmount: diamondFilters?.min_amount,
+                              //   maxAmount: diamondFilters?.max_amount,
                               //   shapes: selectedShapesData ? [data?.find((item: any) => item.id === selectedShapesData)?.code] : [],
                               // });
                               dispatch(setDiamondPageNumber(1));
@@ -996,10 +996,10 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                   clarity: diamondFilters?.clarity,
                                   colors: diamondFilters?.colors,
                                   cut: diamondFilters?.cut,
-                                  minCarat: diamondFilters?.minCarat,
-                                  maxCarat: diamondFilters?.maxCarat,
-                                  minAmount: diamondFilters?.minAmount,
-                                  maxAmount: diamondFilters?.maxAmount,
+                                  minCarat: diamondFilters?.min_carat,
+                                  maxCarat: diamondFilters?.max_carat,
+                                  minAmount: diamondFilters?.min_amount,
+                                  maxAmount: diamondFilters?.max_amount,
                                   shapes: selectedShapesData
                                     ? [data?.find((item: any) => item.id === selectedShapesData)?.code]
                                     : [diamondFilters?.shapes?.[0]],
@@ -1012,10 +1012,10 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                     clarity: diamondFilters?.clarity,
                                     colors: diamondFilters?.colors,
                                     cut: diamondFilters?.cut,
-                                    minCarat: diamondFilters?.minCarat,
-                                    maxCarat: diamondFilters?.maxCarat,
-                                    minAmount: diamondFilters?.minAmount,
-                                    maxAmount: diamondFilters?.maxAmount,
+                                    minCarat: diamondFilters?.min_carat,
+                                    maxCarat: diamondFilters?.max_carat,
+                                    minAmount: diamondFilters?.min_amount,
+                                    maxAmount: diamondFilters?.max_amount,
                                     // shapes: [],
                                     shapes: selectedShapesData
                                       ? [data?.find((item: any) => item.id === selectedShapesData)?.code]
@@ -1176,7 +1176,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                           <InputNumber
                             size="small"
                             className={NUMBER_BOX}
-                            min={diamondFilters?.minCarat}
+                            min={diamondFilters?.min_carat}
                             max={selectedDiamondFilters?.maxCarat}
                             style={{ color: 'black' }}
                             step={0.05}
@@ -1196,7 +1196,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                   minCarat: value,
                                 }),
                               );
-                              handleFilterChange('carat', [value ?? diamondFilters?.minCarat ?? 0, selectedDiamondFilters?.maxCarat]);
+                              handleFilterChange('carat', [value ?? diamondFilters?.min_carat ?? 0, selectedDiamondFilters?.maxCarat]);
                             }}
                           />
                         </div>
@@ -1205,7 +1205,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                             size="small"
                             className={NUMBER_BOX}
                             min={selectedDiamondFilters?.minCarat}
-                            max={diamondFilters?.maxCarat}
+                            max={diamondFilters?.max_carat}
                             style={{ color: 'black' }}
                             // prefix="$"
                             step={0.05}
@@ -1224,7 +1224,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                                   maxCarat: value,
                                 }),
                               );
-                              handleFilterChange('carat', [selectedDiamondFilters?.minCarat, value ?? diamondFilters?.maxCarat ?? 0]);
+                              handleFilterChange('carat', [selectedDiamondFilters?.minCarat, value ?? diamondFilters?.max_carat ?? 0]);
                             }}
                           />
                         </div>
@@ -1232,7 +1232,7 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                       <Slider
                         // included={false}
                         range
-                        defaultValue={[diamondFilters?.minCarat, diamondFilters?.maxCarat]}
+                        defaultValue={[diamondFilters?.min_carat, diamondFilters?.max_carat]}
                         value={[selectedDiamondFilters.minCarat, selectedDiamondFilters.maxCarat]}
                         onChange={(value: any) => {
                           // setSelectedFilters((prevFilters: any) => ({
@@ -1248,8 +1248,8 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                           );
                         }}
                         step={0.01}
-                        min={diamondFilters?.minCarat || 0}
-                        max={diamondFilters?.maxCarat || 0}
+                        min={diamondFilters?.min_carat || 0}
+                        max={diamondFilters?.max_carat || 0}
                         onChangeComplete={(value: any) => handleFilterChange('carat', value)}
                       />
                     </div>
@@ -1269,10 +1269,10 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                     //   clarity: diamondFilters?.clarity,
                     //   colors: diamondFilters?.colors,
                     //   cut: diamondFilters?.cut,
-                    //   minCarat: diamondFilters?.minCarat,
-                    //   maxCarat: diamondFilters?.maxCarat,
-                    //   minAmount: diamondFilters?.minAmount,
-                    //   maxAmount: diamondFilters?.maxAmount,
+                    //   minCarat: diamondFilters?.min_carat,
+                    //   maxCarat: diamondFilters?.max_carat,
+                    //   minAmount: diamondFilters?.min_amount,
+                    //   maxAmount: diamondFilters?.max_amount,
                     //   shapes: selectedShapesData ? [data?.find((item: any) => item.id === selectedShapesData)?.code] : [],
                     // });
                     dispatch(
@@ -1280,10 +1280,10 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                         clarity: diamondFilters?.clarity,
                         colors: diamondFilters?.colors,
                         cut: diamondFilters?.cut,
-                        minCarat: diamondFilters?.minCarat,
-                        maxCarat: diamondFilters?.maxCarat,
-                        minAmount: diamondFilters?.minAmount,
-                        maxAmount: diamondFilters?.maxAmount,
+                        minCarat: diamondFilters?.min_carat,
+                        maxCarat: diamondFilters?.max_carat,
+                        minAmount: diamondFilters?.min_amount,
+                        maxAmount: diamondFilters?.max_amount,
                         shapes: selectedShapesData
                           ? [data?.find((item: any) => item.id === selectedShapesData)?.code]
                           : [diamondFilters?.shapes?.[0]],
@@ -1296,10 +1296,10 @@ export default function CustomJewelryDiamondFilter({ isLoading, setIsLoading }: 
                           clarity: diamondFilters?.clarity,
                           colors: diamondFilters?.colors,
                           cut: diamondFilters?.cut,
-                          minCarat: diamondFilters?.minCarat,
-                          maxCarat: diamondFilters?.maxCarat,
-                          minAmount: diamondFilters?.minAmount,
-                          maxAmount: diamondFilters?.maxAmount,
+                          minCarat: diamondFilters?.min_carat,
+                          maxCarat: diamondFilters?.max_carat,
+                          minAmount: diamondFilters?.min_amount,
+                          maxAmount: diamondFilters?.max_amount,
                           shapes: selectedShapesData
                             ? [data?.find((item: any) => item.id === selectedShapesData)?.code]
                             : [diamondFilters?.shapes?.[0]],

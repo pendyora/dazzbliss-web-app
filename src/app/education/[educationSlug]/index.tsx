@@ -65,7 +65,9 @@ export default function EducationDetails() {
             {educationData?.subtitle && (
               <p className="m-0 max-w-[60ch] text-[16px] leading-[1.7] text-ink-soft sm:text-[15px]">{educationData?.subtitle}</p>
             )}
-            {educationData?.createdAt && <span className="text-[12.5px] text-ink-faint">{dayjs(educationData.createdAt).format('D MMM YYYY')}</span>}
+            {educationData?.created_at && (
+              <span className="text-[12.5px] text-ink-faint">{dayjs(educationData.created_at).format('D MMM YYYY')}</span>
+            )}
           </header>
 
           <div className={SHELL}>

@@ -152,7 +152,7 @@ export default function EducationPage({ BannerData }: any) {
                         className="!h-full w-full object-cover transition-transform duration-[1200ms] ease-luxe group-hover:scale-[1.035]"
                       />
                     </figure>
-                    <span className="text-[12.5px] text-ink-faint">{dayjs(item?.createdAt).format('DD.MM.YYYY')}</span>
+                    <span className="text-[12.5px] text-ink-faint">{dayjs(item?.created_at).format('DD.MM.YYYY')}</span>
                     <h3 className="m-0 font-cormorant text-[24px] font-medium leading-[1.12] group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
                       {item?.title}
                     </h3>

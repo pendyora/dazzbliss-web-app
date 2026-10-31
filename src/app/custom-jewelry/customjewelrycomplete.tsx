@@ -474,7 +474,7 @@ export default function CustomJewelryCompletePage({
   }, [selectedRingSizeId, selectedProduct, selectedSettingStore]);
 
   useEffect(() => {
-    if (!selectedDiamondStore?.videoFile && !selectedDiamondStore?.imageFile) {
+    if (!selectedDiamondStore?.video_file && !selectedDiamondStore?.image_file) {
       return;
     }
 
@@ -513,8 +513,8 @@ export default function CustomJewelryCompletePage({
     if (settingVideoFiles?.length > 0) {
       const update = [...sliderArray];
       setVideoOne(settingVideoFiles?.[0]);
-      // if (selectedDiamondStore?.imageFile) {
-      //   update.push(selectedDiamondStore?.imageFile);
+      // if (selectedDiamondStore?.image_file) {
+      //   update.push(selectedDiamondStore?.image_file);
       // }
       if (settingVideoFiles?.[1]) {
         setIsVideo2(true);
@@ -522,19 +522,19 @@ export default function CustomJewelryCompletePage({
         setVideoTwo(settingVideoFiles?.[1]);
       }
       // 360 Diamond iframe
-      // if (selectedDiamondStore?.videoFile) {
-      //   update.push(selectedDiamondStore?.videoFile);
+      // if (selectedDiamondStore?.video_file) {
+      //   update.push(selectedDiamondStore?.video_file);
       // }
       setIsVideo(true);
       setSwiperData(update);
     } else {
-      // sliderArray.push(selectedDiamondStore?.imageFile);
+      // sliderArray.push(selectedDiamondStore?.image_file);
       if (settingVideoFiles?.[1]) {
         sliderArray.unshift(settingVideoFiles?.[1]);
       }
       // 360 Diamond iframe
-      // if (selectedDiamondStore?.videoFile) {
-      //   sliderArray.push(selectedDiamondStore?.videoFile);
+      // if (selectedDiamondStore?.video_file) {
+      //   sliderArray.push(selectedDiamondStore?.video_file);
       // }
       setSwiperData(sliderArray);
     }
@@ -756,7 +756,7 @@ export default function CustomJewelryCompletePage({
                               />
                             ) : (
                               <iframe
-                                src={` ${selectedDiamondStore?.videoFile?.split('/500/500')[0]}${`/${windowWidth - 24}/${windowWidth - 24}`}`}
+                                src={` ${selectedDiamondStore?.video_file?.split('/500/500')[0]}${`/${windowWidth - 24}/${windowWidth - 24}`}`}
                                 title={`Model View`}
                                 className="hidden aspect-square h-full w-full sm:block"
                                 style={{
@@ -999,9 +999,9 @@ export default function CustomJewelryCompletePage({
                   {selectedDiamondStore ? <p className={SECTION_LABEL}>The diamond</p> : <Skeleton.Input active={true} size="small" />}
                   <div className="grid grid-cols-[96px_minmax(0,1fr)] items-start gap-4 sm:grid-cols-[80px_minmax(0,1fr)]">
                     <div className="aspect-square w-full overflow-hidden bg-stone">
-                      {selectedDiamondStore?.imageFile || selectedDiamondStore?.fullTitle ? (
+                      {selectedDiamondStore?.image_file || selectedDiamondStore?.fullTitle ? (
                         <Image
-                          src={selectedDiamondStore?.imageFile ? selectedDiamondStore?.imageFile : BRAND.logo.monogram}
+                          src={selectedDiamondStore?.image_file ? selectedDiamondStore?.image_file : BRAND.logo.monogram}
                           preview={false}
                           fallback={BRAND.logo.monogram}
                           className="aspect-square object-cover"

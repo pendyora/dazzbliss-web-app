@@ -36,7 +36,7 @@ export default function AnnouncementBar({ promoStripData, currencyProps }: Props
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const items: any[] = useMemo(() => (promoStripData?.isActive && Array.isArray(promoStripData?.data) ? promoStripData.data : []), [promoStripData]);
+  const items: any[] = useMemo(() => (promoStripData?.is_active && Array.isArray(promoStripData?.data) ? promoStripData.data : []), [promoStripData]);
   // Timed messages disappear once their end date passes; a message without `enableEndDate` always shows
   // (with its countdown while it still has a live end date).
   const messages = items.filter((item) => item?.title && (!item?.enableEndDate || (item?.endDate && countdown(item.endDate, now))));

@@ -29,7 +29,7 @@ const slugify = (s: string) =>
     .replace(/-+/g, '-')
     .replace(/^-+|-+$/g, '');
 
-const dateOf = (post: any) => (post?.createdAt ? dayjs(post.createdAt).format('D MMM YYYY') : '');
+const dateOf = (post: any) => (post?.created_at ? dayjs(post.created_at).format('D MMM YYYY') : '');
 const clip = (s?: string, n = 140) => (s && s.length > n ? `${s.slice(0, n).trimEnd()}…` : s);
 
 function Cover({ src, alt, className = '' }: { src?: string; alt: string; className?: string }) {

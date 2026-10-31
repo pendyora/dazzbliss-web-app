@@ -31,8 +31,8 @@ export interface Product {
   code: string;
   customisable: boolean;
   title: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   estimated_delivery_days: number;
   fullTitle: string;
   best_seller: boolean;
@@ -75,7 +75,7 @@ export interface ProductData {
     details: string | null;
     diamond_price: number;
     favorite: string | null;
-    isLabGrown: boolean;
+    is_lab_grown: boolean;
     slug: string;
     tag: string | null;
     title: string;

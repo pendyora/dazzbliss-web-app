@@ -32,8 +32,8 @@ export interface SocialPost {
   source: number;
   account_link: string;
   product_link: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   suggestedJewelry: SuggestedJewelry[];
 }
 

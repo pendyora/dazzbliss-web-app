@@ -27,8 +27,8 @@ interface Product {
   code: string;
   customisable: boolean;
   title: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   estimated_delivery_days: number;
   fullTitle: string;
   best_seller: boolean;

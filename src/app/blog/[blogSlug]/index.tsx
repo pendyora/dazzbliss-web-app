@@ -63,7 +63,7 @@ export default function BlogDetails() {
               {blogData?.title}
             </h1>
             {blogData?.subtitle && <p className="m-0 max-w-[60ch] text-[16px] leading-[1.7] text-ink-soft sm:text-[15px]">{blogData?.subtitle}</p>}
-            {blogData?.createdAt && <span className="text-[12.5px] text-ink-faint">{dayjs(blogData.createdAt).format('D MMM YYYY')}</span>}
+            {blogData?.created_at && <span className="text-[12.5px] text-ink-faint">{dayjs(blogData.created_at).format('D MMM YYYY')}</span>}
           </header>
 
           <div className={SHELL}>

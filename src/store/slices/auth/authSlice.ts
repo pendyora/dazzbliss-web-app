@@ -13,12 +13,12 @@ interface LoginResponse {
 }
 interface DecryptedData {
   id: string;
-  isActive: boolean;
+  is_active: boolean;
   first_name: string;
   last_name: string;
   email: string;
-  updatedAt: string; // Consider using Date if you parse it
-  createdAt: string; // Consider using Date if you parse it
+  updated_at: string; // Consider using Date if you parse it
+  created_at: string; // Consider using Date if you parse it
   gender: string | null;
   profile: string | null;
   phone: string | null;
@@ -31,7 +31,7 @@ interface DecryptedData {
   doa: string | null;
   country: string | null;
   zip_code: string | null;
-  deletedAt: string | null;
+  deleted_at: string | null;
   token: string;
   key: string;
 }

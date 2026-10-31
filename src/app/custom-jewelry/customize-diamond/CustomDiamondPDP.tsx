@@ -93,31 +93,31 @@ export default function CustomDiamondPDP({
   }, [loading]);
 
   useEffect(() => {
-    if (!selectedProduct?.videoFile && !selectedProduct?.imageFile) {
+    if (!selectedProduct?.video_file && !selectedProduct?.image_file) {
       return;
     }
-    // setSwiperData([selectedProduct?.videoFile, selectedProduct?.imageFile]);
+    // setSwiperData([selectedProduct?.video_file, selectedProduct?.image_file]);
 
     const sliderArray = [];
     // 360 image is on index 0
-    if (!selectedProduct?.videoFile) {
+    if (!selectedProduct?.video_file) {
       setIs360(true);
     } else {
-      sliderArray.unshift(selectedProduct?.videoFile);
+      sliderArray.unshift(selectedProduct?.video_file);
     }
-    // sliderArray.unshift(selectedProduct?.imageFile);
+    // sliderArray.unshift(selectedProduct?.image_file);
 
     // first video on index 1
     if (selectedProduct?.videos_image_uri?.length > 0) {
       const update = [sliderArray?.[0]];
-      if (selectedProduct?.imageFile) {
-        update.push(selectedProduct?.imageFile);
+      if (selectedProduct?.image_file) {
+        update.push(selectedProduct?.image_file);
       }
       setIsVideo(true);
       // console.log(update, 'üpdate');
       setSwiperData(update);
     } else {
-      sliderArray.push(selectedProduct?.imageFile);
+      sliderArray.push(selectedProduct?.image_file);
       setSwiperData(sliderArray);
     }
   }, [selectedProduct]);
@@ -162,7 +162,7 @@ export default function CustomDiamondPDP({
                                   !is360 && (
                                     <div className="aspect-square relative w-full xl:h-auto lg:h-auto sm:!h-full">
                                       <iframe
-                                        src={` ${selectedProduct?.videoFile?.split('/500/500')[0]}${`/${windowWidth - 24}/${windowWidth - 24}`}`}
+                                        src={` ${selectedProduct?.video_file?.split('/500/500')[0]}${`/${windowWidth - 24}/${windowWidth - 24}`}`}
                                         title={`Model View`}
                                         className="h-full w-full hidden sm:block aspect-square"
                                         style={{
@@ -261,25 +261,25 @@ export default function CustomDiamondPDP({
                         </Swiper>
                       </div>
                     )}
-                    {selectedProduct?.videoFile ? (
+                    {selectedProduct?.video_file ? (
                       <div className="aspect-square col-span-1 relative sm:hidden">
                         <iframe
-                          src={` ${selectedProduct?.videoFile.split('/500/500')[0]}`}
+                          src={` ${selectedProduct?.video_file.split('/500/500')[0]}`}
                           title={`Model View`}
                           className="h-full w-full block lg:hidden bg-stone"
                         />
                         <iframe
-                          src={` ${selectedProduct?.videoFile.split('/500/500')[0]}`}
+                          src={` ${selectedProduct?.video_file.split('/500/500')[0]}`}
                           title={`Model View`}
                           className="h-full w-full hidden lg:block md:hidden"
                         />
                         <iframe
-                          src={` ${selectedProduct?.videoFile.split('/500/500')[0]}`}
+                          src={` ${selectedProduct?.video_file.split('/500/500')[0]}`}
                           title={`Model View`}
                           className="h-full w-full hidden md:block sm:hidden"
                         />
                         <iframe
-                          src={` ${selectedProduct?.videoFile.split('/500/500')[0]}`}
+                          src={` ${selectedProduct?.video_file.split('/500/500')[0]}`}
                           title={`Model View`}
                           className="h-full w-full hidden sm:block"
                         />
@@ -303,9 +303,9 @@ export default function CustomDiamondPDP({
                         />
                       </>
                     )}
-                    {selectedProduct?.imageFile ? (
+                    {selectedProduct?.image_file ? (
                       <div className=" col-span-1 sm:hidden bg-stone 2xl:h-auto w-full aspect-square xl:h-auto lg:h-auto md:h-auto flex justify-center items-center">
-                        <ImageZoom src={selectedProduct?.imageFile} alt="Product image" zoom="200" className="!aspect-square sm:hidden" />
+                        <ImageZoom src={selectedProduct?.image_file} alt="Product image" zoom="200" className="!aspect-square sm:hidden" />
                       </div>
                     ) : (
                       <>
@@ -521,7 +521,7 @@ export default function CustomDiamondPDP({
                 footer={false}
               >
                 <div className="!w-[100%] !h-[60vh]" style={{ minHeight: '100%' }}>
-                  <iframe className="!w-full !h-full" width={700} height={700} src={selectedDiamondStore?.certificateFile} />
+                  <iframe className="!w-full !h-full" width={700} height={700} src={selectedDiamondStore?.certificate_file} />
                 </div>
               </Modal>
             </div>

@@ -20,8 +20,8 @@ interface BlogState {
     category_name: string;
     category_link: string;
     sequence: number;
-    createdAt: string;
-    updatedAt: string;
+    created_at: string;
+    updated_at: string;
   }>;
 }
 
