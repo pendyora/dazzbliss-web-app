@@ -36,6 +36,9 @@ type Props = {
  * and the Shop Pay addresses are attached at payment confirmation, then the buyer lands on the
  * thank-you page — the checkout page is skipped entirely, like PayPal Express.
  */
+// DAZZBLISS: Shop Pay is a third-party service (Shopify); keep it off until the Dazzbliss Shopify account is set up.
+const SHOP_PAY_ENABLED = process.env.NEXT_PUBLIC_SHOP_PAY_ENABLED === 'true';
+
 const ShopPayExpressButton = ({ cartProducts, couponCode, canStart, onBeforeCreate, includeFreeGift = true, clearCartOnSuccess = true }: Props) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -150,7 +153,8 @@ const ShopPayExpressButton = ({ cartProducts, couponCode, canStart, onBeforeCrea
     [dispatch, router, clearCartOnSuccess],
   );
 
-  if (available === false) {
+  // Off unless NEXT_PUBLIC_SHOP_PAY_ENABLED=true: nothing renders, so Shopify's SDK is never loaded.
+  if (!SHOP_PAY_ENABLED || available === false) {
     return null;
   }
 

@@ -11,6 +11,16 @@ import { decrypt } from '@/utils/enc-decy';
 
 import AppProviderData from './AppProvider';
 
+import type { Metadata } from 'next';
+
+// DAZZBLISS: search engines stay out until NEXT_PUBLIC_ALLOW_INDEXING=true (set it only on the live site).
+// Pages inherit this; robots.ts blocks crawling with the same switch.
+const ALLOW_INDEXING = process.env.NEXT_PUBLIC_ALLOW_INDEXING === 'true';
+
+export const metadata: Metadata = {
+  robots: ALLOW_INDEXING ? undefined : { index: false, follow: false, googleBot: { index: false, follow: false } },
+};
+
 async function getHeaderData() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mega-menu`, {

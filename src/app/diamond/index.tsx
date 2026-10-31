@@ -8,6 +8,10 @@ import { useAppSelector } from '@/store';
 
 import DiamondsCard from './diamondCard';
 
+// DAZZBLISS TODO: placeholder from the design set; replace with a Dazzbliss diamond photo.
+// (Was hot-linked from a third-party jeweller's site.)
+const DIAMOND_HERO_IMAGE = '/images/Model/editorial.jpg';
+
 export default function DiamondsPage() {
   const masterData = useAppSelector((state) => state.master.data);
 
@@ -35,7 +39,7 @@ export default function DiamondsPage() {
       <div
         className={`flex bg-stone sm:hidden h-[660px] items-center justify-center py-48 2xl:h-[480px] xl:h-[380px] xl:py-8 lg:h-[280px] lg:py-8 md:h-auto md:py-5 sm:py-4`}
         style={{
-          backgroundImage: `url('https://www.brilliantearth.com/_next/image/?url=https%3A%2F%2Fcdn.builder.io%2Fapi%2Fv1%2Fimage%2Fassets%252F9f2a69003c86470ea05deb9ecb9887be%252F9645025ab0bc46c3a0eeb999d54a1f75&w=3840&q=95&dpl=e2360bf3aa91a2d260dfa5d768aad3921746e8ca')`,
+          backgroundImage: `url('${DIAMOND_HERO_IMAGE}')`,
           backgroundSize: 'cover',
           // backgroundPosition: "center",
           backgroundRepeat: 'no-repeat',
@@ -49,13 +53,7 @@ export default function DiamondsPage() {
       </div>
       <div className="hidden flex-col sm:flex">
         <div className="flex h-[224px] w-full overflow-hidden bg-stone">
-          <Image
-            src="https://www.brilliantearth.com/_next/image/?url=https%3A%2F%2Fcdn.builder.io%2Fapi%2Fv1%2Fimage%2Fassets%252F9f2a69003c86470ea05deb9ecb9887be%252F9645025ab0bc46c3a0eeb999d54a1f75&w=3840&q=95&dpl=e2360bf3aa91a2d260dfa5d768aad3921746e8ca"
-            preview={false}
-            alt="Ring"
-            rootClassName="!h-full !w-full"
-            className="!h-full !w-full object-cover"
-          />
+          <Image src={DIAMOND_HERO_IMAGE} preview={false} alt="Ring" rootClassName="!h-full !w-full" className="!h-full !w-full object-cover" />
         </div>
       </div>
       <section className="flex flex-col gap-8 py-[clamp(48px,6vw,96px)] sm:gap-5">
