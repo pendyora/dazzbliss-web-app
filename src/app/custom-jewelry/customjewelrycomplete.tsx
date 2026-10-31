@@ -15,6 +15,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import ImageZoom from '@/components/CustomImageZoom';
 import ProtectedVideo from '@/components/ProtectedVideo';
+import { BRAND } from '@/config/brand';
 import { IsRingSizeType } from '@/constants/Header';
 import { RING_SIZE } from '@/constants/master.constant';
 import {
@@ -690,10 +691,10 @@ export default function CustomJewelryCompletePage({
                   })
                 ) : (
                   <>
-                    <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
-                    <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
-                    <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
-                    <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
+                    <Image src={BRAND.logo.monogram} alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
+                    <Image src={BRAND.logo.monogram} alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
+                    <Image src={BRAND.logo.monogram} alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
+                    <Image src={BRAND.logo.monogram} alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
                   </>
                 )
               ) : (
@@ -716,7 +717,7 @@ export default function CustomJewelryCompletePage({
                 </div>
               )}
               {swiperData && swiperData?.length > 1 && swiperData?.length % 2 > 0 && (
-                <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
+                <Image src={BRAND.logo.monogram} alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
               )}
             </Suspense>
           </div>
@@ -779,7 +780,7 @@ export default function CustomJewelryCompletePage({
                             src={d}
                             preview={false}
                             alt="Mask Group"
-                            fallback={'/images/ashclair_pdp_logo_image.svg'}
+                            fallback={BRAND.logo.monogram}
                             className="mx-auto aspect-square w-full bg-stone object-contain mix-blend-multiply"
                           />
                         )}
@@ -838,7 +839,7 @@ export default function CustomJewelryCompletePage({
                             src={d}
                             preview={false}
                             alt="Mask Group"
-                            fallback={'/images/ashclair_pdp_logo_image.svg'}
+                            fallback={BRAND.logo.monogram}
                             className="aspect-square w-full bg-stone object-contain mix-blend-multiply"
                           />
                         )}
@@ -848,7 +849,7 @@ export default function CustomJewelryCompletePage({
                 </Swiper>
               </div>
             ) : (
-              <Image src="/images/ashclair_pdp_logo_image.svg" alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
+              <Image src={BRAND.logo.monogram} alt="PDP1" preview={false} style={STONE_FALLBACK_STYLE} />
             )}
           </div>
 
@@ -922,9 +923,9 @@ export default function CustomJewelryCompletePage({
                   <div className="aspect-square w-full overflow-hidden bg-stone">
                     {selectedSettingStore && selectedSettingStore?.product_details?.title ? (
                       <Image
-                        src={selectedSettingType?.carat_images?.[1] ? selectedSettingType?.carat_images?.[1] : '/images/ashclair_pdp_logo_image.svg'}
+                        src={selectedSettingType?.carat_images?.[1] ? selectedSettingType?.carat_images?.[1] : BRAND.logo.monogram}
                         preview={false}
-                        fallback="/images/ashclair_pdp_logo_image.svg"
+                        fallback={BRAND.logo.monogram}
                         className="!h-full object-contain !mix-blend-multiply"
                         alt="Mask Group"
                       />
@@ -1000,9 +1001,9 @@ export default function CustomJewelryCompletePage({
                     <div className="aspect-square w-full overflow-hidden bg-stone">
                       {selectedDiamondStore?.imageFile || selectedDiamondStore?.fullTitle ? (
                         <Image
-                          src={selectedDiamondStore?.imageFile ? selectedDiamondStore?.imageFile : '/images/ashclair_pdp_logo_image.svg'}
+                          src={selectedDiamondStore?.imageFile ? selectedDiamondStore?.imageFile : BRAND.logo.monogram}
                           preview={false}
-                          fallback="/images/ashclair_pdp_logo_image.svg"
+                          fallback={BRAND.logo.monogram}
                           className="aspect-square object-cover"
                           alt="Mask Group"
                         />

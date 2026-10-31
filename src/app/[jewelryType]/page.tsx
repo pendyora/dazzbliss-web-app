@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Metadata } from 'next';
 
+import { BRAND } from '@/config/brand';
+
 import Page from '.';
 
 const jewelryTypeMetadata: Record<string, { title: string; description: string }> = {
@@ -11,7 +13,7 @@ const jewelryTypeMetadata: Record<string, { title: string; description: string }
       'Shop elegant wedding bands for women and men with lab grown diamonds and classic gold styles. Find the perfect band to wear and love forever.',
   },
   'engagement-rings': {
-    title: 'Lab Grown Diamond Engagement Rings | Ashclair',
+    title: `Lab Grown Diamond Engagement Rings${BRAND.titleSuffix}`,
     description:
       'Explore stunning lab grown diamond engagement rings in solitaire, halo, oval, emerald, and hidden halo styles made for modern love stories.',
   },
@@ -26,9 +28,8 @@ export function generateMetadata({ params }: { params: { jewelryType: string } }
     };
   }
   return {
-    title: 'Ashclair - Gems & Jewelry',
-    description:
-      'Ashclair offers handcrafted fine jewelry and premium gemstones—custom-designed with expert craftsmanship, direct from a family-run diamond house.',
+    title: `${BRAND.name} - ${BRAND.tagline}`,
+    description: `${BRAND.name} offers fine jewelry and diamonds, including custom designs made to order.`,
   };
 }
 

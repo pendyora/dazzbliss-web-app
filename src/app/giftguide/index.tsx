@@ -2,7 +2,7 @@ import React from 'react';
 
 import InspiredByCommunity from '@/page/InspiredByCommunity';
 
-import WhyAllorya from './../../components/WhyAllorya';
+import WhyUs from './../../components/WhyUs';
 import { FeaturedIn } from './../../page';
 import GiftguideFrame67 from './GiftguideFrame67';
 
@@ -11,7 +11,7 @@ export default function GIFTGUIDEPage() {
     <div className="w-full bg-paper">
       <div className="sm:mt-5">
         <GiftguideFrame67 />
-        <WhyAllorya />
+        <WhyUs />
         <FeaturedIn />
         <InspiredByCommunity />
       </div>

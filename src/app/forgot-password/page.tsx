@@ -2,11 +2,13 @@ import React from 'react';
 
 import { Metadata } from 'next';
 
+import { BRAND } from '@/config/brand';
+
 import Page from '.';
 
 export const metadata: Metadata = {
-  title: 'Set a New Password | Pendyora',
-  description: 'Choose a new password for your Pendyora account.',
+  title: `Set a New Password${BRAND.titleSuffix}`,
+  description: `Choose a new password for your ${BRAND.name} account.`,
   // ogTitle:'...'
 };
 

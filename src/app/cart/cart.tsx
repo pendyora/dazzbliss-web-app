@@ -11,6 +11,7 @@ import FreeGiftItem from '@/components/FreeGiftItem';
 import FreeGiftProgress from '@/components/FreeGiftProgress';
 import OrderSummary, { useCurrencyCode, useOrderTotals } from '@/components/OrderSummary';
 import ReviewRatingStrip from '@/components/ReviewRatingStrip';
+import { BRAND } from '@/config/brand';
 import * as ga4 from '@/lib/analytics';
 import { apiUpdateCartItem, apiUpdateCountCartProduct } from '@/services/cartService';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -527,7 +528,7 @@ const Cart = () => {
                       className="mt-0.5 h-4 w-4 flex-none rounded-none border-line-strong text-ink focus:ring-ink"
                     />
                     <span>
-                      Text me order and delivery updates from Pendyora. Optional. Message rates may apply; reply HELP for help and STOP to cancel.{' '}
+                      Text me order and delivery updates from {BRAND.name}. Optional. Message rates may apply; reply HELP for help and STOP to cancel.{' '}
                       <Link href="/terms-and-conditions" className="underline">
                         Terms &amp; Privacy
                       </Link>

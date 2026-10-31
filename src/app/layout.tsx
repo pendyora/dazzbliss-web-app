@@ -85,7 +85,7 @@ async function RootLayout({ children }: { children: ReactNode }) {
             optional type starts 'denied' (only functionality and security are
             granted) and the provider replays a 'consent' 'update' on opt-in. */}
         {/* DAZZBLISS: disabled — old client's ID, enable with Dazzbliss's own.
-            Ashclair moved Microsoft Clarity, Google Ads (gtag AW-…), Meta Pixel and the AMP
+            The previous version moved Microsoft Clarity, Google Ads (gtag AW-…), Meta Pixel and the AMP
             <amp-analytics> tag into `@/components/CookieConsent/Trackers`, gated on cookie consent. */}
         <script
           type="text/javascript"

@@ -12,6 +12,7 @@ import { AUTH_POSTERS } from '@/components/Auth/authPosters';
 import AuthShell, { AuthTabs, StatusIcon } from '@/components/Auth/AuthShell';
 import { AUTH } from '@/components/Auth/authUi';
 import CloudflareTurnstile, { CloudflareTurnstileHandle } from '@/components/common/CloudflareTurnstile';
+import { BRAND } from '@/config/brand';
 import { useHoneypot } from '@/hook/useHoneypot';
 import { apiSignUp } from '@/services/authService';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -165,7 +166,7 @@ export default function CreateanaccountGroup2691() {
     <AuthShell poster={AUTH_POSTERS.register}>
       <div className={AUTH.form}>
         <AuthTabs active="register" callbackUrl={callbackUrl} />
-        <p className={AUTH.kicker}>Join Pendyora</p>
+        <p className={AUTH.kicker}>Join {BRAND.name}</p>
         <h1 className={AUTH.title}>
           Create your <em>account</em>
         </h1>
@@ -252,8 +253,8 @@ export default function CreateanaccountGroup2691() {
             rules={[{ validator: (_, checked) => (checked ? Promise.resolve() : Promise.reject(new Error('Please accept to continue'))) }]}
           >
             <Checkbox className="items-start text-[13px] leading-[1.5] [&>span:last-child]:text-ink-soft [&_.ant-checkbox]:mt-0.5 [&_.ant-checkbox]:self-start">
-              I agree to receive automated personalised text messages (e.g. cart reminders, shipping updates and tracking info) from Pendyora. Consent
-              is not a condition of any purchase. Reply HELP for help and STOP to cancel. See our{' '}
+              I agree to receive automated personalised text messages (e.g. cart reminders, shipping updates and tracking info) from {BRAND.name}.
+              Consent is not a condition of any purchase. Reply HELP for help and STOP to cancel. See our{' '}
               <Link href="/terms-and-conditions" className={AUTH.link}>
                 Terms
               </Link>{' '}

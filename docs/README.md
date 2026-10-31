@@ -1,11 +1,11 @@
 # Storefront design docs
 
 These docs list the placeholder content in the redesigned Dazzbliss storefront and the **backend/API changes the new design needs**.
-They were written while designing in `pendyora-web-app` (May–Oct 2026) and copied here when the design was merged into this repo
+They were written while designing in a separate design repo (May–Oct 2026) and copied here when the design was merged into this repo
 (branch `design-merge`). Every item was re-checked against the merged code and `latest-backend-main` on **31 Oct 2026**.
 
-The design mockups are not in this repo. They live in `pendyora-web-app`, branch `shruti/mockups`, folder
-[`design-mockups/`](https://github.com/pendyora/pendyora-web-app/tree/shruti/mockups/design-mockups).
+The design mockups are not in this repo. They live in the design repo (working name `pendyora-web-app`), branch `shruti/mockups`, folder
+`design-mockups/`. The other docs refer to mockups by their path in that folder.
 
 ## Docs
 

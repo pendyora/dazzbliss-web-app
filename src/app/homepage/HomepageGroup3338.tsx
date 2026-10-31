@@ -4,17 +4,17 @@ import UserProfile2 from '../../components/UserProfile2';
 
 const data = [
   {
-    userImage: '/img_ashclair_polinach_11007534.png',
+    userImage: '/img_jewelry_polinach_11007534.png',
     headlineText: 'Less than $500',
     path: '/less-than-five-hundred',
   },
   {
-    userImage: '/img_ashclair_mathilde.png',
+    userImage: '/img_jewelry_mathilde.png',
     headlineText: 'Less than $1000',
     path: '/less-than-thousand',
   },
   {
-    userImage: '/img_ashclair_diam_630x632.png',
+    userImage: '/img_jewelry_diam_630x632.png',
     headlineText: 'Less than $2000',
     path: '/less-than-two-thousand',
   },

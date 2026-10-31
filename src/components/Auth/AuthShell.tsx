@@ -6,6 +6,8 @@ import { ConfigProvider } from 'antd';
 import Link from 'next/link';
 import { LuCheck, LuChevronLeft, LuCircleHelp, LuClock3, LuLock, LuMail } from 'react-icons/lu';
 
+import { BRAND } from '@/config/brand';
+
 import AuthPoster, { AuthBanner } from './AuthPoster';
 import { authTheme } from './authUi';
 
@@ -31,8 +33,8 @@ export default function AuthShell({ poster, flip, children }: Props) {
             <LuChevronLeft className="h-4 w-4" />
             <span className="sm:hidden">Continue shopping</span>
           </Link>
-          <Link href="/" aria-label="Pendyora home" className="justify-self-center">
-            <img src="/images/logo.png" alt="Dazzbliss" className="h-[30px] w-auto object-contain mix-blend-multiply sm:h-[22px]" />
+          <Link href="/" aria-label={`${BRAND.name} home`} className="justify-self-center">
+            <img src={BRAND.logo.wordmark} alt={BRAND.name} className="h-[30px] w-auto object-contain mix-blend-multiply sm:h-[22px]" />
           </Link>
           <Link
             href="/contactpage"
@@ -73,7 +75,9 @@ export default function AuthShell({ poster, flip, children }: Props) {
               Client care
             </Link>
           </nav>
-          <span>© {new Date().getFullYear()} Pendyora</span>
+          <span>
+            © {new Date().getFullYear()} {BRAND.name}
+          </span>
         </footer>
       </div>
     </ConfigProvider>

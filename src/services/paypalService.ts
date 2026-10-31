@@ -14,7 +14,7 @@ import ApiService from './ApiService';
  * sessionStorage rather than localStorage: it is scoped to this tab and cleared when the tab
  * closes, which is the right lifetime for a token that only has to survive one round trip.
  */
-const PAYPAL_GUEST_SESSION_KEY = 'majesca_paypal_guest_session';
+const PAYPAL_GUEST_SESSION_KEY = 'paypal_guest_session';
 
 /** Park the guest session immediately before navigating away to PayPal. */
 export function stashPayPalGuestSession(guestDetails: any) {

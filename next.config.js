@@ -1,20 +1,16 @@
+/**
+ * Remote image hosts allowed for next/image, comma-separated in NEXT_IMAGE_HOSTS (e.g. the backend's CloudFront domain).
+ * DAZZBLISS TODO: set NEXT_IMAGE_HOSTS to the Dazzbliss image CDN host(s). The previous company's hosts were removed.
+ */
+const imageHosts = (process.env.NEXT_IMAGE_HOSTS || '')
+  .split(',')
+  .map((host) => host.trim())
+  .filter(Boolean);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
-      {
-        // Define the protocol, hostname, and path pattern
-        protocol: 'https',
-        hostname: 'd2xnejqesyh20p.cloudfront.net',
-        pathname: '/**', // Use `/**` to allow all paths
-      },
-      {
-        // Define the protocol, hostname, and path pattern
-        protocol: 'https',
-        hostname: 'aws.kavyajewel.com',
-        pathname: '/**', // Use `/**` to allow all paths
-      },
-    ],
+    remotePatterns: imageHosts.map((hostname) => ({ protocol: 'https', hostname, pathname: '/**' })),
   },
 
   crossOrigin: 'anonymous',

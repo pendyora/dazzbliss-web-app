@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Image } from 'antd';
 
+import { BRAND } from '@/config/brand';
+
 import { decrypt } from './../../utils/enc-decy';
 import CustomJewelryBanner from './components/CustomjewelryBanner';
 import CustomjewelryGroup2788 from './CustomjewelryGroup2788';
@@ -69,9 +71,9 @@ export default async function CUSTOMJEWELRYPage() {
             jewelry in 3 simple <em className="italic text-gilt">steps</em>
           </h2>
           <p className={BODY}>
-            Buying the right type of jewelry for a special occasion is a daunting task but at Ashclair, we now have a convenient solution. It is now
-            possible to design your own jewelry by collaborating with our highly talented team of designers and craftsmen. Whether you are looking for
-            the ideal engagement ring wedding ring anniversary ring trio ring set or any other kind of ring, we got you covered.
+            Buying the right type of jewelry for a special occasion is a daunting task but at {BRAND.name}, we now have a convenient solution. It is
+            now possible to design your own jewelry by collaborating with our highly talented team of designers and craftsmen. Whether you are looking
+            for the ideal engagement ring wedding ring anniversary ring trio ring set or any other kind of ring, we got you covered.
           </p>
         </div>
       </section>
@@ -82,8 +84,8 @@ export default async function CUSTOMJEWELRYPage() {
             Why custom jewelry <em className="italic text-gilt">design</em>
           </h2>
           <p className={BODY}>
-            Our team at Ashclair is committed to bringing your ring design idea to life at the most affordable price. Through our long experience in
-            the industry and our commitment to quality jewelry, we have consistently exceeded the expectations of clients. We invite you to design
+            Our team at {BRAND.name} is committed to bringing your ring design idea to life at the most affordable price. Through our long experience
+            in the industry and our commitment to quality jewelry, we have consistently exceeded the expectations of clients. We invite you to design
             your jewelry with us to save time and money.
           </p>
         </div>

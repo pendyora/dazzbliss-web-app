@@ -7,7 +7,8 @@ import Link from 'next/link';
 import { LuCalendarCheck, LuChevronRight, LuHeadset, LuShieldCheck } from 'react-icons/lu';
 
 import { Img } from '@/components';
-import { whyAshclairBadges } from '@/components/WhyAllorya';
+import { whyUsBadges } from '@/components/WhyUs';
+import { BRAND } from '@/config/brand';
 
 import HowCanWeHelpModal from './HowCanWeHelpModal';
 
@@ -149,11 +150,11 @@ export const AssurancePanel = ({ cartProducts, className = '' }: PanelProps) => 
             No *vertical* rules between the badges though: five cells across this column leave each
             label barely a word wide, and the text collided with them. */}
         <div className={`bg-stone/45 px-5 py-5 sm:px-3 sm:py-4 ${deliveryWindow ? 'border-t border-line' : ''}`}>
-          <p className="m-0 text-center text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Why Ashclair?</p>
+          <p className="m-0 text-center text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Why {BRAND.name}?</p>
           <div className="mt-4 grid grid-cols-5 gap-x-2 sm:mt-3 sm:gap-x-1.5">
-            {whyAshclairBadges.map((badge) => (
+            {whyUsBadges.map((badge) => (
               <div key={badge.label} className="flex flex-col items-center gap-2 text-center sm:gap-1.5">
-                {/* brightness-0 renders the remote SVGs in ink (the global `.why-ashclair-icon` filter tints them green). */}
+                {/* brightness-0 renders the remote SVGs in ink (the global `.why-us-icon` filter tints them). */}
                 <Img src={badge.src} width={40} height={40} alt="" className="h-6 w-6 object-contain opacity-80 brightness-0 sm:h-5 sm:w-5" />
                 <span className="text-[9.5px] uppercase leading-[1.35] tracking-[0.08em] text-ink-soft lg:text-[9px] sm:text-[8.5px]">
                   {badge.label}

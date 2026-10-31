@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { LuCheck, LuLoader } from 'react-icons/lu';
 
 import ProductName from '@/components/CartProductDetails/ProductName';
+import { BRAND } from '@/config/brand';
 import useCookieConsent from '@/hook/useCookieConsent';
 import * as ga4 from '@/lib/analytics';
 import * as klaviyo from '@/lib/klaviyo';
@@ -81,7 +82,7 @@ export default function ThankYouSection() {
       return;
     }
     try {
-      const raw = sessionStorage.getItem(`majesca_guest_order_${id}`);
+      const raw = sessionStorage.getItem(`storefront_guest_order_${id}`);
       if (raw) {
         const parsed = JSON.parse(raw);
         dispatch(setGuestUserOrderDetails(parsed));
@@ -145,11 +146,11 @@ export default function ThankYouSection() {
     let cartOrigin = '';
     let lineSkus: string[] = [];
     try {
-      fbclid = sessionStorage.getItem('majesca_meta_fbclid') || '';
-      cartOrigin = sessionStorage.getItem('majesca_meta_cart_origin') || '';
+      fbclid = sessionStorage.getItem('storefront_meta_fbclid') || '';
+      cartOrigin = sessionStorage.getItem('storefront_meta_cart_origin') || '';
       // The lines the Meta link itself put in the cart — anything added on our own site
       // afterwards is absent, so admin can label each line by where it actually came from.
-      const storedSkus = JSON.parse(sessionStorage.getItem('majesca_meta_line_skus') || '[]');
+      const storedSkus = JSON.parse(sessionStorage.getItem('storefront_meta_line_skus') || '[]');
       lineSkus = Array.isArray(storedSkus) ? storedSkus.filter((sku: unknown) => typeof sku === 'string') : [];
     } catch {
       /* ignore */
@@ -171,9 +172,9 @@ export default function ThankYouSection() {
       })
       .finally(() => {
         try {
-          sessionStorage.removeItem('majesca_meta_fbclid');
-          sessionStorage.removeItem('majesca_meta_cart_origin');
-          sessionStorage.removeItem('majesca_meta_line_skus');
+          sessionStorage.removeItem('storefront_meta_fbclid');
+          sessionStorage.removeItem('storefront_meta_cart_origin');
+          sessionStorage.removeItem('storefront_meta_line_skus');
         } catch {
           /* ignore */
         }
@@ -239,7 +240,7 @@ export default function ThankYouSection() {
           price: unit,
           categories: jewelryTypeName ? [jewelryTypeName] : [],
           imageUrl: item?.skuOrderItems?.carat_images?.[0],
-          brand: 'Ashclair',
+          brand: BRAND.name,
         };
       }),
     });

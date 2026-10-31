@@ -1,3 +1,4 @@
+import { BRAND } from '@/config/brand';
 /** Mirrors the backend `ORDER_REQUEST_*` constants. Website orders only. */
 export const ORDER_REQUEST_TYPE = {
   CANCEL: 1,
@@ -52,9 +53,9 @@ export const RETURN_REASONS = [
 
 export const RETURN_CARRIERS = ['FedEx', 'UPS', 'USPS', 'DHL', 'Other'];
 
-export const RETURN_ADDRESS = 'Ashclair, 1142 S Diamond Bar Blvd, Unit 503, Diamond Bar, CA 91765, United States';
+export const RETURN_ADDRESS = `${BRAND.name}, ${BRAND.address.oneLine}`;
 
-export const SUPPORT = { phone: '(213) 622-3264', email: 'service@ashclair.com' };
+export const SUPPORT = { phone: BRAND.phone, email: BRAND.supportEmail };
 
 /** Refunds are made in USD, whatever currency the storefront is showing. */
 export const formatUsd = (value: any) => `$${Number(value || 0).toFixed(2)}`;

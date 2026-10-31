@@ -132,7 +132,7 @@ async function getInstagramFeedData() {
 async function InspiredByCommunitySection() {
   const feed = await getInstagramFeedData();
   // The live feed ends with its own bottom padding; the static gallery it falls
-  // back to when there are no posts has none, so match it before Ashclair Story.
+  // back to when there are no posts has none, so match it before the next section.
   const hasPosts = Boolean(feed?.posts?.length);
 
   return (
@@ -168,7 +168,7 @@ export default async function HOMEPAGEPage() {
         <OurCollabrations />
 
         <RingBuilder />
-        {/* <AlloryaStory /> */}
+        {/* <BrandStory /> */}
 
         <Drops />
         {/* <GiftguideFrame67 /> */}
@@ -178,7 +178,7 @@ export default async function HOMEPAGEPage() {
         <Suspense fallback={<InspiredByCommunity loading showTopBorder={false} />}>
           <InspiredByCommunitySection />
         </Suspense>
-        {/* <WhyAllorya /> */}
+        {/* <WhyUs /> */}
         {/* <FeaturedIn /> */}
       </div>
     </div>

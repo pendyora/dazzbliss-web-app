@@ -3,6 +3,7 @@ import React from 'react';
 
 import CareLayout from '@/components/ClientCare/CareLayout';
 import PolicyDoc, { Callout, CareContact, PolicySection, StepList } from '@/components/ClientCare/PolicyDoc';
+import { BRAND } from '@/config/brand';
 
 const SECTIONS: PolicySection[] = [
   {
@@ -10,7 +11,7 @@ const SECTIONS: PolicySection[] = [
     title: 'Using this site',
     body: (
       <p>
-        We reserve the right to update or modify these terms and conditions at any time without prior notice. Your use of the Pendyora website
+        We reserve the right to update or modify these terms and conditions at any time without prior notice. Your use of the {BRAND.name} website
         following any such change constitutes your agreement to follow and be bound by the terms and conditions as changed. For this reason, we
         encourage you to review these terms and conditions each time you use this website.
       </p>
@@ -22,12 +23,12 @@ const SECTIONS: PolicySection[] = [
     body: (
       <>
         <p>
-          Pricing errors may occur on the Pendyora site from time to time. Pendyora attempts to correct all pricing errors as soon as they are
+          Pricing errors may occur on the {BRAND.name} site from time to time. {BRAND.name} attempts to correct all pricing errors as soon as they are
           discovered, or as soon as we receive notice of an error.
         </p>
         <Callout>
-          Pendyora reserves the right to cancel any order containing a pricing error, with no further obligation to you, even after you have received
-          an order confirmation. Any payment you made for an order cancelled because of a pricing error will be refunded.
+          {BRAND.name} reserves the right to cancel any order containing a pricing error, with no further obligation to you, even after you have
+          received an order confirmation. Any payment you made for an order cancelled because of a pricing error will be refunded.
         </Callout>
       </>
     ),
@@ -37,9 +38,9 @@ const SECTIONS: PolicySection[] = [
     title: 'Imports, duties & taxes',
     body: (
       <p>
-        Goods are imported on behalf of the consignee (the buyer). The consignee authorises Pendyora to import the goods on their behalf, and agrees
-        that Pendyora may delegate this to a subcontractor such as a customs broker. The consignee pays taxes and duties in addition to the purchase
-        price of the goods.
+        Goods are imported on behalf of the consignee (the buyer). The consignee authorises {BRAND.name} to import the goods on their behalf, and
+        agrees that {BRAND.name} may delegate this to a subcontractor such as a customs broker. The consignee pays taxes and duties in addition to the
+        purchase price of the goods.
       </p>
     ),
   },
@@ -77,7 +78,7 @@ const SECTIONS: PolicySection[] = [
         />
         <h3>Good to know</h3>
         <ul>
-          <li>Until it is paid in full, the piece remains the property of Pendyora.</li>
+          <li>Until it is paid in full, the piece remains the property of {BRAND.name}.</li>
           <li>
             If a layaway is not paid in full or is cancelled, a restocking fee of 20% of the total is kept, because the piece is made after the order
             is placed.
@@ -102,7 +103,7 @@ export default function TermsAndConditions() {
     <CareLayout
       title="Terms & conditions"
       crumb="Terms"
-      intro="The terms that apply when you use the Pendyora website and buy from us, including pricing, imports, custom orders and layaway."
+      intro={`The terms that apply when you use the ${BRAND.name} website and buy from us, including pricing, imports, custom orders and layaway.`}
     >
       <PolicyDoc sections={SECTIONS} help={{ title: 'Have a question?', text: 'Our client care team is happy to help.' }} />
     </CareLayout>

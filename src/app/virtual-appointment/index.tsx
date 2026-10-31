@@ -9,6 +9,7 @@ import { LuCalendarDays, LuCheck, LuClock3, LuGem, LuPhone, LuShieldCheck, LuUse
 
 import { FORM_LABELS, PRIMARY_BTN, checkoutTheme } from '@/app/checkout/checkoutTheme';
 import CloudflareTurnstile, { CloudflareTurnstileHandle } from '@/components/common/CloudflareTurnstile';
+import { BRAND } from '@/config/brand';
 import { JEWELRY_TYPE } from '@/constants/master.constant';
 import { useHoneypot } from '@/hook/useHoneypot';
 import { apiAppointment } from '@/services/authService';
@@ -319,7 +320,7 @@ export default function VirtualAppointment() {
                 Book a <em className="italic">virtual appointment</em>
               </h1>
               <p className="m-0 mt-2.5 max-w-[52ch] text-[15px] text-ink-soft">
-                See pieces live with a Pendyora jeweler, compare stones and get sized, from home.
+                See pieces live with a {BRAND.name} jeweler, compare stones and get sized, from home.
               </p>
             </div>
             <div className="flex flex-wrap gap-[22px] text-[13px] text-ink-soft">
@@ -529,7 +530,7 @@ export default function VirtualAppointment() {
 
             <aside aria-label="Your appointment" className="sticky top-[calc(var(--header-height,108px)+24px)] grid gap-4 lg:static">
               <div className="grid gap-4 border border-line bg-mist px-6 py-[26px]">
-                <span className="font-cormorant text-[15px] font-medium tracking-[0.3em] text-navy">PENDYORA</span>
+                <span className="font-cormorant text-[15px] font-medium tracking-[0.3em] text-navy">{BRAND.nameUpper}</span>
                 <h3 className="m-0 font-cormorant text-[26px] font-medium leading-[1.1]">Your appointment</h3>
                 <dl className="m-0 grid gap-3 border-t border-line pt-3.5 text-[14px]">
                   {(
@@ -537,7 +538,7 @@ export default function VirtualAppointment() {
                       [LuGem, service, 'Choose what to see'],
                       [LuCalendarDays, chosenSlot ? whenText : null, 'Choose a day and time'],
                       [mode === 'Video call' ? LuVideo : LuPhone, `${mode} · 50 minutes`, ''],
-                      [LuUser, 'With a Pendyora jeweler', ''],
+                      [LuUser, `With a ${BRAND.name} jeweler`, ''],
                     ] as const
                   ).map(([Icon, v, empty], i) => (
                     <div key={i} className="grid grid-cols-[22px_1fr] items-start gap-2.5">

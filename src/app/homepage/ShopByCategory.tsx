@@ -3,6 +3,8 @@ import React from 'react';
 import { Image } from 'antd';
 import Link from 'next/link';
 
+import { BRAND } from '@/config/brand';
+
 import { Text } from '../../components';
 
 const CATEGORY_HREFS = ['/engagement-rings', '/earrings', '/necklaces', '/bracelets'];
@@ -38,7 +40,7 @@ export default function ShopByCategory({ bannerData }: any) {
                 preview={false}
                 alt={bannerData?.[dataIndex]?.title || ''}
                 loading="lazy"
-                fallback="/images/ashclair_pdp_logo_image.svg"
+                fallback={BRAND.logo.monogram}
                 wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
                 wrapperClassName="transition-transform duration-500 ease-in-out scale-105 group-hover:scale-100"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}

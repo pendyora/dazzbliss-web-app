@@ -5,6 +5,8 @@ import { Image as AntdImage } from 'antd';
 // eslint-disable-next-line import/no-named-as-default
 import styled, { keyframes } from 'styled-components';
 
+import { BRAND } from '@/config/brand';
+
 // Types
 interface ImageZoomProps {
   zoom?: string;
@@ -101,7 +103,8 @@ const ErrorText = styled.p`
   color: #555;
 `;
 
-const DEFAULT_IMAGE = '/images/ashclair_pdp_logo_image.svg';
+// Brand placeholder shown when a product image is missing.
+const DEFAULT_IMAGE = BRAND.logo.monogram;
 
 const ImageZoom: React.FC<ImageZoomProps> = ({
   zoom = '200',

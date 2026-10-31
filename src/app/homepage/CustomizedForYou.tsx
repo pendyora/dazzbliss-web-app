@@ -31,7 +31,7 @@ export default function CustomizedForYou() {
             </Link>
           </div>
           <div className="w-[20%]">
-            <Image src="/images/img_ashclair_tima_mir.png" alt="Customized for you" preview={false} className="!object-contain w-full !h-full" />
+            <Image src="/images/img_jewelry_tima_mir.png" alt="Customized for you" preview={false} className="!object-contain w-full !h-full" />
           </div>
           <div className="flex w-[38%] flex-col  gap-5 2xl:w-1/4 xl:w-1/3 md:w-1/3">
             {/* <div className="ml-[90px] flex flex-col gap-5 self-stretch md:ml-0">
@@ -93,7 +93,7 @@ export default function CustomizedForYou() {
           <div className="flex gap-3 w-full">
             {/* <div className=" w-[50%] bg-[#d9d9d9]" /> */}
             <div className="w-[33%] h-auto">
-              <Image src="/images/img_ashclair_tima_mir.png" preview={false} alt="Jeweler crafting a ring by hand" className="object-contain" />
+              <Image src="/images/img_jewelry_tima_mir.png" preview={false} alt="Jeweler crafting a ring by hand" className="object-contain" />
             </div>
             <div className="flex justify-center flex-col  gap-3">
               <div className="flex flex-col items-start gap-0.5 border-b pb-5 2xl:border-b 2xl:pb-5">

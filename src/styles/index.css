@@ -347,7 +347,7 @@ bottom: 14px !important;
   overflow: visible;
 }
 /* The admin's Quill editor rebuilds every <img> through a custom ImageBlot
-   (majesca-admin-app src/components/CmsEditor/CmsEditor.js) that carries only `src` and
+   (admin app, src/components/CmsEditor/CmsEditor.js) that carries only `src` and
    `style` across, so the width/height ATTRIBUTES stored in the CMS HTML are dropped there and
    the image is laid out at its natural size. Match that, or copy wrapping around a floated
    image breaks at a different word on the live page than it does in the editor, and the page
@@ -464,11 +464,11 @@ bottom: 14px !important;
   }
 }
 
-/* "Why Ashclair" badges on the PDP (compact variant) sit on white, so the remote
+/* "Why us" badges on the PDP (compact variant) sit on white, so the remote
    SVG icons are tinted to ink (Dazzbliss palette; was the old green). They render as <img>, so a
    filter chain is the only way to recolour them; brightness(0) normalises the
    source colour to black first. */
-.why-ashclair-icon {
+.why-us-icon {
   /* Dazzbliss: icons in ink (was old green). */
   filter: brightness(0) saturate(100%);
 }

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Metadata, ResolvingMetadata } from 'next';
 
+import { BRAND } from '@/config/brand';
 import { decrypt, encrypt } from '@/utils/enc-decy';
 
 import Page from '.';
@@ -30,10 +31,9 @@ export async function generateMetadata({ params }: Props, parent: ResolvingMetad
 
       const educationData = resData;
 
-      const title = educationData?.meta_title ?? 'Ashclair - Gems & Jewelry';
+      const title = educationData?.meta_title ?? `${BRAND.name} - ${BRAND.tagline}`;
       const description =
-        educationData?.meta_description ??
-        'Ashclair offers handcrafted fine jewelry and premium gemstones—custom-designed with expert craftsmanship, direct from a family-run diamond house.';
+        educationData?.meta_description ?? `${BRAND.name} offers fine jewelry and diamonds, including custom designs made to order.`;
       const imageUrl = educationData?.thumbnail_image || educationData?.banner;
       const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/education/${educationSlug}`;
       return {
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props, parent: ResolvingMetad
           title,
           description,
           url: pageUrl,
-          siteName: 'Ashclair',
+          siteName: BRAND.name,
           images: [
             {
               url: imageUrl,
@@ -63,16 +63,14 @@ export async function generateMetadata({ params }: Props, parent: ResolvingMetad
       };
     }
     return {
-      title: 'Ashclair - Gems & Jewelry',
-      description:
-        'Ashclair offers handcrafted fine jewelry and premium gemstones—custom-designed with expert craftsmanship, direct from a family-run diamond house.',
+      title: `${BRAND.name} - ${BRAND.tagline}`,
+      description: `${BRAND.name} offers fine jewelry and diamonds, including custom designs made to order.`,
     };
   } catch (error) {
     console.error('Error fetching Meta data:', error);
     return {
-      title: 'Ashclair - Gems & Jewelry',
-      description:
-        'Ashclair offers handcrafted fine jewelry and premium gemstones—custom-designed with expert craftsmanship, direct from a family-run diamond house.',
+      title: `${BRAND.name} - ${BRAND.tagline}`,
+      description: `${BRAND.name} offers fine jewelry and diamonds, including custom designs made to order.`,
     };
   }
 }

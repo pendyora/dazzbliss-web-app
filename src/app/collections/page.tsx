@@ -2,11 +2,13 @@ import React from 'react';
 
 import { Metadata } from 'next';
 
+import { BRAND } from '@/config/brand';
+
 import Page from '.';
 
 export const metadata: Metadata = {
-  title: 'Collections | Pendyora',
-  description: 'Explore Pendyora collections: each one begins with a single piece, finished by hand in our atelier.',
+  title: `Collections${BRAND.titleSuffix}`,
+  description: `Explore ${BRAND.name} fine jewelry collections.`,
   // ogTitle:'...'
 };
 

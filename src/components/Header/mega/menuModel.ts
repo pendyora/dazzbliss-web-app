@@ -39,9 +39,15 @@ export interface MenuEntry {
 const COLUMN_KEYS = ['menu_column_one', 'menu_column_two', 'menu_column_three', 'menu_column_four'];
 const METAL_CODES: Record<string, MetalSwatch> = { yg: 'yellow', wg: 'white', rg: 'rose', wp: 'white', pt: 'platinum', pl: 'platinum' };
 
-// The CMS stores absolute links to the old domain (https://ashclair.com/rings…). Links on these hosts become
-// site-relative so they work on any environment; anything else is treated as external and left alone.
-const INTERNAL_HOSTS = ['ashclair.com', 'www.ashclair.com', 'pendyora.com', 'www.pendyora.com'];
+// The CMS may store absolute links to the shop's own domain (https://<domain>/rings…). Links on the
+// NEXT_PUBLIC_BASE_URL host and on the hosts in NEXT_PUBLIC_CMS_LINK_HOSTS (comma-separated, e.g. a previous
+// domain still stored in menu data) become site-relative so they work on any environment; anything else is
+// treated as external and left alone.
+// DAZZBLISS TODO: list any old domain still stored in the menu data in NEXT_PUBLIC_CMS_LINK_HOSTS.
+const INTERNAL_HOSTS = (process.env.NEXT_PUBLIC_CMS_LINK_HOSTS || '')
+  .split(',')
+  .map((host) => host.trim().toLowerCase())
+  .filter(Boolean);
 
 export function toSitePath(url?: string | null): string {
   if (!url) {

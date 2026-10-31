@@ -68,10 +68,10 @@ export default function MetaCheckoutClient() {
         // Persist Meta attribution for the session so the Purchase pixel / order can reference it.
         try {
           if (fbclid) {
-            sessionStorage.setItem('majesca_meta_fbclid', fbclid);
+            sessionStorage.setItem('storefront_meta_fbclid', fbclid);
           }
           if (cartOrigin) {
-            sessionStorage.setItem('majesca_meta_cart_origin', cartOrigin);
+            sessionStorage.setItem('storefront_meta_cart_origin', cartOrigin);
           }
         } catch {
           /* ignore storage errors */
@@ -114,7 +114,7 @@ export default function MetaCheckoutClient() {
           // Remembered so the Thank-You page can tell the backend which lines came from Meta.
           // Whatever the shopper adds on our own site after this is deliberately not recorded,
           // which is how admin can show a per-line source on a mixed order.
-          sessionStorage.setItem('majesca_meta_line_skus', JSON.stringify(cartItems.map((item) => String(item.sku_master))));
+          sessionStorage.setItem('storefront_meta_line_skus', JSON.stringify(cartItems.map((item) => String(item.sku_master))));
         } catch {
           /* ignore */
         }

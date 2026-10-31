@@ -2,14 +2,16 @@ import React, { Suspense } from 'react';
 
 import { Metadata } from 'next';
 
+import { BRAND } from '@/config/brand';
+
 import MetaCheckoutClient from './MetaCheckoutClient';
 import '../../styles/font.css';
 import '../../styles/tailwind.css';
 import '../../styles/index.css';
 
 export const metadata: Metadata = {
-  title: 'Checkout - Ashclair Jewelry Store',
-  description: 'Complete your Ashclair jewelry purchase.',
+  title: `Checkout - ${BRAND.name} Jewelry Store`,
+  description: `Complete your ${BRAND.name} jewelry purchase.`,
   robots: { index: false, follow: false },
 };
 

@@ -1,12 +1,14 @@
 import React from 'react';
 
+import { BRAND } from '@/config/brand';
+
 import { Img } from '../';
 
 /**
  * The five brand promises, shared so the checkout rail can lay them out its own way (dividers,
  * flanking rules) without a second copy of the list drifting out of step with the PDP's.
  */
-export const whyAshclairBadges = [
+export const whyUsBadges = [
   { src: 'img_close.svg', label: 'Finest Diamond & Gemstone' },
   { src: 'img_user.svg', label: 'Expert Support' },
   { src: 'img_calculator.svg', label: 'Insured Shipping & Returns' },
@@ -28,15 +30,15 @@ const BAND_BADGES = [
   { src: 'img_signal.svg', label: '90 Days Warranty' },
 ];
 
-export default function WhyAllorya({ compact = false, className = COMPACT_PDP_SPACING }: { compact?: boolean; className?: string }) {
+export default function WhyUs({ compact = false, className = COMPACT_PDP_SPACING }: { compact?: boolean; className?: string }) {
   // Compact card variant — sized to fit inside the PDP options column (narrow on
   // desktop, full-width on mobile) directly under the action buttons.
   if (compact) {
     return (
       <div className={`w-full border border-line bg-paper px-4 py-6 font-libre sm:px-3 ${className}`}>
-        <p className="m-0 mb-5 text-center text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Why Ashclair?</p>
+        <p className="m-0 mb-5 text-center text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt">Why {BRAND.name}?</p>
         <div className="grid grid-cols-5 gap-x-2 gap-y-3">
-          {whyAshclairBadges.map((badge, i) => (
+          {whyUsBadges.map((badge, i) => (
             <div key={i} className="flex flex-col items-center gap-2 text-center">
               {/* The icons are light SVGs drawn for a dark band; brightness-0 turns them ink on white. */}
               <Img
@@ -56,11 +58,11 @@ export default function WhyAllorya({ compact = false, className = COMPACT_PDP_SP
 
   // Full-width navy promise band, matching the product page's assurance strip.
   return (
-    <section aria-label="Why Ashclair" className="bg-navy font-libre text-noir-on">
+    <section aria-label={`Why ${BRAND.name}`} className="bg-navy font-libre text-noir-on">
       <div className="mx-auto w-full max-w-[1440px] px-[clamp(16px,3.2vw,56px)] py-[clamp(48px,6vw,80px)]">
         <span className="text-[10.5px] font-medium uppercase tracking-[0.22em] text-teal-soft">Our promise</span>
         <h2 className="m-0 mt-3 font-cormorant text-[clamp(30px,3.2vw,48px)] font-medium leading-none text-paper">
-          Why <em className="text-teal-soft">Ashclair?</em>
+          Why <em className="text-teal-soft">{BRAND.name}?</em>
         </h2>
         <ul className="m-0 mt-10 grid list-none grid-cols-5 gap-6 p-0 lg:grid-cols-3 md:mt-8 sm:grid-cols-2 sm:gap-x-4 sm:gap-y-6">
           {BAND_BADGES.map((badge) => (

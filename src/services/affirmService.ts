@@ -30,7 +30,7 @@ export async function apiCaptureAffirmCharge(data: { checkout_token: string; ord
 
 /**
  * Report an Affirm failure on the shopper's side (white screen, validation error, script not
- * loading) so the backend can email the Ashclair inbox.
+ * loading) so the backend can email the store's inbox.
  */
 export async function apiReportAffirmFailure(data: {
   stage: 'modal_not_opened' | 'validation_error' | 'sdk_failed_to_load' | 'sdk_not_available' | 'checkout_failed_before_modal';

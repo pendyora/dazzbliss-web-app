@@ -3,6 +3,7 @@ import React from 'react';
 import { Metadata, ResolvingMetadata } from 'next';
 import { permanentRedirect } from 'next/navigation';
 
+import { BRAND } from '@/config/brand';
 import { decrypt } from '@/utils/enc-decy';
 
 import Page from '.';
@@ -81,9 +82,8 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
 
   if (typeof slug !== 'string' || !slug) {
     return {
-      title: 'Ashclair - Gems & Jewelry',
-      description:
-        'Ashclair offers handcrafted fine jewelry and premium gemstones—custom-designed with expert craftsmanship, direct from a family-run diamond house.',
+      title: `${BRAND.name} - ${BRAND.tagline}`,
+      description: `${BRAND.name} offers fine jewelry and diamonds, including custom designs made to order.`,
     };
   }
 
@@ -106,11 +106,9 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
     if (data.status === 200) {
       const meta = decrypt(data.data);
 
-      const title = meta?.meta_title ?? 'Ashclair - Gems & Jewelry';
+      const title = meta?.meta_title ?? `${BRAND.name} - ${BRAND.tagline}`;
       const jewelryType = meta?.jewelry_type_name?.toLowerCase().replace(/\s+/g, '-');
-      const description =
-        meta?.meta_description ??
-        'Ashclair offers handcrafted fine jewelry and premium gemstones—custom-designed with expert craftsmanship, direct from a family-run diamond house.';
+      const description = meta?.meta_description ?? `${BRAND.name} offers fine jewelry and diamonds, including custom designs made to order.`;
       const imageUrl = meta?.image_url || undefined;
       const pageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${jewelryType}/premade?slug=${slug}`;
       // return resData;
@@ -121,7 +119,7 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
           title,
           description,
           url: pageUrl,
-          siteName: 'Ashclair',
+          siteName: BRAND.name,
           images: [
             {
               url: imageUrl,
@@ -141,16 +139,14 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
       };
     }
     return {
-      title: 'Ashclair - Gems & Jewelry',
-      description:
-        'Ashclair offers handcrafted fine jewelry and premium gemstones—custom-designed with expert craftsmanship, direct from a family-run diamond house.',
+      title: `${BRAND.name} - ${BRAND.tagline}`,
+      description: `${BRAND.name} offers fine jewelry and diamonds, including custom designs made to order.`,
     };
   } catch (error) {
     console.error('Error fetching Meta data:', error);
     return {
-      title: 'Ashclair - Gems & Jewelry',
-      description:
-        'Ashclair offers handcrafted fine jewelry and premium gemstones—custom-designed with expert craftsmanship, direct from a family-run diamond house.',
+      title: `${BRAND.name} - ${BRAND.tagline}`,
+      description: `${BRAND.name} offers fine jewelry and diamonds, including custom designs made to order.`,
     };
   }
 }

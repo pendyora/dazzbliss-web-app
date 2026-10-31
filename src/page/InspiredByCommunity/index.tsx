@@ -4,20 +4,19 @@ import { FaInstagram } from 'react-icons/fa';
 import { FaArrowRightLong } from 'react-icons/fa6';
 
 import { InstagramFeed, InstagramPost } from '@/@types/instagram';
+import { BRAND } from '@/config/brand';
 
 import CommunityGalleryFallback from './CommunityGalleryFallback';
+import { COMMUNITY_SUBHEADING, INSTAGRAM_HANDLE, INSTAGRAM_PROFILE_URL } from './instagram';
 import InstagramCarousel, { Tile } from './InstagramCarousel';
 
-/**
- * Where the heading handle and the Follow button point. Env-driven so the
- * handle can change without a code edit; the literal is the fallback.
- */
-const PROFILE_URL = process.env.NEXT_PUBLIC_INSTAGRAM_PROFILE_URL || 'https://www.instagram.com/ashclairjewelry/';
-const HANDLE = '@ashclairjewelry';
+/** Where the heading handle and the Follow button point (see ./instagram.ts). */
+const PROFILE_URL = INSTAGRAM_PROFILE_URL;
+const HANDLE = INSTAGRAM_HANDLE;
 
 const HEADING = 'Be inspired by our community';
 const FOLLOW_LABEL = 'Follow us on Instagram';
-const SUBHEADING = 'Upload your photo with your new jewels on instagram and tag us at #ashclairjewelry for a chance to be featured in our gallery!';
+const SUBHEADING = COMMUNITY_SUBHEADING;
 
 /**
  * Ceiling on how many posts the carousel lays out, in case the backend's own
@@ -33,7 +32,7 @@ const MAX_POSTS = Number.parseInt(process.env.NEXT_PUBLIC_INSTAGRAM_MAX_POSTS ||
  */
 const postPosterUrl = (post: InstagramPost): string => (post.media_type === 'VIDEO' ? post.thumbnail_url || post.media_url : post.media_url);
 
-const postAlt = (post: InstagramPost): string => post.caption?.trim().slice(0, 100) || 'Ashclair jewellery on Instagram';
+const postAlt = (post: InstagramPost): string => post.caption?.trim().slice(0, 100) || `${BRAND.name} jewellery on Instagram`;
 
 const toTiles = (posts: InstagramPost[]): Tile[] =>
   posts.slice(0, MAX_POSTS).map((post) => ({
@@ -88,15 +87,17 @@ export default function InspiredByCommunity({
       <div className="mx-auto w-full max-w-[1440px] px-[clamp(16px,3.2vw,56px)]">
         <div className="flex items-end justify-between gap-8 md:flex-col md:items-start md:gap-4">
           <div className="max-w-[640px]">
-            <a
-              href={PROFILE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt transition-colors hover:text-ink"
-            >
-              <FaInstagram className="text-[13px]" aria-hidden="true" />
-              {HANDLE}
-            </a>
+            {HANDLE && PROFILE_URL && (
+              <a
+                href={PROFILE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.22em] text-gilt transition-colors hover:text-ink"
+              >
+                <FaInstagram className="text-[13px]" aria-hidden="true" />
+                {HANDLE}
+              </a>
+            )}
 
             <h2
               id="instagram-feed-heading"
@@ -113,16 +114,18 @@ export default function InspiredByCommunity({
       <div className="mt-10 md:mt-8 sm:mt-6">{loading ? <CarouselSkeleton /> : <InstagramCarousel tiles={tiles} />}</div>
 
       <div className="mx-auto flex w-full max-w-[1440px] justify-center px-[clamp(16px,3.2vw,56px)] pb-[clamp(56px,7vw,96px)] pt-10 md:pt-8 sm:pt-6">
-        <a
-          href={PROFILE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group/follow inline-flex h-12 items-center gap-3 border border-ink bg-paper px-8 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors duration-300 hover:bg-ink hover:text-paper focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-ink sm:w-full sm:justify-center sm:gap-2.5 sm:px-5"
-        >
-          <FaInstagram className="text-[15px]" aria-hidden="true" />
-          {FOLLOW_LABEL}
-          <FaArrowRightLong className="text-[13px] transition-transform duration-300 group-hover/follow:translate-x-1" aria-hidden="true" />
-        </a>
+        {PROFILE_URL && (
+          <a
+            href={PROFILE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group/follow inline-flex h-12 items-center gap-3 border border-ink bg-paper px-8 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors duration-300 hover:bg-ink hover:text-paper focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-ink sm:w-full sm:justify-center sm:gap-2.5 sm:px-5"
+          >
+            <FaInstagram className="text-[15px]" aria-hidden="true" />
+            {FOLLOW_LABEL}
+            <FaArrowRightLong className="text-[13px] transition-transform duration-300 group-hover/follow:translate-x-1" aria-hidden="true" />
+          </a>
+        )}
       </div>
     </section>
   );

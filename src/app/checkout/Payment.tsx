@@ -43,7 +43,7 @@ const affirmLog = (event: string, details?: Record<string, boolean | number | st
   console.info(`[Affirm] ${event}`, details ?? '');
 };
 
-// Emails the Ashclair inbox (via the backend) when Affirm fails on the shopper's side. Best effort:
+// Emails the store support inbox (via the backend) when Affirm fails on the shopper's side. Best effort:
 // a failed report must never surface to the shopper.
 const reportAffirmFailure = (report: Parameters<typeof apiReportAffirmFailure>[0]) => {
   affirmLog('report:sent', { stage: report.stage });
@@ -210,7 +210,7 @@ const Payment = ({
 
       // Store guest order details if needed
       if (responseData?.is_guest && responseData?.guestUserOrderDetails) {
-        sessionStorage.setItem(`majesca_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
+        sessionStorage.setItem(`storefront_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
       }
 
       pendingPayPalOrderIdRef.current = null; // Clear — order is confirmed
@@ -445,7 +445,7 @@ const Payment = ({
       const orderId = responseData?.order?.order_id || pendingOrderId;
 
       if (responseData?.is_guest && responseData?.guestUserOrderDetails) {
-        sessionStorage.setItem(`majesca_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
+        sessionStorage.setItem(`storefront_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
       }
 
       router.push(`/ordersuccesfull?order_id=${orderId}`);
@@ -674,7 +674,7 @@ const Payment = ({
 
             // Store guest order details if needed
             if (responseData?.is_guest && responseData?.guestUserOrderDetails) {
-              sessionStorage.setItem(`majesca_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
+              sessionStorage.setItem(`storefront_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
             }
 
             pendingAffirmOrderIdRef.current = null;

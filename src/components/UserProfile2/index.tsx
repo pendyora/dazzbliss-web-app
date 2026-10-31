@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function UserProfile2({
-  userImage = '/img_ashclair_polinach_11007534.png',
+  userImage = '/img_jewelry_polinach_11007534.png',
   headlineText = 'Less than 500$',
   path = '/',
   ...props
@@ -21,7 +21,7 @@ export default function UserProfile2({
   return (
     <Link href={path} {...props} className={`${props.className} h-auto w-[32%] md:w-full relative 2xl:w-full`}>
       <div className="mx-auto h-full w-full flex-1 !aspect-square">
-        <Image src={`/images${userImage}`} preview={false} alt="Ashclair Image" className="object-cover h-auto" />
+        <Image src={`/images${userImage}`} preview={false} alt="Jewelry" className="object-cover h-auto" />
       </div>
       <div className="absolute w-full bottom-0">
         <Text

@@ -12,6 +12,7 @@ import { AUTH_POSTERS } from '@/components/Auth/authPosters';
 import AuthShell, { AuthTabs } from '@/components/Auth/AuthShell';
 import { AUTH } from '@/components/Auth/authUi';
 import CloudflareTurnstile, { CloudflareTurnstileHandle } from '@/components/common/CloudflareTurnstile';
+import { BRAND } from '@/config/brand';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { setBillingAddress, setDeliveryAddress } from '@/store/slices/Address/addressSlice';
 import { loginUser } from '@/store/slices/auth/authSlice';
@@ -148,7 +149,7 @@ export default function LoginGroup2722() {
         </Form>
 
         <div className="my-9 mb-7 flex items-center gap-4 text-[10.5px] uppercase tracking-[0.22em] text-ink-soft before:h-px before:flex-1 before:bg-line after:h-px after:flex-1 after:bg-line">
-          New to Pendyora?
+          New to {BRAND.name}?
         </div>
         <h2 className="m-0 mb-1.5 font-cormorant text-[28px] font-normal">
           Join the <em className="italic text-gilt">house</em>

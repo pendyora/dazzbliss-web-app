@@ -8,6 +8,7 @@ import { FaFacebookF, FaInstagram, FaPinterestP } from 'react-icons/fa6';
 
 import CloudflareTurnstile, { CloudflareTurnstileHandle } from '@/components/common/CloudflareTurnstile';
 import YotpoBadge from '@/components/YotpoBadge';
+import { BRAND } from '@/config/brand';
 import useCookieConsent from '@/hook/useCookieConsent';
 import { useHoneypot } from '@/hook/useHoneypot';
 import { addSubmitSignUp, getCouponData } from '@/services/cartService';
@@ -61,11 +62,13 @@ const PAYMENT_METHODS = [
   { src: '/images/Amarican_express.png', alt: 'American Express', aspect: 'aspect-[1.653]' },
 ];
 
+// DAZZBLISS TODO: set the brand's social profile URLs (NEXT_PUBLIC_INSTAGRAM_PROFILE_URL / NEXT_PUBLIC_FACEBOOK_URL /
+// NEXT_PUBLIC_PINTEREST_URL). A link without a URL is not shown.
 const socials = [
-  { label: 'Instagram', href: 'https://www.instagram.com/ashclairjewelry/', Icon: FaInstagram },
-  { label: 'Facebook', href: 'https://www.facebook.com/ashclairjewelry', Icon: FaFacebookF },
-  { label: 'Pinterest', href: 'https://www.pinterest.com/ashclairjewelry/', Icon: FaPinterestP },
-];
+  { label: 'Instagram', href: process.env.NEXT_PUBLIC_INSTAGRAM_PROFILE_URL || '', Icon: FaInstagram },
+  { label: 'Facebook', href: process.env.NEXT_PUBLIC_FACEBOOK_URL || '', Icon: FaFacebookF },
+  { label: 'Pinterest', href: process.env.NEXT_PUBLIC_PINTEREST_URL || '', Icon: FaPinterestP },
+].filter((social) => social.href);
 
 export default function Footer({ className }: Props) {
   const { openPreferences } = useCookieConsent();
@@ -209,7 +212,7 @@ export default function Footer({ className }: Props) {
               : 'Monthly dispatches — new releases, atelier films, and private previews. No noise.'}
           </p>
 
-          {/* Shown to signed-in shoppers too (the latest Ashclair footer no longer hides it from them). */}
+          {/* Shown to signed-in shoppers too (the previous footer hid it from them). */}
           <div className="mt-8 flex flex-col gap-3">
             <div className="flex border-b border-primary pb-2">
               <input
@@ -327,7 +330,7 @@ export default function Footer({ className }: Props) {
           <p className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-5">Social</p>
           <ul className="space-y-3 text-sm text-primary/80">
             {socials.map(({ label, href, Icon }) => (
-              <li key={href}>
+              <li key={label}>
                 <a href={href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-mocha transition-colors">
                   <Icon className="w-4 h-4" />
                   {label}
@@ -343,12 +346,14 @@ export default function Footer({ className }: Props) {
 
       {/* Large brand wordmark */}
       <div className="mx-auto max-w-[1500px] px-6 md:px-5 mt-16 overflow-hidden">
-        <p className="font-serif text-[16vw] leading-[0.85] tracking-[0.04em] text-primary/90 select-none">PENDYORA</p>
+        <p className="font-serif text-[16vw] leading-[0.85] tracking-[0.04em] text-primary/90 select-none">{BRAND.nameUpper}</p>
       </div>
 
       {/* Bottom bar */}
       <div className="mx-auto max-w-[1500px] px-12 md:px-5 mt-6 flex flex-wrap justify-between gap-4 text-[10px] tracking-[0.25em] uppercase text-mocha">
-        <span>© {new Date().getFullYear()} Pendyora</span>
+        <span>
+          © {new Date().getFullYear()} {BRAND.name}
+        </span>
         <ul aria-label="Accepted payment methods" className="m-0 flex list-none items-center gap-x-2 p-0">
           {PAYMENT_METHODS.map((method) => (
             <li key={method.alt} title={method.alt} className={`flex h-[22px] items-center justify-center ${method.aspect}`}>

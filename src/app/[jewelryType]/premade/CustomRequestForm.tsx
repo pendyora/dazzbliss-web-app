@@ -7,6 +7,7 @@ import { ConfigProvider, Modal, Form, Input, Button, Upload, Select, Image, noti
 
 import { checkoutTheme, FORM_LABELS, PRIMARY_BTN } from '@/app/checkout/checkoutTheme';
 import CloudflareTurnstile, { CloudflareTurnstileHandle } from '@/components/common/CloudflareTurnstile';
+import { BRAND } from '@/config/brand';
 import { apiRequestCustomJewelry } from '@/services/orderService';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { fetchCountries } from '@/store/slices/Address/addressSlice';
@@ -161,10 +162,10 @@ const CustomRequestForm: React.FC<CustomRequestFormProps> = ({ open, onClose, da
             <div className="my-6 flex w-full items-center justify-between gap-4 border-y border-line py-4">
               <div className="w-[88px] shrink-0 bg-stone">
                 <Image
-                  src={data?.image || '/images/ashclair_pdp_logo_image.svg'} // Fallback image if data.image is not available
+                  src={data?.image || BRAND.logo.monogram} // Fallback image if data.image is not available
                   alt={data?.image || 'Custom Request Image'}
                   preview={false}
-                  fallback="/images/ashclair_pdp_logo_image.svg"
+                  fallback={BRAND.logo.monogram}
                   width={100}
                   height={100}
                   className="w-full h-auto object-cover mix-blend-multiply"

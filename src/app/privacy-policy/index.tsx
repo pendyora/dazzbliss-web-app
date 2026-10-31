@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
 
-import { CARE } from '@/components/ClientCare/careInfo';
 import CareLayout from '@/components/ClientCare/CareLayout';
 import PolicyDoc, { PolicySection } from '@/components/ClientCare/PolicyDoc';
+import { BRAND } from '@/config/brand';
 
-const mail = <a href={`mailto:${CARE.email}`}>{CARE.email}</a>;
+const mail = <a href={`mailto:${BRAND.supportEmail}`}>{BRAND.supportEmail}</a>;
 
 const SECTIONS: PolicySection[] = [
   {
@@ -13,8 +13,8 @@ const SECTIONS: PolicySection[] = [
     title: 'Introduction',
     body: (
       <p>
-        Welcome to Pendyora, an online retailer of fine diamond jewelry. This policy explains the information we collect, and how we use and protect
-        it. By visiting our site you agree to this Privacy Policy. If you do not agree, please do not use the site.
+        Welcome to {BRAND.name}, an online retailer of fine diamond jewelry. This policy explains the information we collect, and how we use and
+        protect it. By visiting our site you agree to this Privacy Policy. If you do not agree, please do not use the site.
       </p>
     ),
   },

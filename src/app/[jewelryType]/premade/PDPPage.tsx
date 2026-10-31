@@ -14,6 +14,7 @@ import { PiRuler } from 'react-icons/pi';
 
 import ShopPayExpressButton from '@/app/cart/ShopPayExpressButton';
 import ShareButton from '@/components/ShareButton';
+import { BRAND } from '@/config/brand';
 import { IsRingSizeType } from '@/constants/Header';
 import * as ga4 from '@/lib/analytics';
 import * as klaviyo from '@/lib/klaviyo';
@@ -699,7 +700,7 @@ const PDPPage = ({ selectionRoute }: { selectionRoute?: any }) => {
               categories: product?.subType?.jewelry_type?.name ? [product.subType.jewelry_type.name] : [],
               imageUrl: selectedProductObject?.carat_images?.[0] ?? jewelryMetadata?.carat_images?.[0],
               url: typeof window !== 'undefined' ? window.location.href : undefined,
-              brand: 'Ashclair',
+              brand: BRAND.name,
               price: Number(price),
               quantity: count,
             });
@@ -754,7 +755,7 @@ const PDPPage = ({ selectionRoute }: { selectionRoute?: any }) => {
             categories: product?.subType?.jewelry_type?.name ? [product.subType.jewelry_type.name] : [],
             imageUrl: selectedProductObject?.carat_images?.[0] ?? jewelryMetadata?.carat_images?.[0],
             url: typeof window !== 'undefined' ? window.location.href : undefined,
-            brand: 'Ashclair',
+            brand: BRAND.name,
             price: Number(price),
             quantity: count,
           });
@@ -1344,7 +1345,7 @@ const PDPPage = ({ selectionRoute }: { selectionRoute?: any }) => {
       categories: product?.subType?.jewelry_type?.name ? [product.subType.jewelry_type.name] : [],
       imageUrl: selectedProductObject?.carat_images?.[0] ?? jewelryMetadata?.carat_images?.[0],
       url: typeof window !== 'undefined' ? window.location.href : undefined,
-      brand: 'Ashclair',
+      brand: BRAND.name,
       price: Number(price),
       // Only a genuine markdown — otherwise Klaviyo renders a struck-through equal price.
       compareAtPrice: sellingPrice > Number(price) ? sellingPrice : undefined,

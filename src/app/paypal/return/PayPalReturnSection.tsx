@@ -66,7 +66,7 @@ const PayPalReturnSection = () => {
       const confirmedOrderId = responseData?.order?.order_id || orderId;
 
       if (responseData?.is_guest && responseData?.guestUserOrderDetails) {
-        sessionStorage.setItem(`majesca_guest_order_${confirmedOrderId}`, JSON.stringify(responseData.guestUserOrderDetails));
+        sessionStorage.setItem(`storefront_guest_order_${confirmedOrderId}`, JSON.stringify(responseData.guestUserOrderDetails));
       }
 
       clearPayPalGuestSession();

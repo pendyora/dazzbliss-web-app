@@ -1,9 +1,9 @@
 # Listing & product page refresh: placeholder content and API changes
 
 **Scope:** the Atlantic palette and the new listing page (PLP) and product page (PDP), built from the
-[plp-v3](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/plp-v3/index.html) and
-[product-page-v4](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/product-page-v4/index.html) mockups.
-**Mockups:** the design mockups live in the `pendyora-web-app` repo (branch `shruti/mockups`, folder `design-mockups/`), not in this repo.
+plp-v3 (`design-mockups/plp-v3/index.html`) and
+product-page-v4 (`design-mockups/product-page-v4/index.html`) mockups.
+**Mockups:** the design mockups live in the separate design repo (folder `design-mockups/`, see [README.md](README.md)), not in this repo.
 **Last updated:** 31 Oct 2026 (statuses checked against this repo's `design-merge` branch and `latest-backend-main`)
 
 Everything on these pages still comes from the existing APIs except the items below. Earlier items that still apply (PLP intro claims, "Free shipping and returns", shipping shown as complimentary) are tracked in [redesign-dummy-content-and-api-changes.md](redesign-dummy-content-and-api-changes.md).

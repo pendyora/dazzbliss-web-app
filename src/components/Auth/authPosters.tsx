@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { BRAND } from '@/config/brand';
+
 // Campaign content for the poster half of each auth screen (design reference: design-mockups/auth/index.html).
 // Marketing copy lives here so it can be swapped per campaign (or moved to the CMS) without touching the screens.
 // Wrap the accent word of a title in <em> — it is set in italic gilt.
@@ -83,7 +85,7 @@ const giftGuide = {
 export const AUTH_POSTERS = {
   signIn: {
     kind: 'image',
-    tag: 'Pendyora · Autumn 2026',
+    tag: `${BRAND.name} · Autumn 2026`,
     slides: [
       goldenHour,
       {
@@ -119,7 +121,7 @@ export const AUTH_POSTERS = {
   },
   register: {
     kind: 'offer',
-    tag: 'Pendyora · Welcome',
+    tag: `${BRAND.name} · Welcome`,
     image: '/images/auth/m-hand-satin.jpg',
     alt: 'Hand wearing fine gold rings against champagne silk',
     offer: {
@@ -143,7 +145,7 @@ export const AUTH_POSTERS = {
   },
   welcome: {
     kind: 'image',
-    tag: 'Pendyora · Members',
+    tag: `${BRAND.name} · Members`,
     slides: [
       {
         image: '/images/auth/promo-chain.jpg',
@@ -175,7 +177,7 @@ export const AUTH_POSTERS = {
   sent: { kind: 'still', eyebrow: 'While you wait', ...giftGuide },
   reset: {
     kind: 'image',
-    tag: 'Pendyora · Care',
+    tag: `${BRAND.name} · Care`,
     slides: [
       {
         image: '/images/auth/m-hand-sepia.jpg',
@@ -200,13 +202,13 @@ export const AUTH_POSTERS = {
   },
   updated: {
     kind: 'image',
-    tag: 'Pendyora · Autumn 2026',
+    tag: `${BRAND.name} · Autumn 2026`,
     slides: [{ ...goldenHour, eyebrow: 'Pick up where you left off' }],
     banner: goldenHourBanner,
   },
   expired: {
     kind: 'image',
-    tag: 'Pendyora · Appointments',
+    tag: `${BRAND.name} · Appointments`,
     slides: [
       {
         image: '/images/auth/m-bw-hand.jpg',

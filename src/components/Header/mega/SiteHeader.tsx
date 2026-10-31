@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LuMenu } from 'react-icons/lu';
 
+import { BRAND } from '@/config/brand';
 import { useAppSelector } from '@/store';
 
 import CurrencySelect from './CurrencySelect';
@@ -184,8 +185,8 @@ export default function SiteHeader({ headerMetaData, currencyProps, search }: Pr
             >
               <LuMenu className="h-5 w-5" strokeWidth={1.2} />
             </button>
-            <Link href="/" aria-label="Pendyora home" className="lg:hidden">
-              <img src="/images/logo.png" alt="Dazzbliss" className="h-[34px] w-auto object-contain mix-blend-multiply" />
+            <Link href="/" aria-label={`${BRAND.name} home`} className="lg:hidden">
+              <img src={BRAND.logo.wordmark} alt={BRAND.name} className="h-[34px] w-auto object-contain mix-blend-multiply" />
             </Link>
           </div>
 
@@ -243,8 +244,8 @@ export default function SiteHeader({ headerMetaData, currencyProps, search }: Pr
             })}
           </nav>
 
-          <Link href="/" aria-label="Pendyora home" className="hidden justify-self-center lg:block">
-            <img src="/images/logo.png" alt="Dazzbliss" className="h-[26px] w-auto object-contain mix-blend-multiply sm:h-[22px]" />
+          <Link href="/" aria-label={`${BRAND.name} home`} className="hidden justify-self-center lg:block">
+            <img src={BRAND.logo.wordmark} alt={BRAND.name} className="h-[26px] w-auto object-contain mix-blend-multiply sm:h-[22px]" />
           </Link>
 
           <div className="flex items-center justify-end gap-1.5">

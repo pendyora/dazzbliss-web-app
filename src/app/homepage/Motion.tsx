@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 
 const stages = [
-  { t: 'Rough', d: 'A stone is born.', img: '/images/img_ashclair_diam.png' },
+  { t: 'Rough', d: 'A stone is born.', img: '/images/img_jewelry_diam.png' },
   { t: 'Cut', d: 'Geometry of light.', img: '/images/img_polished_diamond.png' },
   { t: 'Set', d: 'Held by hand.', img: '/images/img_aliceconti_ring_430x430.png' },
-  { t: 'Worn', d: 'Becoming yours.', img: '/images/img_ashclair_ring.png' },
+  { t: 'Worn', d: 'Becoming yours.', img: '/images/img_jewelry_ring.png' },
 ];
 
 export default function Motion() {

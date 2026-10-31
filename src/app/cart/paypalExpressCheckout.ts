@@ -98,7 +98,7 @@ export async function completeExpressCheckout({ paypalOrderId, cart, couponCode,
   dispatch(clearCartProducts());
   try {
     localStorage.removeItem('cartItems');
-    sessionStorage.removeItem('majesca_pp_express');
+    sessionStorage.removeItem('storefront_pp_express');
   } catch {
     /* ignore */
   }
@@ -107,7 +107,7 @@ export async function completeExpressCheckout({ paypalOrderId, cart, couponCode,
     dispatch(setGuestUserOrderDetails(responseData.guestUserOrderDetails));
     try {
       if (orderId) {
-        sessionStorage.setItem(`majesca_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
+        sessionStorage.setItem(`storefront_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
       }
     } catch {
       /* ignore */

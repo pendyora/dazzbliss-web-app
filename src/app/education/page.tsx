@@ -2,14 +2,14 @@ import React from 'react';
 
 import { Metadata } from 'next';
 
+import { BRAND } from '@/config/brand';
 import { decrypt } from '@/utils/enc-decy';
 
 import Page from '.';
 
 export const metadata: Metadata = {
   title: 'Diamond Education Guide | Lab Grown Diamond Learning Center',
-  description:
-    'Learn about lab grown diamonds, diamond shapes, ring settings, clarity, cut, and jewelry buying tips with Ashclair’s easy diamond education guide.',
+  description: `Learn about lab grown diamonds, diamond shapes, ring settings, clarity, cut, and jewelry buying tips with ${BRAND.name}’s easy diamond education guide.`,
   // ogTitle:'...'
 };
 

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { LuArrowLeft } from 'react-icons/lu';
 
 import CloudflareTurnstile, { CloudflareTurnstileHandle } from '@/components/common/CloudflareTurnstile';
+import { BRAND } from '@/config/brand';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { forgotPassword } from '@/store/slices/auth/authSlice';
 import { isValidEmailFormat } from '@/utils/emailValidation';
@@ -168,7 +169,7 @@ export default function ForgotPasswordRequest({ variant = 'forgot' }: Props) {
         <p className={AUTH.lede}>
           {expired
             ? 'Reset links only work once and for a limited time, to keep your account safe. Send yourself a new one below.'
-            : 'Enter the email you use for Pendyora and we’ll send you a secure link to set a new password.'}
+            : `Enter the email you use for ${BRAND.name} and we’ll send you a secure link to set a new password.`}
         </p>
 
         <Form name="forgotPassword" onFinish={handleSubmit} requiredMark={false} initialValues={{ email: '' }} className={AUTH.formFix}>

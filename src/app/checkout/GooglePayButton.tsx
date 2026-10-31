@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import { BRAND } from '@/config/brand';
 import { apiCancelGooglePayOrder, apiCreateGooglePaySession, apiGetGooglePayQuote, apiProcessGooglePayPayment } from '@/services/googlePayService';
 
 // Google's Pay.js SDK. Same URL for TEST and PRODUCTION — the environment is selected on
@@ -103,7 +104,7 @@ const GooglePayButton = ({ buildOrderData, onProcessingChange, onSuccess, onErro
           total: toMoney(quote.order_total),
           currencyCode: quote.currency || 'USD',
           countryCode: quote.country_code || 'US',
-          merchantName: quote.merchant_name || process.env.NEXT_PUBLIC_GOOGLE_PAY_MERCHANT_NAME || 'Majesca',
+          merchantName: quote.merchant_name || process.env.NEXT_PUBLIC_GOOGLE_PAY_MERCHANT_NAME || BRAND.name,
         };
       })
       .catch(() => {

@@ -2,9 +2,9 @@
 
 **Scope:** `/blog` and `/blog/all-blogs` (now one Journal page, [JournalPage.tsx](../src/components/Journal/JournalPage.tsx)) and
 `/collections` ([collections/index.tsx](../src/app/collections/index.tsx)), built from the
-[blog](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/blog/index.html) and
-[collections](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/collections/index.html) mockups.
-**Mockups:** the design mockups live in the `pendyora-web-app` repo (branch `shruti/mockups`, folder `design-mockups/`), not in this repo.
+blog (`design-mockups/blog/index.html`) and
+collections (`design-mockups/collections/index.html`) mockups.
+**Mockups:** the design mockups live in the separate design repo (folder `design-mockups/`, see [README.md](README.md)), not in this repo.
 **Last updated:** 31 Oct 2026 (statuses checked against this repo's `design-merge` branch and `latest-backend-main`)
 
 Priority: 🔴 before launch · 🟠 soon · ⚪ later
@@ -24,7 +24,7 @@ newsletter tile = `/user/subscribe` (same API as the offer pop-up).
 | B2  | **Images**                                            | Cards use `thumbnail_image`; missing images show the generic placeholder                                                                  | Upload a landscape thumbnail (4:3, ≥1200 px) for every post.            | 🟠       | Still needed (content).                                                                                                                                                                                                                                            |
 | B3  | **Journal intro text**                                | Hardcoded: "Guides to diamonds and metals, how our pieces are made…"                                                                      | Fine as is; could come from the CMS.                                    | ⚪       | Done (in latest code) — fine as is.                                                                                                                                                                                                                                |
 | B4  | **Wide "Featured" card**                              | The 3rd post in the "All" view is shown wide (layout only, `JournalPage.tsx`)                                                             | Optional `is_featured` flag on a post to choose which one.              | ⚪       | Partly done — `Blog.is_featured` already exists and is returned, but it also picks the lead story for `/blog/featured-views`. Frontend can use it; Check whether a separate flag is wanted.                                                                        |
-| B5  | **Old page removed**                                  | The previous `/blog` landing and the `/blog/all-blogs` sidebar list are replaced by the Journal. `/blog/banner/4` is no longer requested. | —                                                                       | —        | Done (in latest code) — dead files remain: `src/app/blog/index_Old.tsx` and `src/app/blog/newdesign/` (title still says "Ashclair - Blog List").                                                                                                                   |
+| B5  | **Old page removed**                                  | The previous `/blog` landing and the `/blog/all-blogs` sidebar list are replaced by the Journal. `/blog/banner/4` is no longer requested. | —                                                                       | —        | Done (in latest code) — dead files remain: `src/app/blog/index_Old.tsx` and `src/app/blog/newdesign/` (its page title still names the previous company).                                                                                                           |
 
 ## Collections
 

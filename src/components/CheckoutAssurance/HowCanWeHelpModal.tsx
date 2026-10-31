@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { LuCalendarDays, LuChevronRight, LuMail, LuPhone, LuX } from 'react-icons/lu';
 
 import { checkoutTheme } from '@/app/checkout/checkoutTheme';
+import { BRAND } from '@/config/brand';
 
 import type { IconType } from 'react-icons';
 
@@ -29,10 +30,10 @@ import type { IconType } from 'react-icons';
  *   dialog answers the question even for someone who never clicks.
  */
 
-/** Taken from the footer, so a change there is not silently contradicted here. */
-const PHONE_DISPLAY = '213-622-3264';
-const PHONE_HREF = 'tel:2136223264';
-const SUPPORT_EMAIL = 'service@ashclair.com';
+/** From the brand config, so the dialog never contradicts the rest of the site. */
+const PHONE_DISPLAY = BRAND.phone;
+const PHONE_HREF = BRAND.phoneHref;
+const SUPPORT_EMAIL = BRAND.supportEmail;
 
 type Channel = {
   Icon: IconType;

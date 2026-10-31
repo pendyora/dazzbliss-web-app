@@ -1,6 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import { BRAND } from '@/config/brand';
 import { initYotpoClassicWidgets, loadYotpoClassicWidgetScript } from '@/utils/yotpoClassic';
 
 const YOTPO_APP_KEY = process.env.NEXT_PUBLIC_YOTPO_APP_KEY;
@@ -22,7 +23,7 @@ const YOTPO_APP_KEY = process.env.NEXT_PUBLIC_YOTPO_APP_KEY;
 // Everything is deferred to the first click, so visitors who never write a
 // review pay nothing for it.
 const SITE_REVIEWS_PRODUCT_ID = 'yotpo_site_reviews';
-const STORE_NAME = 'Ashclair';
+const STORE_NAME = BRAND.name;
 const NATIVE_BUTTON_SELECTOR = '.yotpo-new-review-btn';
 const POLL_MS = 200;
 // Opening the modal hands the whole widget over to Yotpo's <body>-level portal.

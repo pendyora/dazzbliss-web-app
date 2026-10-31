@@ -4,6 +4,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { FaInstagram } from 'react-icons/fa';
 
+import { INSTAGRAM_HANDLE } from './instagram';
+
 export type Tile = {
   /** Poster frame: bare filename for a bundled image, absolute URL for an Instagram one. */
   src: string;
@@ -417,7 +419,7 @@ export default function InstagramCarousel({ tiles }: { tiles: Tile[] }) {
       // page still scrolls normally when a swipe starts on the row.
       style={{ touchAction: 'pan-y' }}
       role="region"
-      aria-label="Instagram posts from @ashclairjewelry"
+      aria-label={INSTAGRAM_HANDLE ? `Instagram posts from ${INSTAGRAM_HANDLE}` : 'Instagram posts'}
     >
       <div ref={rowRef} className="ig-feed__row flex will-change-transform">
         {Array.from({ length: copies }, (_, copyIndex) => renderTrack(copyIndex))}

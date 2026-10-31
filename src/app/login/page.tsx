@@ -2,11 +2,13 @@ import React from 'react';
 
 import { Metadata } from 'next';
 
+import { BRAND } from '@/config/brand';
+
 import Page from '.';
 
 export const metadata: Metadata = {
-  title: 'Sign In | Pendyora',
-  description: 'Sign in to your Pendyora account to see your orders, saved pieces and member previews.',
+  title: `Sign In${BRAND.titleSuffix}`,
+  description: `Sign in to your ${BRAND.name} account to see your orders and saved pieces.`,
   // ogTitle:'...'
 };
 

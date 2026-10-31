@@ -14,6 +14,7 @@ import { pdpTheme } from '@/app/[jewelryType]/premade/pdp/pdpTheme';
 import { PRIMARY_BTN } from '@/app/checkout/checkoutTheme';
 import OurCollabrations from '@/app/homepage/OurCollabrations';
 import ImageZoom from '@/components/CustomImageZoom';
+import { BRAND } from '@/config/brand';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { setSelectedShapesData } from '@/store/slices/customProducts/customProductSlice';
 import themeColors from '@/styles/theme-colors';
@@ -289,7 +290,7 @@ export default function CustomDiamondPDP({
                     ) : (
                       <>
                         <Image
-                          src="/images/ashclair_pdp_logo_image.svg"
+                          src={BRAND.logo.monogram}
                           alt="PDP1"
                           preview={false}
                           style={{
@@ -309,7 +310,7 @@ export default function CustomDiamondPDP({
                     ) : (
                       <>
                         <Image
-                          src="/images/ashclair_pdp_logo_image.svg"
+                          src={BRAND.logo.monogram}
                           alt="PDP1"
                           preview={false}
                           style={{

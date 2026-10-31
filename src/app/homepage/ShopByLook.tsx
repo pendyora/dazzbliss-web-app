@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { BRAND } from '@/config/brand';
+
 interface JewelryDot {
   id: string;
   x: number;
@@ -24,7 +26,7 @@ interface LookItem {
 const looks: LookItem[] = [
   {
     image: '/images/Model/marcin-sajur-Q44fOUMn-p0-unsplash (1).jpg',
-    alt: 'Model wearing Pendyora jewelry',
+    alt: `Model wearing ${BRAND.name} jewelry`,
     dots: [
       {
         id: 'look1-earring',
@@ -48,7 +50,7 @@ const looks: LookItem[] = [
   },
   {
     image: '/images/Model/annahita-salamat-tLfrkAggpGY-unsplash (1).jpg',
-    alt: 'Model wearing Pendyora statement jewelry',
+    alt: `Model wearing ${BRAND.name} statement jewelry`,
     dots: [
       {
         id: 'look2-necklace',

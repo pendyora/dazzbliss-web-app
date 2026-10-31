@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { LuLoader, LuSearch } from 'react-icons/lu';
 
+import { BRAND } from '@/config/brand';
 import { addSubmitSignUp } from '@/services/cartService';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { fetchBlogFilter, fetchBlogList, fetchFeaturedViews } from '@/store/slices/blog/blogSlice';
@@ -79,7 +80,7 @@ function Newsletter() {
 
   return (
     <div className="relative grid min-h-full content-end gap-3.5 bg-navy px-7 py-8 text-noir-on before:pointer-events-none before:absolute before:inset-3.5 before:border before:border-teal before:content-['']">
-      <span className="relative text-[10.5px] font-semibold uppercase tracking-[0.16em] text-teal-soft">The Pendyora letter</span>
+      <span className="relative text-[10.5px] font-semibold uppercase tracking-[0.16em] text-teal-soft">The {BRAND.name} letter</span>
       <b className="relative font-cormorant text-[30px] font-medium leading-[1.1] text-paper">New stories, once a month</b>
       <p className="relative m-0 text-[14px] text-noir-on/85">Guides, new collections and private previews. No spam.</p>
       {state === 'done' ? (

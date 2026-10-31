@@ -1,10 +1,10 @@
 # Account, wishlist, search & appointment: placeholder content and API changes
 
 **Scope:** `/profile` (Overview, Addresses, Details), `/profile/purchases` (Orders + `?order=` detail), `/wishlist`, `/search` and
-`/virtual-appointment`, built from the [account](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/account/index.html),
-[search](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/search/index.html) and
-[appointment](https://github.com/pendyora/pendyora-web-app/blob/shruti/mockups/design-mockups/appointment/index.html) mockups.
-**Mockups:** the design mockups live in the `pendyora-web-app` repo (branch `shruti/mockups`, folder `design-mockups/`), not in this repo.
+`/virtual-appointment`, built from the account (`design-mockups/account/index.html`),
+search (`design-mockups/search/index.html`) and
+appointment (`design-mockups/appointment/index.html`) mockups.
+**Mockups:** the design mockups live in the separate design repo (folder `design-mockups/`, see [README.md](README.md)), not in this repo.
 **Last updated:** 31 Oct 2026 (statuses checked against this repo's `design-merge` branch and `latest-backend-main`)
 
 Priority: 🔴 before launch · 🟠 soon · ⚪ later

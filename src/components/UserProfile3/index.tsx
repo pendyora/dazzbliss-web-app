@@ -29,9 +29,9 @@ export default function UserProfile3({
         onMouseLeave={() => setHovered(false)}
       >
         <Image
-          src={!hovered ? '/images/img_ashclair_diam_384x384.png' : '/images/img_ashclair_an_e_384x384.png'}
+          src={!hovered ? '/images/img_jewelry_diam_384x384.png' : '/images/img_jewelry_an_e_384x384.png'}
           preview={false}
-          alt="Ashclair Diam"
+          alt="Diamond jewelry"
           className=" m-auto h-[384px] 2xl:h-[325px] xl:h-[289px] lg:h-[201px] sm:h-[188px] w-full object-cover"
         />
       </div>

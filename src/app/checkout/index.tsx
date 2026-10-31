@@ -11,6 +11,7 @@ import { LuLoader, LuLock } from 'react-icons/lu';
 import { AssurancePanel } from '@/components/CheckoutAssurance';
 import FreeGiftProgress from '@/components/FreeGiftProgress';
 import ReviewRatingStrip from '@/components/ReviewRatingStrip';
+import { BRAND } from '@/config/brand';
 import * as ga4 from '@/lib/analytics';
 import * as klaviyo from '@/lib/klaviyo';
 import { apiCancelAffirmOrder } from '@/services/affirmService';
@@ -93,7 +94,7 @@ export default function CheckOutPage() {
     // Always start checkout with a clean guest state to avoid stale email/address data.
     dispatch(setGuestDetails([]));
     try {
-      sessionStorage.removeItem('majesca_checkout_step');
+      sessionStorage.removeItem('storefront_checkout_step');
     } catch {
       /* ignore */
     }
@@ -123,10 +124,10 @@ export default function CheckOutPage() {
             const serializedCart = JSON.stringify(cartList);
             let shouldSyncGuestCart = true;
             try {
-              const lastSyncedGuestCart = sessionStorage.getItem('majesca_checkout_synced_guest_cart');
+              const lastSyncedGuestCart = sessionStorage.getItem('storefront_checkout_synced_guest_cart');
               shouldSyncGuestCart = lastSyncedGuestCart !== serializedCart;
               if (shouldSyncGuestCart) {
-                sessionStorage.setItem('majesca_checkout_synced_guest_cart', serializedCart);
+                sessionStorage.setItem('storefront_checkout_synced_guest_cart', serializedCart);
               }
             } catch {
               // If sessionStorage is unavailable, continue with sync.
@@ -140,7 +141,7 @@ export default function CheckOutPage() {
                 localStorage.removeItem('cartItems');
               } else {
                 try {
-                  sessionStorage.removeItem('majesca_checkout_synced_guest_cart');
+                  sessionStorage.removeItem('storefront_checkout_synced_guest_cart');
                 } catch {
                   /* ignore */
                 }
@@ -203,10 +204,10 @@ export default function CheckOutPage() {
       // Guest flow should always start from contact and should never restore stale saved step.
       if (scope === 'guest') {
         setCurrentStep(0);
-        sessionStorage.removeItem('majesca_checkout_step');
+        sessionStorage.removeItem('storefront_checkout_step');
         return;
       }
-      const raw = sessionStorage.getItem('majesca_checkout_step');
+      const raw = sessionStorage.getItem('storefront_checkout_step');
       if (raw !== null) {
         const n = parseInt(raw, 10);
         if (!Number.isNaN(n) && n >= 0 && n <= 3) {
@@ -229,7 +230,7 @@ export default function CheckOutPage() {
       return;
     }
     try {
-      sessionStorage.setItem('majesca_checkout_step', String(currentStep));
+      sessionStorage.setItem('storefront_checkout_step', String(currentStep));
     } catch {
       /* ignore */
     }
@@ -386,7 +387,7 @@ export default function CheckOutPage() {
               typeof window !== 'undefined' && skuSlug && jewelryTypeName
                 ? `${window.location.origin}/${String(jewelryTypeName).toLowerCase().replace(/\s+/g, '-')}/premade?slug=${skuSlug}`
                 : undefined,
-            brand: 'Ashclair',
+            brand: BRAND.name,
           };
         }),
       });
@@ -498,7 +499,7 @@ export default function CheckOutPage() {
       // Clear header/cart badge state immediately after successful order.
       dispatch(clearCartProducts());
       try {
-        sessionStorage.removeItem('majesca_checkout_step');
+        sessionStorage.removeItem('storefront_checkout_step');
       } catch {
         /* ignore */
       }
@@ -517,7 +518,7 @@ export default function CheckOutPage() {
           dispatch(setGuestUserOrderDetails(guestOrderPayload));
           try {
             if (orderIdFromResponse) {
-              sessionStorage.setItem(`majesca_guest_order_${orderIdFromResponse}`, JSON.stringify(guestOrderPayload));
+              sessionStorage.setItem(`storefront_guest_order_${orderIdFromResponse}`, JSON.stringify(guestOrderPayload));
             }
           } catch {
             /* ignore */

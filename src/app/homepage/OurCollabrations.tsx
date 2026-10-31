@@ -16,6 +16,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/effect-coverflow';
 
+import { BRAND } from '@/config/brand';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { fetchSocialPosts } from '@/store/slices/Social/socialSlice';
 
@@ -229,14 +230,7 @@ function CollaborationsSection({ socialPost }: { socialPost: any[] }) {
                       />
                     ) : (
                       <div className="w-full h-[100vh] flex items-center justify-center">
-                        <Image
-                          src="/images/ashclair_pdp_logo_image.svg"
-                          alt="Ashclair"
-                          preview={false}
-                          width="100%"
-                          height="100%"
-                          className="!bg-secondary"
-                        />
+                        <Image src={BRAND.logo.monogram} alt={BRAND.name} preview={false} width="100%" height="100%" className="!bg-secondary" />
                       </div>
                     )}
 
@@ -416,7 +410,7 @@ function ReelCard({
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center bg-mocha/20">
-          <Image src="/images/ashclair_pdp_logo_image.svg" alt="Ashclair" preview={false} width="100%" height="100%" className="!bg-secondary" />
+          <Image src={BRAND.logo.monogram} alt={BRAND.name} preview={false} width="100%" height="100%" className="!bg-secondary" />
         </div>
       )}
 

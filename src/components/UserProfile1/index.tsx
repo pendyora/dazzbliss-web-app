@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function UserProfile1({
-  userImage = 'img_ashclair_diam_450x384.png',
+  userImage = 'img_jewelry_diam_450x384.png',
   userHeadline = (
     <>
       NAME OF THE PRODUCT
@@ -29,7 +29,7 @@ export default function UserProfile1({
         <Image
           src={'/images/' + userImage}
           preview={false}
-          alt="Ashclair Diam"
+          alt="Diamond jewelry"
           className="h-[450px] w-full object-cover lg:h-[230px] xl:h-[330px] 2xl:h-[400px] sm:h-[200px]"
         />
         <Text size="textlg" as="p" className="uppercase leading-[30px] tracking-[1.00px] xl:p-3 2xl:p-3 lg:p-2 lg:leading-5">

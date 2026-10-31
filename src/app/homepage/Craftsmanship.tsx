@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { BRAND } from '@/config/brand';
+
 const pillars = [
   { n: '01', t: 'Hand-set', d: 'Every stone is placed by a single artisan, from setting to polish.' },
   { n: '02', t: 'Recycled gold', d: 'Solid 18k metal, refined from reclaimed sources only.' },
@@ -24,7 +26,7 @@ export default function Craftsmanship() {
             Hours, not <span className="italic text-secondary">minutes.</span>
           </h2>
           <p className="mt-8 max-w-xl text-ivory/75 text-lg leading-relaxed font-sans">
-            A Pendyora piece passes through fourteen pairs of hands before it leaves the atelier. We measure quality in milligrams of gold and
+            A {BRAND.name} piece passes through fourteen pairs of hands before it leaves the atelier. We measure quality in milligrams of gold and
             millimeters of patience — never in trends.
           </p>
           <a

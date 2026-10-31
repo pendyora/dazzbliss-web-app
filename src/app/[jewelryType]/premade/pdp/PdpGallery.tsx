@@ -7,6 +7,7 @@ import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import ProtectedVideo from '@/components/ProtectedVideo';
+import { BRAND } from '@/config/brand';
 
 import type { Swiper as SwiperClass } from 'swiper';
 
@@ -100,7 +101,7 @@ function ZoomTile({ src, alt, onOpen }: { src: string; alt: string; onOpen: () =
 function NoteTile() {
   return (
     <div className="relative flex aspect-[4/5] flex-col justify-between bg-navy p-[clamp(22px,2.6vw,40px)] text-noir-on before:pointer-events-none before:absolute before:inset-3.5 before:border before:border-teal before:content-['']">
-      <span className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-gilt-soft">The Pendyora atelier</span>
+      <span className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-gilt-soft">The {BRAND.name} atelier</span>
       <p className="m-0 font-cormorant text-[clamp(22px,2.1vw,32px)] italic leading-[1.2] text-noir-on">
         “Made to be looked at closely, and worn every day.”
       </p>

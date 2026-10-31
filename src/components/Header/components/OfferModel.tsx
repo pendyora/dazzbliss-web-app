@@ -8,6 +8,7 @@ import { IoMdClose } from 'react-icons/io';
 
 import { checkoutTheme, PRIMARY_BTN } from '@/app/checkout/checkoutTheme';
 import CloudflareTurnstile, { CloudflareTurnstileHandle } from '@/components/common/CloudflareTurnstile';
+import { BRAND } from '@/config/brand';
 import { useHoneypot } from '@/hook/useHoneypot';
 import { addSubmitSignUp, getCouponData } from '@/services/cartService';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -340,8 +341,8 @@ const OfferModel = () => {
                       }}
                     />
                     <label htmlFor="offerModelConsentDesktop" className={POPUP.consent}>
-                      By checking this box, you agree to receive automated personalized text messages from ASHCLAIR. Reply HELP for help and STOP to
-                      cancel.{' '}
+                      By checking this box, you agree to receive automated personalized text messages from {BRAND.nameUpper}. Reply HELP for help and
+                      STOP to cancel.{' '}
                       <Link className={POPUP.consentLink} href="/terms-and-conditions" onClick={handleCancel}>
                         View Terms &amp; Privacy
                       </Link>
@@ -409,8 +410,8 @@ const OfferModel = () => {
                       }}
                     />
                     <label htmlFor="offerModelConsentMobile" className={POPUP.consent}>
-                      By checking this box, you agree to receive automated personalized text messages from ASHCLAIR. Reply HELP for help and STOP to
-                      cancel.{' '}
+                      By checking this box, you agree to receive automated personalized text messages from {BRAND.nameUpper}. Reply HELP for help and
+                      STOP to cancel.{' '}
                       <Link className={POPUP.consentLink} href="/terms-and-conditions" onClick={handleCancel}>
                         View Terms &amp; Privacy
                       </Link>

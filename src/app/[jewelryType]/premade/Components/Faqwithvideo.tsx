@@ -52,41 +52,41 @@ const FAQ_DATA = [
 //     id: 1,
 //     videoUrl: 'https://videosbysachin.s3.us-west-1.amazonaws.com/WhatsApp+Video+2026-07-06+at+4.52.00+PM.mp4',
 //     productUrl:
-//       'https://ashclair.com/engagement-rings/premade?slug=sunlit-crown-solitaire-engagement-ring-in-oval-round-lab-grown-diamond-oval-white-gold-14k-025-lab-white-diamond-r2088',
+//       '/engagement-rings/premade?slug=sunlit-crown-solitaire-engagement-ring-in-oval-round-lab-grown-diamond-oval-white-gold-14k-025-lab-white-diamond-r2088',
 //     productName: 'Sunlit Crown Solitaire Engagement Ring',
 //   },
 //   {
 //     id: 2,
 //     videoUrl: 'https://videosbysachin.s3.us-west-1.amazonaws.com/WhatsApp+Video+2026-07-06+at+4.52.48+PM.mp4',
 //     productUrl:
-//       'https://ashclair.com/engagement-rings/premade?slug=eclipse-spark-solitaire-engagement-ring-in-125-cttw-princess-round-lab-grown-diamond-princess-white-gold-14k-1-lab-white-diamond-r2138',
+//       '/engagement-rings/premade?slug=eclipse-spark-solitaire-engagement-ring-in-125-cttw-princess-round-lab-grown-diamond-princess-white-gold-14k-1-lab-white-diamond-r2138',
 //     productName: 'Eclipse Spark Solitaire Engagement Ring',
 //   },
 //   {
 //     id: 3,
 //     videoUrl: 'https://videosbysachin.s3.us-west-1.amazonaws.com/WhatsApp+Video+2026-07-06+at+4.53.40+PM.mp4',
-//     productUrl: 'https://ashclair.com/earrings/premade?slug=lush-ivy-hoop-earrings-in-1-carat-round-lab-grown-diamond-rose-gold-14k-e11101',
+//     productUrl: '/earrings/premade?slug=lush-ivy-hoop-earrings-in-1-carat-round-lab-grown-diamond-rose-gold-14k-e11101',
 //     productName: 'Lush Ivy Hoop Earrings',
 //   },
 //   {
 //     id: 4,
 //     videoUrl: 'https://videosbysachin.s3.us-west-1.amazonaws.com/WhatsApp+Video+2026-07-06+at+4.54.35+PM.mp4',
 //     productUrl:
-//       'https://ashclair.com/engagement-rings/premade?slug=belle-echo-engagement-ring-in-115-cttw-emerald-cut-round-lab-grown-diamond-emerald-white-gold-14k-2-lab-white-diamond-r5559',
+//       '/engagement-rings/premade?slug=belle-echo-engagement-ring-in-115-cttw-emerald-cut-round-lab-grown-diamond-emerald-white-gold-14k-2-lab-white-diamond-r5559',
 //     productName: 'Belle Echo Halo Engagement Ring',
 //   },
 //   {
 //     id: 5,
 //     videoUrl: 'https://videosbysachin.s3.us-west-1.amazonaws.com/WhatsApp+Video+2026-07-06+at+4.56.00+PM.mp4',
 //     productUrl:
-//       'https://ashclair.com/earrings/premade?slug=two-stone-dangle-earrings-for-women-in-1200-cttw-asscher-pear-lab-grown-diamond-white-gold-14k-e11310',
+//       '/earrings/premade?slug=two-stone-dangle-earrings-for-women-in-1200-cttw-asscher-pear-lab-grown-diamond-white-gold-14k-e11310',
 //     productName: 'Two Stone Dangle Earrings',
 //   },
 //   {
 //     id: 6,
 //     videoUrl: 'https://videosbysachin.s3.us-west-1.amazonaws.com/WhatsApp+Video+2026-07-06+at+4.56.52+PM.mp4',
 //     productUrl:
-//       'https://ashclair.com/necklace/premade?slug=starlit-grace-halo-pendant-in-round-lab-grown-diamond-round-white-gold-14k-025-lab-white-diamond-n2065',
+//       '/necklace/premade?slug=starlit-grace-halo-pendant-in-round-lab-grown-diamond-round-white-gold-14k-025-lab-white-diamond-n2065',
 //     productName: 'Starlit Grace Halo Pendant',
 //   },
 // ];

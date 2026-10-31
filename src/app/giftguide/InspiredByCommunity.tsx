@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { BRAND } from '@/config/brand';
+
 import { Img, Text } from '../../components';
 
 export default function InspiredByCommunity() {
@@ -14,12 +16,12 @@ export default function InspiredByCommunity() {
               className="w-[32%] self-center leading-[54px] tracking-[2.20px] lg:w-[32%] lg:leading-9 md:w-full md:text-[26px] sm:text-[22px]"
             >
               <span className="uppercase">
-                <>@ASHCLAIR Be inspired by Our comm</>
+                <>@{BRAND.nameUpper} Be inspired by Our comm</>
               </span>
               <span>unity</span>
             </Text>
             <Text as="p" size="textlg" className="w-[44%] !font-light leading-8 2xl:w-[45%] lg:w-[50%] md:w-full text-justify">
-              <>Upload your photo with your new jewels on instagram and tag us at #ashclairjewelry for a chance to be featured in our gallery!</>
+              <>Upload your photo with your new jewels on instagram and tag us for a chance to be featured in our gallery!</>
             </Text>
           </div>
         </div>
@@ -29,7 +31,7 @@ export default function InspiredByCommunity() {
               <div className="grid grid-cols-2 gap-2 w-full h-1/2">
                 <div className="col-span-1 w-full h-full">
                   <Img
-                    src="img_ashclair_created.png"
+                    src="img_jewelry_created.png"
                     width={300}
                     height={300}
                     alt="Woman wearing chunky gold rings"
@@ -38,7 +40,7 @@ export default function InspiredByCommunity() {
                 </div>
                 <div className="col-span-1 w-full h-full">
                   <Img
-                    src="img_ashclair_an_e.png"
+                    src="img_jewelry_an_e.png"
                     width={308}
                     height={308}
                     alt="Hand with a thin silver ring"
@@ -49,7 +51,7 @@ export default function InspiredByCommunity() {
               <div className="grid grid-cols-2 gap-2 w-full h-1/2">
                 <div className="col-span-1 w-full h-full">
                   <Img
-                    src="img_ashclair_polinach_11007534_306x308.png"
+                    src="img_jewelry_polinach_11007534_306x308.png"
                     width={308}
                     height={308}
                     alt="Woman wearing gold necklace and earrings"
@@ -58,7 +60,7 @@ export default function InspiredByCommunity() {
                 </div>
                 <div className="col-span-1 w-full h-full">
                   <Img
-                    src="img_ashclair_arif_khan_15684184.png"
+                    src="img_jewelry_arif_khan_15684184.png"
                     width={308}
                     height={308}
                     alt="Silver ring with blue gemstones on display"
@@ -80,7 +82,7 @@ export default function InspiredByCommunity() {
               <div className="grid grid-cols-2 gap-2 w-full h-1/2">
                 <div className="col-span-1 w-full h-full">
                   <Img
-                    src="img_ashclair_created.png"
+                    src="img_jewelry_created.png"
                     width={300}
                     height={300}
                     alt="Woman wearing chunky gold rings"
@@ -89,7 +91,7 @@ export default function InspiredByCommunity() {
                 </div>
                 <div className="col-span-1 w-full h-full">
                   <Img
-                    src="img_ashclair_an_e.png"
+                    src="img_jewelry_an_e.png"
                     width={308}
                     height={308}
                     alt="Hand with a thin silver ring"
@@ -100,7 +102,7 @@ export default function InspiredByCommunity() {
               <div className="grid grid-cols-2 gap-2 w-full h-1/2">
                 <div className="col-span-1 w-full h-full">
                   <Img
-                    src="img_ashclair_polinach_11007534_306x308.png"
+                    src="img_jewelry_polinach_11007534_306x308.png"
                     width={308}
                     height={308}
                     alt="Woman wearing gold necklace and earrings"
@@ -109,7 +111,7 @@ export default function InspiredByCommunity() {
                 </div>
                 <div className="col-span-1 w-full h-full">
                   <Img
-                    src="img_ashclair_arif_khan_15684184.png"
+                    src="img_jewelry_arif_khan_15684184.png"
                     width={308}
                     height={308}
                     alt="Silver ring with blue gemstones on display"

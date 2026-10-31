@@ -22,7 +22,7 @@ import { deleteCookie, getAllCookieNames, getCookie, setCookie } from '@/utils/c
 /* -------------------------------------------------------------------------- */
 
 /** The single first-party cookie holding the visitor's choice. */
-export const CONSENT_COOKIE_NAME = 'majesca_cookie_consent' as const;
+export const CONSENT_COOKIE_NAME = 'site_cookie_consent' as const;
 
 /**
  * Consent policy version. Bump whenever the categories, what they control, or the

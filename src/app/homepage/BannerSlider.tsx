@@ -9,6 +9,7 @@ import { Navigation, Autoplay, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import ProtectedVideo from '@/components/ProtectedVideo';
+import { BRAND } from '@/config/brand';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -289,7 +290,7 @@ export default function BannerSwiper({ bannerData }: any) {
                     preview={false}
                     draggable={false}
                     loading="lazy"
-                    fallback="/images/ashclair_pdp_logo_image.svg"
+                    fallback={BRAND.logo.monogram}
                     className="w-full h-full min-w-[100vw] object-cover pointer-events-none"
                     style={{ WebkitTouchCallout: 'none' }}
                   />

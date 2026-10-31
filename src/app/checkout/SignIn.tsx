@@ -9,6 +9,7 @@ import { LuEye, LuEyeOff, LuPencil } from 'react-icons/lu';
 
 import { CheckBox, Text } from '@/components';
 import CloudflareTurnstile, { CloudflareTurnstileHandle } from '@/components/common/CloudflareTurnstile';
+import { BRAND } from '@/config/brand';
 import * as klaviyo from '@/lib/klaviyo';
 import { varifyEmailApi, apiMergeExistingCart } from '@/services/cartService';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -86,7 +87,7 @@ function SmsConsentField({ checked, onChange, disabled }: { checked?: boolean; o
     <div className="flex items-start gap-3 text-left text-[12px] leading-[1.5] text-ink-soft">
       <CheckBox id="contact-sms-consent" label="" size="xs" checked={checked} onChange={onChange} disabled={disabled} className="!flex-shrink-0" />
       <label htmlFor="contact-sms-consent" className="cursor-pointer pl-0">
-        Text me order and delivery updates from Pendyora. Optional. Message rates may apply; reply HELP for help and STOP to cancel.{' '}
+        Text me order and delivery updates from {BRAND.name}. Optional. Message rates may apply; reply HELP for help and STOP to cancel.{' '}
         <Link href="/terms-and-conditions" className="underline !cursor-pointer">
           Terms &amp; Privacy
         </Link>

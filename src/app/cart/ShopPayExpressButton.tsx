@@ -132,7 +132,7 @@ const ShopPayExpressButton = ({ cartProducts, couponCode, canStart, onBeforeCrea
       if (responseData?.is_guest && responseData?.guestUserOrderDetails) {
         dispatch(setGuestUserOrderDetails(responseData.guestUserOrderDetails));
         try {
-          sessionStorage.setItem(`majesca_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
+          sessionStorage.setItem(`storefront_guest_order_${orderId}`, JSON.stringify(responseData.guestUserOrderDetails));
           localStorage.removeItem('admin');
         } catch {
           /* ignore */
