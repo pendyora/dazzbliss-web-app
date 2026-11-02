@@ -11,12 +11,13 @@ import { Text } from '../../components';
 const CATEGORY_LINKS: Record<string, string> = {
   RINGS: '/rings',
   ENGAGEMENT_RINGS: '/engagement-rings',
-  CUSTOM_ENGAGEMENT_RINGS: '/design-your-own',
   WEDDING_BANDS: '/wedding-bands',
   EARRINGS: '/earrings',
   NECKLACE: '/necklaces',
   BRACELET: '/bracelets',
 };
+// Not shown in Shop by Category, even if an older banner saved an image for it.
+const EXCLUDED_CODES = ['CUSTOM_ENGAGEMENT_RINGS'];
 
 const hrefFor = (item: any) =>
   item?.link || CATEGORY_LINKS[item?.code] || (item?.code ? `/${String(item.code).toLowerCase().replace(/_/g, '-')}` : '/all');
@@ -24,7 +25,7 @@ const hrefFor = (item: any) =>
 // Shop by Category: every category given an image in Admin → CMS → Banner (in the admin's order), two per
 // full-screen card; an odd last one fills its card.
 export default function ShopByCategory({ bannerData }: any) {
-  const items: any[] = (Array.isArray(bannerData) ? bannerData : []).filter((e: any) => e?.image);
+  const items: any[] = (Array.isArray(bannerData) ? bannerData : []).filter((e: any) => e?.image && !EXCLUDED_CODES.includes(e?.code));
   if (items.length === 0) {
     return null;
   }
