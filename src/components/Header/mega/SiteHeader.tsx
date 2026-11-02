@@ -166,7 +166,7 @@ export default function SiteHeader({ headerMetaData, currencyProps, search }: Pr
 
       <div
         className={`border-b transition-[background-color,border-color,box-shadow] duration-300 ${
-          solid ? 'border-line bg-paper' : 'border-transparent bg-transparent'
+          solid ? 'border-line bg-paper text-ink' : 'border-transparent bg-transparent text-white'
         } ${scrolled && !panelOpen ? 'shadow-[0_8px_30px_rgba(23,20,15,0.05)]' : ''}`}
       >
         <div
@@ -186,7 +186,11 @@ export default function SiteHeader({ headerMetaData, currencyProps, search }: Pr
               <LuMenu className="h-5 w-5" strokeWidth={1.2} />
             </button>
             <Link href="/" aria-label={`${BRAND.name} home`} className="lg:hidden">
-              <img src={BRAND.logo.wordmark} alt={BRAND.name} className="h-[34px] w-auto object-contain mix-blend-multiply" />
+              <img
+                src={BRAND.logo.wordmark}
+                alt={BRAND.name}
+                className={`h-[34px] w-auto object-contain transition-[filter] duration-300 ${solid ? '' : 'invert'}`}
+              />
             </Link>
           </div>
 
@@ -194,8 +198,8 @@ export default function SiteHeader({ headerMetaData, currencyProps, search }: Pr
             {menu.map((entry) => {
               const expanded = openKey === entry.id;
               const current = !!entry.href && entry.href !== '/' && pathname?.startsWith(entry.href.split('?')[0]);
-              const className = `relative flex h-full items-center whitespace-nowrap text-[12px] font-medium uppercase tracking-[0.14em] transition-colors after:absolute after:inset-x-0 after:-bottom-px after:h-[1.5px] after:origin-left after:bg-ink after:transition-transform after:duration-[350ms] after:ease-luxe ${
-                expanded || current ? 'text-ink after:scale-x-100' : 'text-ink after:scale-x-0 hover:after:scale-x-100'
+              const className = `relative flex h-full items-center whitespace-nowrap text-[12px] font-medium uppercase tracking-[0.14em] transition-colors after:absolute after:inset-x-0 after:-bottom-px after:h-[1.5px] after:origin-left after:bg-current after:transition-transform after:duration-[350ms] after:ease-luxe ${
+                expanded || current ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'
               }`;
               const handlers = {
                 'data-menu-key': entry.id,
@@ -245,7 +249,11 @@ export default function SiteHeader({ headerMetaData, currencyProps, search }: Pr
           </nav>
 
           <Link href="/" aria-label={`${BRAND.name} home`} className="hidden justify-self-center lg:block">
-            <img src={BRAND.logo.wordmark} alt={BRAND.name} className="h-[26px] w-auto object-contain mix-blend-multiply sm:h-[22px]" />
+            <img
+              src={BRAND.logo.wordmark}
+              alt={BRAND.name}
+              className={`h-[26px] w-auto object-contain transition-[filter] duration-300 sm:h-[22px] ${solid ? '' : 'invert'}`}
+            />
           </Link>
 
           <div className="flex items-center justify-end gap-1.5">
@@ -257,7 +265,11 @@ export default function SiteHeader({ headerMetaData, currencyProps, search }: Pr
               aria-label="Search"
               onClick={() => (openKey === SEARCH ? close() : open(SEARCH))}
               className={`mr-2 inline-flex h-10 min-w-[200px] items-center gap-2.5 border px-3.5 text-[13px] transition-colors xls:min-w-0 lg:mr-0 lg:w-10 lg:justify-center lg:border-0 lg:px-0 ${
-                openKey === SEARCH ? 'border-ink text-ink' : 'border-line-strong text-ink-soft hover:border-ink hover:text-ink'
+                openKey === SEARCH
+                  ? 'border-ink text-ink'
+                  : solid
+                    ? 'border-line-strong text-ink-soft hover:border-ink hover:text-ink'
+                    : 'border-white/60 text-white hover:border-white'
               }`}
             >
               <SearchIcon className="h-4 w-4 lg:h-5 lg:w-5" />
