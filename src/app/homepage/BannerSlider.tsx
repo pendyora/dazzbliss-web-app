@@ -183,10 +183,10 @@ export default function BannerSwiper({ bannerData }: any) {
           }}
         >
           {bannerData?.banner_image?.map((banner: any, index: number) => (
-            <SwiperSlide key={index} className="!aspect-[12/5] !w-full !relative [container-type:inline-size]">
+            <SwiperSlide key={index} className="!h-[100svh] !min-h-[560px] !w-full !relative overflow-hidden [container-type:inline-size]">
               {!banner?.is_desktop_image ? (
                 banner?.desktop_image?.toLowerCase().includes('.mp4') && (
-                  <ProtectedVideo src={banner?.desktop_image} autoPlay={isVideoPlaying} link={banner?.http_link || null} className="max-h-[700px]" />
+                  <ProtectedVideo src={banner?.desktop_image} autoPlay={isVideoPlaying} link={banner?.http_link || null} />
                 )
               ) : (
                 <div className="!w-full !h-full">
@@ -195,8 +195,9 @@ export default function BannerSwiper({ bannerData }: any) {
                     preview={false}
                     draggable={false}
                     loading="lazy"
-                    className="w-full min-w-[100vw] !aspect-[12/5] pointer-events-none"
-                    style={{ WebkitTouchCallout: 'none' }}
+                    wrapperStyle={{ width: '100%', height: '100%', display: 'block' }}
+                    className="pointer-events-none"
+                    style={{ WebkitTouchCallout: 'none', width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                   {banner?.http_link && <Link href={banner.http_link} className="absolute inset-0 w-full h-full" />}
                 </div>
